@@ -11,7 +11,6 @@ const Navbar = () => {
             <div className="navbar-container">
                 <Link to="/" className="nav-logo">
                     <img src={logo} alt="Fachri Property Group" className="logo-image" />
-                    <span>FACHRI PROPERTY GROUP</span>
                 </Link>
                 <ul className="navbar-menu">
                     
@@ -26,6 +25,7 @@ const Navbar = () => {
                         {showAboutSubmenu && (
                             <ul className="dropdown-menu">
                                 <li><Link to="/about/history">Sejarah Perusahaan</Link></li>
+                                <li><Link to="/about/history">Menegement</Link></li>
                                 <li><Link to="/about/awards">Penghargaan</Link></li>
                                 <li><Link to="/about/subsidiaries">Anak Perusahaan</Link></li>
                             </ul>

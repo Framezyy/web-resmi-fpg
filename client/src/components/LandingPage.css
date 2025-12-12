@@ -8,7 +8,6 @@
 }
 
 .hero-section {
-    /* Background akan diatur dari inline style di JSX */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -22,8 +21,8 @@
 .hero-overlay {
     text-align: center;
     color: white;
-    z-index: 1;
-    margin-top: -100px;
+    z-index: 2;
+    position: relative;
 }
 
 .hero-section::before {
@@ -33,7 +32,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .hero-section h1 {
@@ -41,7 +40,8 @@
     margin-bottom: 20px;
     z-index: 2;
     position: relative;
-    color: #f9f9f9;
+    color: #ffffff;
+    font-weight: bold;
 }
 
 .highlight {
@@ -49,9 +49,29 @@
 }
 
 .hero-subtitle {
-    font-size: 20px;
+    font-size: 18px;
     z-index: 2;
     position: relative;
+    margin-bottom: 30px;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 12px 35px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-outline:hover {
+    background: white;
+    color: #333;
 }
 
 .container {
@@ -60,120 +80,42 @@
     padding: 60px 20px;
 }
 
-.vision-section, .properties-section, .contact-section {
+.contact-section {
     background: #f9f9f9;
 }
 
-.vision-section:nth-child(even) {
-    background: white;
-}
-
-.vision-section h2, .properties-section h2, .contact-section h2 {
+.contact-section h2 {
     text-align: center;
-    font-size: 36px;
-    margin-bottom: 40px;
+    font-size: 32px;
+    margin-bottom: 50px;
     color: #333;
-}
-
-.vision-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-}
-
-.vision-image img {
-    width: 100%;
-    border-radius: 8px;
-}
-
-.vision-text h3 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-.btn-primary, .btn-outline {
-    display: inline-block;
-    padding: 12px 30px;
-    border-radius: 25px;
-    text-decoration: none;
     font-weight: bold;
-    transition: all 0.3s;
-}
-
-.btn-primary {
-    background: #333;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #e74c3c;
-}
-
-.btn-outline {
-    border: 2px solid white;
-    color: white;
-}
-
-.btn-outline:hover {
-    background: white;
-    color: #333;
-}
-
-.properties-grid {
-    display: grid;
-    gap: 20px;
-}
-
-.property-card {
-    position: relative;
-    height: 400px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.property-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.property-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-.property-overlay h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
 }
 
 .contact-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: 60px;
 }
 
-.contact-logo {
-    height: 60px;
-    margin-bottom: 20px;
+.contact-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.logo-box {
+    width: 50px;
+    height: 50px;
+    background: #333;
+    border-radius: 5px;
 }
 
 .contact-info h3 {
-    font-size: 20px;
-    margin-bottom: 30px;
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
 }
 
 .address, .contact-details {
@@ -183,34 +125,39 @@
 .address h4, .contact-details h4 {
     font-size: 16px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    color: #333;
 }
 
 .address p, .contact-details p {
     margin: 5px 0;
     color: #666;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .contact-map iframe {
     border-radius: 8px;
+    width: 100%;
 }
 
 .footer {
     background: #1a1a1a;
     color: white;
-    padding: 40px 0 20px;
+    padding: 50px 0 20px;
 }
 
 .footer-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 30px;
-    margin-bottom: 30px;
+    gap: 40px;
+    margin-bottom: 40px;
 }
 
 .footer-column h4 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-size: 16px;
+    font-weight: bold;
 }
 
 .footer-column ul {
@@ -219,9 +166,10 @@
 }
 
 .footer-column ul li {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: #999;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .footer-column ul li:hover {
@@ -230,17 +178,22 @@
 
 .footer-bottom {
     text-align: center;
-    padding-top: 20px;
+    padding-top: 30px;
     border-top: 1px solid #333;
     color: #999;
+    font-size: 14px;
 }
 
 @media (max-width: 768px) {
-    .vision-content, .contact-content {
+    .contact-content {
         grid-template-columns: 1fr;
     }
     
     .footer-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hero-section h1 {
+        font-size: 32px;
     }
 }
