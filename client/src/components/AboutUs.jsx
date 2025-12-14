@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AboutUs.css';
 import heroBg from '../assets/images/homesatu.png';
 import visiImage from '../assets/images/homedua.png';
-import ceoImage from '../assets/images/hometiga.png';
+import ceoImage from '../assets/images/pahri.png';
 
 const AboutUs = () => {
     const [activeTab, setActiveTab] = useState('vision');
