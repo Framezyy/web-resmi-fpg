@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AboutUs.css';
 import heroBg from '../assets/images/homesatu.png';
-import visiImage from '../assets/images/homedua.png';
+import visiImage from '../assets/images/Kantor.png';
 import ceoImage from '../assets/images/pahri.png';
 
 const AboutUs = () => {
@@ -59,19 +59,36 @@ const AboutUs = () => {
                             </div>
                         )}
                         {activeTab === 'mission' && (
-                            <div className="tab-panel">
-                                <h2>Misi Kami</h2>
-                                <ul>
-                                    <li>Mengembangkan properti berkualitas dengan harga terjangkau</li>
-                                    <li>Memberikan pelayanan terbaik kepada pelanggan</li>
-                                    <li>Berinovasi dalam pengembangan properti</li>
-                                </ul>
+                            <div className="tab-panel vision-content">
+                                <div className="vision-image">
+                                    <img src={visiImage} alt="Visi Fachri Group" />
+                                </div>
+                                <div className="vision-text">
+                                    <h2>Miri Fachri Group</h2>
+                                    <p>Mengembangkan semua sumber daya yang dimilikiuntuk menerapkan tata kelola organisasi yangberorientasi pada peningkatan mutu dan menyediakanlayanan yang berkualitas</p>
+                                </div>
                             </div>
                         )}
                         {activeTab === 'history' && (
-                            <div className="tab-panel">
-                                <h2>Sejarah Perusahaan</h2>
-                                <p>PT Fachri Property Group didirikan dengan komitmen untuk menyediakan hunian berkualitas bagi masyarakat Indonesia.</p>
+                            <div className="tab-panel vision-content">
+                                <div className="vision-image">
+                                    <img src={visiImage} alt="Visi Fachri Group" />
+                                </div>
+                                <div className="vision-text">
+                                    <h2>Sejarah Fachri Group</h2>
+                                    <p>PT. FACHRI PROPERTY GROUP merupakan perusahaanbesar yang bergerak di bidang pengembangan kawasanperumahan di Kalimantan Barat, berdiri sejak tahun 2009 didirikan oleh Bapak Mohammad Fachri, S.Sos.,M. Ap selaku CEO PT. FACHRI PROPERTY GROUP yang semula adalah usaha perorangan dengan nama CV. Mitra Bersama. Pada tahun 2013 berubah nama menjadi CV. Fachri Property dan pada Tahun 2014 berubah menjadi badan usaha Persero. Fachri Property Land
+hingga tahun 2022. Pada tanggal 28 September 2021 PT. Fachri
+Property Land melakukan penambahan anak perusahaan yang 
+masih bernaung dalam satu gedung dengan nama PT. FACHRI 
+PROPERTY GROUP dengan tetap menjadi perusahaan 
+pengembangan terbesar di Kalimantan Barat. Hingga tahun 2023 PT.
+Fachri dengan nama PT. FACHRI PROPERTY GROUP yang saat ini
+beralamatkan di jalan Angkasa No. 22 Pontianak, Kalimantan Barat. 
+Dengan visi untuk terus PT. FACHRI PROPERTY GROUP sedang 
+mencari individu yang berkomitmen dan penuh dedikasi untuk 
+bergabung dalam tim kami. Kami membutuhkan seorang Marketing 
+Professional yang siap mengembangkan strategi dan kampanye</p>
+                                </div>
                             </div>
                         )}
                     </div>

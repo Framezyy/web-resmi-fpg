@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ContactUs.css';
 import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
-import contactBg from '../assets/images/homesatu.png';
+import contactBg from '../assets/images/Kantor.png';
 
 const ContactUs = () => {
     const [jenisPernyataan, setJenisPernyataan] = useState('');
