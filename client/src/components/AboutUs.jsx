@@ -3,9 +3,62 @@ import './AboutUs.css';
 import heroBg from '../assets/images/homesatu.png';
 import visiImage from '../assets/images/Kantor.png';
 import ceoImage from '../assets/images/pahri.png';
+import leadershipBg from '../assets/images/leadershipBg.jpg';
+// Placeholder untuk gambar penghargaan - ganti dengan gambar asli
+import award1 from '../assets/images/penghargaansatu.jpeg';
+import award2 from '../assets/images/penghargaandua.jpeg';
+import award3 from '../assets/images/penghargaantiga.jpeg';
+// Placeholder untuk logo anak perusahaan - ganti dengan logo asli
+import logo1 from '../assets/images/anaksatu.png';
+import logo2 from '../assets/images/anakdua.png';
 
 const AboutUs = () => {
     const [activeTab, setActiveTab] = useState('vision');
+    const [currentAward, setCurrentAward] = useState(0);
+
+    const awards = [
+        {
+            id: 1,
+            image: award1,
+            title: 'BCI ASIA TOP 10 DEVELOPERS AWARD',
+            year: '2022'
+        },
+        {
+            id: 2,
+            image: award2,
+            title: 'BEST AFFORDABLE HOUSING JABODETABEK AREA',
+            year: '2022'
+        },
+        {
+            id: 3,
+            image: award3,
+            title: 'Golden Winner Master Plan',
+            year: ''
+        },
+        {
+            id: 4,
+            image: award1,
+            title: 'EXCELLENCE IN PROPERTY DEVELOPMENT',
+            year: '2023'
+        },
+        {
+            id: 5,
+            image: award2,
+            title: 'BEST RESIDENTIAL PROJECT AWARD',
+            year: '2023'
+        }
+    ];
+
+    const cardsPerView = 3;
+    const maxIndex = awards.length - cardsPerView;
+
+    const nextAward = () => {
+        setCurrentAward((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    };
+
+    const prevAward = () => {
+        setCurrentAward((prev) => (prev <= 0 ? maxIndex : prev - 1));
+    };
 
     return (
         <div className="about-page">
@@ -95,12 +148,71 @@ Professional yang siap mengembangkan strategi dan kampanye</p>
                 </div>
             </section>
 
-            <section className="leadership-section">
-                <div className="container">
+            <section 
+                className="leadership-section"
+                style={{ 
+                    backgroundImage: `url(${leadershipBg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            >
+                <div className="leadership-overlay">
                     <h2>LEADEARSHIP</h2>
                     <div className="ceo-profile">
-                        <img src={ceoImage} alt="CEO Fachri" />
+                        <div className="ceo-image-wrapper">
+                            <img src={ceoImage} alt="CEO Fachri" />
+                        </div>
                         <h3>CEO FACHRI</h3>
+                        <p>Mochammad Fachri HM, S.Sos, M.A.P</p>
+                    </div>
+                </div>
+            </section>
+
+            <section className="awards-section">
+                <div className="container">
+                    <h2>PENGHARGAAN</h2>
+                    <p className="awards-subtitle">PT Fachri Property Group menerima pengakuan publik melalui berbagai penghargaan bergengsi</p>
+                    
+                    <div className="awards-slider">
+                        <button className="slider-btn prev" onClick={prevAward}>‹</button>
+                        
+                        <div className="awards-container">
+                            <div 
+                                className="awards-track"
+                                style={{
+                                    transform: `translateX(-${currentAward * (100 / 3)}%)`
+                                }}
+                            >
+                                {awards.map((award) => (
+                                    <div 
+                                        key={award.id}
+                                        className="award-card"
+                                    >
+                                        <div className="award-image">
+                                            <img src={award.image} alt={award.title} />
+                                        </div>
+                                        <h4>{award.title}</h4>
+                                        {award.year && <p>{award.year}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <button className="slider-btn next" onClick={nextAward}>›</button>
+                    </div>
+                </div>
+            </section>
+
+            <section className="subsidiaries-section">
+                <div className="container">
+                    <h2>ANAK PERUSAHAAN</h2>
+                    <div className="subsidiaries-grid">
+                        <div className="subsidiary-card">
+                            <img src={logo1} alt="Borneo Icon Development" />
+                        </div>
+                        <div className="subsidiary-card">
+                            <img src={logo2} alt="Borneo Real Estate" />
+                        </div>
                     </div>
                 </div>
             </section>

@@ -17,6 +17,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    padding: 60px;
 }
 
 .hero-overlay {
@@ -24,6 +25,12 @@
     color: white;
     z-index: 2;
     position: relative;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-section::before {
@@ -33,7 +40,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-section:first-of-type::before {
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .hero-section h1 {
@@ -42,7 +53,9 @@
     z-index: 2;
     position: relative;
     color: #ffffff;
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .highlight {
@@ -53,12 +66,15 @@
     font-size: 18px;
     z-index: 2;
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.6;
 }
 
 .btn-outline {
     display: inline-block;
-    padding: 12px 35px;
+    padding: 14px 40px;
     border-radius: 5px;
     text-decoration: none;
     font-weight: 600;
@@ -67,7 +83,9 @@
     color: white;
     background: transparent;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .btn-outline:hover {
@@ -91,6 +109,8 @@
     margin-bottom: 50px;
     color: #333;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .contact-content {
@@ -114,9 +134,11 @@
 }
 
 .contact-info h3 {
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .address, .contact-details {
@@ -134,7 +156,7 @@
     margin: 5px 0;
     color: #666;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.8;
 }
 
 .contact-map iframe {
@@ -202,5 +224,9 @@
     
     .hero-section h1 {
         font-size: 32px;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px;
     }
 }

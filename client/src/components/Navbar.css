@@ -115,7 +115,7 @@
   padding: 10px 20px;
   color: #333;
   text-decoration: none;
-  transition: background 0.3s;
+  transition: background 0.5s;
 }
 
 .dropdown-menu a:hover {
