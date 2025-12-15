@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Navbar.css';
-import logo from '../assets/images/logo.png';
+import logoWhite from '../assets/images/logo-putih.png';
+import logoColor from '../assets/images/logo-warna.png';
 
 const Navbar = () => {
     const [showAboutSubmenu, setShowAboutSubmenu] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
-        <nav className="navbar">
+        <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
             <div className="navbar-container">
                 <Link to="/" className="nav-logo">
-                    <img src={logo} alt="Fachri Property Group" className="logo-image" />
+                    <img 
+                        src={scrolled ? logoColor : logoWhite} 
+                        alt="Fachri Property Group" 
+                        className="logo-image" 
+                    />
                 </Link>
                 <ul className="navbar-menu">
                     

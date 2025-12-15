@@ -1,10 +1,19 @@
 .navbar {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
+    background-color: transparent;
+    box-shadow: none;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 1000;
     padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .navbar-container {
@@ -50,7 +59,7 @@
 
 .navbar-link {
     text-decoration: none;
-    color: #333;
+    color: #ffffff;
     font-weight: 500;
     padding: 8px 12px;
     transition: color 0.3s;
@@ -58,6 +67,10 @@
     align-items: center;
     gap: 5px;
     white-space: nowrap;
+}
+
+.navbar.scrolled .navbar-link {
+    color: #333;
 }
 
 .navbar-link:hover {
