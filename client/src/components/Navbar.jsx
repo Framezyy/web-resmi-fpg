@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/Navbar.css';
 import logoWhite from '../assets/images/logo-putih.png';
 import logoColor from '../assets/images/logo-warna.png';
@@ -7,6 +7,8 @@ import logoColor from '../assets/images/logo-warna.png';
 const Navbar = () => {
     const [showAboutSubmenu, setShowAboutSubmenu] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const location = useLocation();
+    const isLandingPage = location.pathname === '/';
 
     useEffect(() => {
         const handleScroll = () => {
@@ -18,11 +20,11 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+        <nav className={`navbar ${scrolled && !isLandingPage ? 'scrolled' : ''}`}>
             <div className="navbar-container">
                 <Link to="/" className="nav-logo">
                     <img 
-                        src={scrolled ? logoColor : logoWhite} 
+                        src={(scrolled && !isLandingPage) ? logoColor : logoWhite} 
                         alt="Fachri Property Group" 
                         className="logo-image" 
                     />
