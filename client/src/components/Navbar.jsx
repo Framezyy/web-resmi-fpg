@@ -20,7 +20,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav className={`navbar ${scrolled && !isLandingPage ? 'scrolled' : ''}`}>
+        <nav className={`navbar ${scrolled && !isLandingPage ? 'scrolled' : ''} navbar-animate`}>
             <div className="navbar-container">
                 <Link to="/" className="nav-logo">
                     <img 
