@@ -4,14 +4,17 @@
 }
 
 .contact-hero {
-    height: 500px;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px;
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    padding: 40px;
+    padding: 0;
 }
 
 .contact-hero::before {
@@ -21,26 +24,32 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
-.hero-overlay {
-    position: relative;
-    z-index: 1;
+.contact-page .hero-overlay {
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    z-index: 2;
     text-align: left;
     color: white;
-    margin-left: 40px;
-    margin-bottom: 30px;
+    max-width: 700px;
 }
 
-.hero-overlay h1 {
+.contact-page .hero-overlay h1 {
     font-size: 60px;
-    margin-bottom: 15px;
+    margin: 0 0 10px 0;
     font-weight: bold;
+    color: white;
+    line-height: 1.1;
 }
 
-.hero-overlay p {
+.contact-page .hero-overlay p {
     font-size: 24px;
+    margin: 0;
+    line-height: 1.2;
 }
 
 .highlight {

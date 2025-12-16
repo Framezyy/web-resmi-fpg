@@ -12,18 +12,19 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 600px;
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding: 60px;
+    padding: 0;
 }
 
-.hero-overlay {
+.landing-page .hero-overlay {
     text-align: center;
     color: white;
-    z-index: 2;
     position: relative;
     width: 100%;
     max-width: 1200px;
@@ -31,6 +32,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 2;
 }
 
 .hero-section::before {
@@ -64,7 +68,7 @@
 
 .hero-subtitle {
     font-size: 18px;
-    z-index: 2;
+    z-index: 1;
     position: relative;
     margin-bottom: 35px;
     font-weight: 400;
