@@ -11,6 +11,22 @@
     transition: all 0.3s ease;
 }
 
+/* Navbar entrance animation */
+.navbar-animate {
+    animation: slideDown 0.6s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .navbar.scrolled {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './LandingPage.css';
 import heroBgsatu from '../assets/images/homesatu.png';
 import heroBgdua from '../assets/images/homedua.png';
@@ -6,6 +6,37 @@ import heroBgtiga from '../assets/images/hometiga.png';
 import heroBgempat from '../assets/images/homeempat.png';
 
 const LandingPage = () => {
+    useEffect(() => {
+        // Animate first section on load
+        const firstSectionElements = document.querySelector('.hero-section:first-of-type').querySelectorAll('.animate-on-scroll');
+        firstSectionElements.forEach((el, index) => {
+            setTimeout(() => {
+                el.classList.add('animate-in');
+            }, 300 + (index * 200));
+        });
+
+        // Observe other sections
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll('.hero-section:not(:first-of-type) .animate-on-scroll, .contact-section .animate-on-scroll');
+        animatedElements.forEach(el => observer.observe(el));
+
+        return () => {
+            animatedElements.forEach(el => observer.unobserve(el));
+        };
+    }, []);
+
     return (
         <div className="landing-page">
             <section 
@@ -17,8 +48,8 @@ const LandingPage = () => {
                 }}
             >
                 <div className="hero-overlay">
-                    <h1>PT <span className="highlight">FACHRI</span> PROPERTY</h1>
-                    <p className="hero-subtitle">BELI RUMAH HARUS FACHRI PROPERTI GROUP</p>
+                    <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>PT <span className="highlight">FACHRI</span> PROPERTY</h1>
+                    <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>BELI RUMAH HARUS FACHRI PROPERTI GROUP</p>
                 </div>
             </section>
 
@@ -31,9 +62,9 @@ const LandingPage = () => {
                 }}
             >
                 <div className="hero-overlay">
-                    <h1>VISI KAMI</h1>
-                    <p className="hero-subtitle">MEMBERI ARTI DAN TUJUAN</p>
-                    <button className="btn-outline">TEMUKAN LEBIH</button>
+                    <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>VISI KAMI</h1>
+                    <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>MEMBERI ARTI DAN TUJUAN</p>
+                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
                 </div>
             </section>
 
@@ -46,9 +77,9 @@ const LandingPage = () => {
                 }}
             >
                 <div className="hero-overlay">
-                    <h1>PROPERTI KAMI</h1>
-                    <p className="hero-subtitle">TEMUKAN DAN BANGUN HUNIAN MASA DEPAN ANDA</p>
-                    <button className="btn-outline">TEMUKAN LEBIH</button>
+                    <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>PROPERTI KAMI</h1>
+                    <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>TEMUKAN DAN BANGUN HUNIAN MASA DEPAN ANDA</p>
+                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
                 </div>
             </section>
 
@@ -61,17 +92,17 @@ const LandingPage = () => {
                 }}
             >
                 <div className="hero-overlay">
-                    <h1>HUBUNGI KAMI</h1>
-                    <p className="hero-subtitle">KAMI MEMBANGUN MIMPI</p>
-                    <button className="btn-outline">TEMUKAN LEBIH</button>
+                    <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>HUBUNGI KAMI</h1>
+                    <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>KAMI MEMBANGUN MIMPI</p>
+                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
                 </div>
             </section>
 
             <section className="contact-section">
                 <div className="container">
-                    <h2>GET IN TOUCH WITH US</h2>
+                    <h2 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>GET IN TOUCH WITH US</h2>
                     <div className="contact-content">
-                        <div className="contact-info">
+                        <div className="contact-info animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
                             <div className="contact-logo-container">
                                 <div className="logo-box"></div>
                                 <h3>FACHRI PROPERTY GROUP</h3>
@@ -90,7 +121,7 @@ const LandingPage = () => {
                                 <p>Email: cs@fachrisaebaty.co.id</p>
                             </div>
                         </div>
-                        <div className="contact-map">
+                        <div className="contact-map animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
                             <iframe 
                                 title="Map Location"
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
