@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './AboutUs.css';
 import heroBg from '../assets/images/homesatu.png';
 import visiImage from '../assets/images/Kantor.png';
@@ -207,12 +208,12 @@ Professional yang siap mengembangkan strategi dan kampanye</p>
                 <div className="container">
                     <h2>ANAK PERUSAHAAN</h2>
                     <div className="subsidiaries-grid">
-                        <div className="subsidiary-card">
+                        <Link to="/subsidiary/borneo-icon" className="subsidiary-card">
                             <img src={logo1} alt="Borneo Icon Development" />
-                        </div>
-                        <div className="subsidiary-card">
+                        </Link>
+                        <Link to="/subsidiary/borneo-real-estate" className="subsidiary-card">
                             <img src={logo2} alt="Borneo Real Estate" />
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </section>
