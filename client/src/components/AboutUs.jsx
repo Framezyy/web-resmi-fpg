@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './AboutUs.css';
 import heroBg from '../assets/images/homesatu.png';
 import visiImage from '../assets/images/Kantor.png';
@@ -10,12 +10,40 @@ import award1 from '../assets/images/penghargaansatu.jpeg';
 import award2 from '../assets/images/penghargaandua.jpeg';
 import award3 from '../assets/images/penghargaantiga.jpeg';
 // Placeholder untuk logo anak perusahaan - ganti dengan logo asli
-import logo1 from '../assets/images/anak3.png';
-import logo2 from '../assets/images/anak2.png';
+import logo1 from '../assets/images/anak2.png';
+import logo2 from '../assets/images/anak3.png';
 
 const AboutUs = () => {
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState('vision');
     const [currentAward, setCurrentAward] = useState(0);
+
+    // Baca URL parameter saat komponen dimuat
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const tab = params.get('tab');
+        const section = params.get('section');
+        
+        if (tab && ['vision', 'mission', 'history'].includes(tab)) {
+            setActiveTab(tab);
+            
+            // Scroll ke section tabs
+            setTimeout(() => {
+                const tabsSection = document.querySelector('.about-tabs');
+                if (tabsSection) {
+                    tabsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        } else if (section) {
+            // Scroll ke section tertentu (leadership, awards, subsidiaries)
+            setTimeout(() => {
+                const targetSection = document.querySelector(`.${section}-section, #${section}`);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+    }, [location]);
 
     const awards = [
         {

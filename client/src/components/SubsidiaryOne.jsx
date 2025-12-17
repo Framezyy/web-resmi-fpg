@@ -77,10 +77,15 @@ const SubsidiaryOne = () => {
                         <div className="tabs-content">
                             {activeTab === 'vision' && (
                                 <div className="tab-panel">
-                                    <p>
-                                        Menjadi perusahaan pengembang properti terpercaya dan terdepan dalam menciptakan kawasan 
-                                        hunian dan komersial yang berkualitas, inovatif, serta berkelanjutan di Indonesia.
-                                    </p>
+                                    <div className="vision-content">
+                                        <div className="vision-text">
+                                            <p>
+                                                Menjadi perusahaan pengembang properti terpercaya dan terdepan dalam menciptakan kawasan 
+                                                hunian dan komersial yang berkualitas, inovatif, serta berkelanjutan di Indonesia.
+                                            </p>
+                                        </div>
+                                        <div className="vision-shape"></div>
+                                    </div>
                                 </div>
                             )}
                             {activeTab === 'mission' && (
