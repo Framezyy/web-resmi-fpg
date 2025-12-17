@@ -10,8 +10,8 @@ import award1 from '../assets/images/penghargaansatu.jpeg';
 import award2 from '../assets/images/penghargaandua.jpeg';
 import award3 from '../assets/images/penghargaantiga.jpeg';
 // Placeholder untuk logo anak perusahaan - ganti dengan logo asli
-import logo1 from '../assets/images/anaksatu.png';
-import logo2 from '../assets/images/anakdua.png';
+import logo1 from '../assets/images/anak3.png';
+import logo2 from '../assets/images/anak2.png';
 
 const AboutUs = () => {
     const [activeTab, setActiveTab] = useState('vision');
