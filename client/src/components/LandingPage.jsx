@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './LandingPage.css';
 import heroBgsatu from '../assets/images/homesatu.png';
 import heroBgdua from '../assets/images/homedua.png';
@@ -7,6 +8,9 @@ import heroBgempat from '../assets/images/homeempat.png';
 
 const LandingPage = () => {
     useEffect(() => {
+        // Scroll to top when component mounts
+        window.scrollTo(0, 0);
+
         // Animate first section on load
         const firstSectionElements = document.querySelector('.hero-section:first-of-type').querySelectorAll('.animate-on-scroll');
         firstSectionElements.forEach((el, index) => {
@@ -64,7 +68,9 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>VISI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>MEMBERI ARTI DAN TUJUAN</p>
-                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    <Link to="/about?tab=vision">
+                        <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    </Link>
                 </div>
             </section>
 
@@ -79,7 +85,9 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>PROPERTI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>TEMUKAN DAN BANGUN HUNIAN MASA DEPAN ANDA</p>
-                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    <Link to="/properties">
+                        <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    </Link>
                 </div>
             </section>
 
@@ -94,7 +102,9 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>HUBUNGI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>KAMI MEMBANGUN MIMPI</p>
-                    <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    <Link to="/contact">
+                        <button className="btn-outline animate-on-scroll" style={{ transitionDelay: '0.5s' }}>TEMUKAN LEBIH</button>
+                    </Link>
                 </div>
             </section>
 

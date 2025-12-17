@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './SubsidiaryTwo.css';
 import heroBg from '../assets/images/homedua.png';
-import logo2 from '../assets/images/anak2.png';
+import logo2 from '../assets/images/anak3.png';
 import aboutImage from '../assets/images/Kantor.png';
 
 const SubsidiaryTwo = () => {
@@ -34,7 +34,7 @@ const SubsidiaryTwo = () => {
                     <div className="logo-container animate-on-scroll">
                         <img src={logo2} alt="Borneo Real Estate" className="subsidiary-logo" />
                     </div>
-                    <h1 className="animate-on-scroll">BORNEO REAL ESTATE</h1>
+                    <h1 className="animate-on-scroll">BORNEO REAL PROPERTY</h1>
                     <p className="hero-subtitle animate-on-scroll">ANAK PERUSAHAAN PT FACHRI PROPERTY GROUP</p>
                 </div>
             </section>
@@ -78,10 +78,15 @@ const SubsidiaryTwo = () => {
                         <div className="tabs-content">
                             {activeTab === 'vision' && (
                                 <div className="tab-panel">
-                                    <p>
-                                        Menjadi mitra terpercaya dalam manajemen dan investasi properti dengan memberikan 
-                                        solusi terbaik untuk setiap kebutuhan klien.
-                                    </p>
+                                    <div className="vision-content">
+                                        <div className="vision-text">
+                                            <p>
+                                                Menjadi mitra terpercaya dalam manajemen dan investasi properti dengan memberikan 
+                                                solusi terbaik untuk setiap kebutuhan klien.
+                                            </p>
+                                        </div>
+                                        <div className="vision-shape"></div>
+                                    </div>
                                 </div>
                             )}
                             {activeTab === 'mission' && (

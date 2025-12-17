@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ContactUs.css';
 import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
 import contactBg from '../assets/images/Kantor.png';
@@ -10,6 +10,11 @@ const ContactUs = () => {
     const [email, setEmail] = useState('');
     const [pesan, setPesan] = useState('');
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        // Scroll to top when component mounts
+        window.scrollTo(0, 0);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

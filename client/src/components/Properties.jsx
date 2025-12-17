@@ -7,6 +7,9 @@ const Properties = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Scroll to top when component mounts
+        window.scrollTo(0, 0);
+
         const fetchProperties = async () => {
             try {
                 const response = await axios.get('/api/properties.php');

@@ -41,10 +41,10 @@ const Navbar = () => {
                         </Link>
                         {showAboutSubmenu && (
                             <ul className="dropdown-menu">
-                                <li><Link to="/about/history">Sejarah Perusahaan</Link></li>
-                                <li><Link to="/about/history">Menegement</Link></li>
-                                <li><Link to="/about/awards">Penghargaan</Link></li>
-                                <li><Link to="/about/subsidiaries">Anak Perusahaan</Link></li>
+                                <li><Link to="/about?tab=history">Sejarah Perusahaan</Link></li>
+                                <li><Link to="/about?section=leadership">Menegement</Link></li>
+                                <li><Link to="/about?section=awards">Penghargaan</Link></li>
+                                <li><Link to="/about?section=subsidiaries">Anak Perusahaan</Link></li>
                             </ul>
                         )}
                     </li>
