@@ -27,7 +27,7 @@ const AboutUs = () => {
         if (tab && ['vision', 'mission', 'history'].includes(tab)) {
             setActiveTab(tab);
             
-            // Scroll ke section tabs
+            // Scroll ke section tabs dengan animasi smooth
             setTimeout(() => {
                 const tabsSection = document.querySelector('.about-tabs');
                 if (tabsSection) {
@@ -35,13 +35,16 @@ const AboutUs = () => {
                 }
             }, 100);
         } else if (section) {
-            // Scroll ke section tertentu (leadership, awards, subsidiaries)
+            // Scroll ke section tertentu (leadership, awards, subsidiaries) dengan animasi smooth
             setTimeout(() => {
                 const targetSection = document.querySelector(`.${section}-section, #${section}`);
                 if (targetSection) {
                     targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }, 100);
+        } else {
+            // Jika tidak ada parameter, scroll to top dengan animasi smooth
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }, [location]);
 

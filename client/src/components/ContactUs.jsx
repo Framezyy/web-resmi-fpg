@@ -12,8 +12,8 @@ const ContactUs = () => {
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
-        // Scroll to top when component mounts
-        window.scrollTo(0, 0);
+        // Scroll to top when component mounts with smooth animation
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
 
     const handleSubmit = async (e) => {
