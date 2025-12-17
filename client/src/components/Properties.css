@@ -172,18 +172,10 @@
     font-size: 14px;
     font-weight: 500;
     transition: color 0.3s;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
 }
 
 .property-btn:hover {
     color: #e74c3c;
-}
-
-.property-card {
-    cursor: pointer;
 }
 
 .partner-banner {
