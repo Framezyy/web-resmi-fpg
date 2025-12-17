@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './AboutUs.css';
-import heroBg from '../assets/images/homesatu.png';
+import heroBg from '../assets/images/homedua.png';
 import visiImage from '../assets/images/Kantor.png';
 import ceoImage from '../assets/images/pahri.png';
 import leadershipBg from '../assets/images/leadershipBg.jpg';
@@ -156,20 +156,9 @@ const AboutUs = () => {
                                 <div className="vision-image">
                                     <img src={visiImage} alt="Visi Fachri Group" />
                                 </div>
-                                <div className="vision-text">
+                                <div className="vision-text history-text">
                                     <h2>Sejarah Fachri Group</h2>
-                                    <p>PT. FACHRI PROPERTY GROUP merupakan perusahaanbesar yang bergerak di bidang pengembangan kawasanperumahan di Kalimantan Barat, berdiri sejak tahun 2009 didirikan oleh Bapak Mohammad Fachri, S.Sos.,M. Ap selaku CEO PT. FACHRI PROPERTY GROUP yang semula adalah usaha perorangan dengan nama CV. Mitra Bersama. Pada tahun 2013 berubah nama menjadi CV. Fachri Property dan pada Tahun 2014 berubah menjadi badan usaha Persero. Fachri Property Land
-hingga tahun 2022. Pada tanggal 28 September 2021 PT. Fachri
-Property Land melakukan penambahan anak perusahaan yang 
-masih bernaung dalam satu gedung dengan nama PT. FACHRI 
-PROPERTY GROUP dengan tetap menjadi perusahaan 
-pengembangan terbesar di Kalimantan Barat. Hingga tahun 2023 PT.
-Fachri dengan nama PT. FACHRI PROPERTY GROUP yang saat ini
-beralamatkan di jalan Angkasa No. 22 Pontianak, Kalimantan Barat. 
-Dengan visi untuk terus PT. FACHRI PROPERTY GROUP sedang 
-mencari individu yang berkomitmen dan penuh dedikasi untuk 
-bergabung dalam tim kami. Kami membutuhkan seorang Marketing 
-Professional yang siap mengembangkan strategi dan kampanye</p>
+                                    <p>PT. FACHRI PROPERTY GROUP merupakan perusahaan besar yang bergerak di bidang pengembangan kawasan perumahan di Kalimantan Barat, berdiri sejak tahun 2009 didirikan oleh Bapak Mohammad Fachri, S.Sos., M.Ap selaku CEO PT. FACHRI PROPERTY GROUP. Awalnya merupakan usaha perorangan dengan nama CV. Mitra Bersama. Pada tahun 2013 berubah nama menjadi CV. Fachri Property dan pada Tahun 2014 berubah menjadi badan usaha Persero Fachri Property Land. Pada tanggal 28 September 2021, PT. Fachri Property Land melakukan penambahan anak perusahaan yang masih bernaung dalam satu gedung dengan nama PT. FACHRI PROPERTY GROUP dengan tetap menjadi perusahaan pengembangan terbesar di Kalimantan Barat. Hingga tahun 2023, PT. Fachri Property Group beralamat di Jalan Angkasa No. 22 Pontianak, Kalimantan Barat, dan terus berkembang menjadi pengembang properti terkemuka di wilayah Kalimantan Barat.</p>
                                 </div>
                             </div>
                         )}

@@ -155,6 +155,13 @@
     line-height: 1.8;
 }
 
+.history-text p {
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: justify;
+    margin: 0px;
+}
+
 .leadership-section {
     background-size: cover;
     background-position: center;
