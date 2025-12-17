@@ -13,8 +13,8 @@ const Properties = () => {
     const [selectedLocation, setSelectedLocation] = useState('');
 
     useEffect(() => {
-        // Scroll to top when component mounts
-        window.scrollTo(0, 0);
+        // Scroll to top when component mounts with smooth animation
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Dummy data - replace with actual API call
         const dummyProperties = [

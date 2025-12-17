@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
 import logoWhite from '../assets/images/logo-putih.png';
 import logoColor from '../assets/images/logo-warna.png';
@@ -8,6 +8,7 @@ const Navbar = () => {
     const [showAboutSubmenu, setShowAboutSubmenu] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
     const isLandingPage = location.pathname === '/';
 
     useEffect(() => {
@@ -18,6 +19,13 @@ const Navbar = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const handleNavigation = (path) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+            navigate(path);
+        }, 300);
+    };
 
     return (
         <nav className={`navbar ${scrolled && !isLandingPage ? 'scrolled' : ''} navbar-animate`}>
@@ -49,10 +57,10 @@ const Navbar = () => {
                         )}
                     </li>
                     <li className="navbar-item">
-                        <Link to="/properties" className="navbar-link">PROPERTI</Link>
+                        <button onClick={() => handleNavigation('/properties')} className="navbar-link">PROPERTI</button>
                     </li>
                     <li className="navbar-item">
-                        <Link to="/contact" className="navbar-link">HUBUNGI KAMI</Link>
+                        <button onClick={() => handleNavigation('/contact')} className="navbar-link">HUBUNGI KAMI</button>
                     </li>
                 </ul>
             </div>
