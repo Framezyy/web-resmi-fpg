@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Properties.css';
+import PropertyDetail from './PropertyDetail';
 import heroBg from '../assets/images/hometiga.png';
 import propertyImage from '../assets/images/homesatu.png';
 import btnLogo from '../assets/images/btnlogo.png';
@@ -11,6 +12,20 @@ const Properties = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [selectedLocation, setSelectedLocation] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [selectedProperty, setSelectedProperty] = useState(null);
+
+    const handlePropertyClick = (property) => {
+        setSelectedProperty(property);
+        setShowModal(true);
+        document.body.style.overflow = 'hidden'; // Prevent background scroll
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedProperty(null);
+        document.body.style.overflow = 'unset'; // Restore scroll
+    };
 
     useEffect(() => {
         // Scroll to top when component mounts with smooth animation
@@ -111,21 +126,29 @@ const Properties = () => {
             <section className="properties-grid">
                 <div className="container">
                     {filteredProperties.map(property => (
-                        <div key={property.id} className="property-card">
+                        <div key={property.id} className="property-card" onClick={() => handlePropertyClick(property)}>
                             <div className="property-image">
                                 <img src={property.image} alt={property.title} />
                             </div>
                             <div className="property-content">
                                 <h3>{property.title}</h3>
                                 <p className="property-location">{property.location}</p>
-                                <Link to={`/properties/${property.id}`} className="property-btn">
+                                <button className="property-btn">
                                     lihat detail →
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
             </section>
+
+            {/* Modal Pop-up */}
+            {showModal && selectedProperty && (
+                <PropertyDetail 
+                    property={selectedProperty} 
+                    onClose={handleCloseModal} 
+                />
+            )}
 
             <section className="partner-banner">
                 <div className="container">
