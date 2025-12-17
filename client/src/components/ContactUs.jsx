@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ContactUs.css';
 import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
 import contactBg from '../assets/images/Kantor.png';
-import heroBg from '../assets/images/homesatu.png';
+import heroBg from '../assets/images/homeempat.png';
 
 const ContactUs = () => {
     const [jenisPernyataan, setJenisPernyataan] = useState('');
