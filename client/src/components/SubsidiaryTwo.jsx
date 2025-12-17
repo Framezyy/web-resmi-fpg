@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './SubsidiaryTwo.css';
 import heroBg from '../assets/images/homedua.png';
-import logo2 from '../assets/images/anakdua.png';
+import logo2 from '../assets/images/anak2.png';
 import aboutImage from '../assets/images/Kantor.png';
 
 const SubsidiaryTwo = () => {
+    const [activeTab, setActiveTab] = useState('vision');
+
     useEffect(() => {
         // Scroll to top when page loads
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -37,105 +39,79 @@ const SubsidiaryTwo = () => {
                 </div>
             </section>
 
-            <section className="subsidiary-about">
+            <section className="description-section">
+                <div className="description-content">
+                    <div className="description-logo">
+                        <img src={logo2} alt="Borneo Real Estate" />
+                    </div>
+                    <div className="description-text">
+                        <h2>Deskripsi Perusahaan</h2>
+                        <p>
+                            PT Borneo Real Estate adalah perusahaan yang berfokus pada manajemen dan investasi properti. 
+                            Kami menyediakan layanan komprehensif dalam pengelolaan aset properti, konsultasi investasi, 
+                            dan solusi real estat untuk memaksimalkan nilai properti Anda. Dengan tim profesional berpengalaman, 
+                            Borneo Real Estate telah dipercaya mengelola berbagai portofolio properti komersial dan residensial 
+                            dengan standar kualitas tertinggi.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section className="vision-mission-section">
                 <div className="container">
-                    <h2>TENTANG BORNEO REAL ESTATE</h2>
-                    <div className="about-content">
-                        <div className="about-image">
-                            <img src={aboutImage} alt="Borneo Real Estate" />
+                    <h2>Visi Dan Misi Perusahaan</h2>
+                    <div className="tabs-container">
+                        <div className="tabs-header">
+                            <button 
+                                className={`tab ${activeTab === 'vision' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('vision')}
+                            >
+                                Vision
+                            </button>
+                            <button 
+                                className={`tab ${activeTab === 'mission' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('mission')}
+                            >
+                                Mision
+                            </button>
                         </div>
-                        <div className="about-text">
-                            <p>
-                                Borneo Real Estate adalah anak perusahaan yang berfokus pada manajemen 
-                                dan investasi properti. Kami menyediakan layanan komprehensif dalam 
-                                pengelolaan aset properti, konsultasi investasi, dan solusi real estat 
-                                untuk memaksimalkan nilai properti Anda.
-                            </p>
-                            <p>
-                                Dengan tim profesional berpengalaman, Borneo Real Estate telah 
-                                dipercaya mengelola berbagai portofolio properti komersial dan 
-                                residensial dengan standar kualitas tertinggi.
-                            </p>
+                        <div className="tabs-content">
+                            {activeTab === 'vision' && (
+                                <div className="tab-panel">
+                                    <p>
+                                        Menjadi mitra terpercaya dalam manajemen dan investasi properti dengan memberikan 
+                                        solusi terbaik untuk setiap kebutuhan klien.
+                                    </p>
+                                </div>
+                            )}
+                            {activeTab === 'mission' && (
+                                <div className="tab-panel">
+                                    <div className="mission-content">
+                                        <div className="mission-shape"></div>
+                                        <div className="mission-text">
+                                            <p>
+                                                Memberikan layanan manajemen properti profesional dan solusi investasi yang 
+                                                menguntungkan dengan fokus pada kepuasan klien.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section className="subsidiary-vision">
+            <section className="map-section">
                 <div className="container">
-                    <div className="vision-grid">
-                        <div className="vision-item">
-                            <div className="icon">🏢</div>
-                            <h3>VISI</h3>
-                            <p>
-                                Menjadi mitra terpercaya dalam manajemen dan investasi properti 
-                                dengan memberikan solusi terbaik untuk setiap kebutuhan klien.
-                            </p>
-                        </div>
-                        <div className="vision-item">
-                            <div className="icon">💼</div>
-                            <h3>MISI</h3>
-                            <p>
-                                Memberikan layanan manajemen properti profesional dan solusi 
-                                investasi yang menguntungkan dengan fokus pada kepuasan klien.
-                            </p>
-                        </div>
-                        <div className="vision-item">
-                            <div className="icon">🌟</div>
-                            <h3>NILAI</h3>
-                            <p>
-                                Profesionalisme, Transparansi, dan Kepercayaan sebagai 
-                                fondasi dalam setiap layanan yang kami berikan.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="subsidiary-services">
-                <div className="container">
-                    <h2>LAYANAN KAMI</h2>
-                    <div className="services-grid">
-                        <div className="service-card">
-                            <div className="service-icon">🏠</div>
-                            <h3>Property Management</h3>
-                            <p>Pengelolaan properti profesional dengan sistem terpadu dan teknologi modern</p>
-                        </div>
-                        <div className="service-card">
-                            <div className="service-icon">📊</div>
-                            <h3>Investment Advisory</h3>
-                            <p>Konsultasi investasi properti untuk memaksimalkan return investasi Anda</p>
-                        </div>
-                        <div className="service-card">
-                            <div className="service-icon">🔑</div>
-                            <h3>Leasing Services</h3>
-                            <p>Layanan sewa-menyewa properti dengan proses yang mudah dan transparan</p>
-                        </div>
-                        <div className="service-card">
-                            <div className="service-icon">💰</div>
-                            <h3>Asset Valuation</h3>
-                            <p>Penilaian aset properti akurat untuk keperluan investasi dan transaksi</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="subsidiary-contact">
-                <div className="container">
-                    <h2>HUBUNGI KAMI</h2>
-                    <div className="contact-info">
-                        <div className="contact-item">
-                            <h4>Alamat</h4>
-                            <p>Panasonic Tower Lantai 16-G</p>
-                            <p>Jl. DR. Pengabean Km. 2, RT.7/RW.1</p>
-                            <p>Kota Tangerang Selatan, Banten 15340</p>
-                        </div>
-                        <div className="contact-item">
-                            <h4>Kontak</h4>
-                            <p>Phone: (+6221) 23581301</p>
-                            <p>Email: info@borneorealestate.co.id</p>
-                        </div>
-                    </div>
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                        width="100%"
+                        height="500"
+                        style={{ border: 0 }}
+                        allowFullScreen={true}
+                        loading="lazy"
+                    ></iframe>
                 </div>
             </section>
 
