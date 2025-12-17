@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Properties.css';
 import heroBg from '../assets/images/hometiga.png';
 import propertyImage from '../assets/images/homesatu.png';
-import btnLogo from '../assets/images/anak2.png';
+import btnLogo from '../assets/images/btnlogo.png';
 
 const Properties = () => {
     const [properties, setProperties] = useState([]);

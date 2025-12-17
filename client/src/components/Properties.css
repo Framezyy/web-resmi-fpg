@@ -97,14 +97,15 @@
 }
 
 .properties-grid {
-    padding: 60px 20px;
+    padding: 0;
     background: white;
 }
 
 .properties-grid .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 1100px;
 }
 
 .property-card {
@@ -113,6 +114,9 @@
     overflow: hidden;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: grid;
+    grid-template-columns: 550px 1fr;
+    min-height: 500px;
 }
 
 .property-card:hover {
@@ -122,7 +126,7 @@
 
 .property-image {
     width: 100%;
-    height: 250px;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -138,20 +142,27 @@
 }
 
 .property-content {
-    padding: 25px;
+    padding: 60px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .property-content h3 {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: bold;
-    margin: 0 0 10px 0;
+    margin: 0 0 20px 0;
     color: #333;
+    line-height: 1.3;
 }
 
 .property-location {
-    font-size: 13px;
-    color: #666;
-    margin: 0 0 20px 0;
+    font-size: 15px;
+    color: #999;
+    margin: 0 0 35px 0;
+    letter-spacing: 0.5px;
 }
 
 .property-btn {
@@ -335,8 +346,17 @@
         grid-template-columns: 1fr;
     }
 
-    .properties-grid .container {
+    .property-card {
         grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .property-image {
+        height: 200px;
+    }
+
+    .property-content {
+        padding: 20px;
     }
 
     .contact-content {
