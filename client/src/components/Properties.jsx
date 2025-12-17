@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import './Properties.css';
 import PropertyDetail from './PropertyDetail';
 import heroBg from '../assets/images/hometiga.png';
@@ -18,13 +17,13 @@ const Properties = () => {
     const handlePropertyClick = (property) => {
         setSelectedProperty(property);
         setShowModal(true);
-        document.body.style.overflow = 'hidden'; // Prevent background scroll
+        document.body.style.overflow = 'hidden';
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedProperty(null);
-        document.body.style.overflow = 'unset'; // Restore scroll
+        document.body.style.overflow = 'auto';
     };
 
     useEffect(() => {
@@ -142,14 +141,6 @@ const Properties = () => {
                 </div>
             </section>
 
-            {/* Modal Pop-up */}
-            {showModal && selectedProperty && (
-                <PropertyDetail 
-                    property={selectedProperty} 
-                    onClose={handleCloseModal} 
-                />
-            )}
-
             <section className="partner-banner">
                 <div className="container">
                     <h2>FACHRI PROPERTY GROUP MITRA</h2>
@@ -248,6 +239,10 @@ const Properties = () => {
                     </div>
                 </div>
             </footer>
+
+            {showModal && selectedProperty && (
+                <PropertyDetail property={selectedProperty} onClose={handleCloseModal} />
+            )}
         </div>
     );
 };
