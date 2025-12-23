@@ -81,15 +81,26 @@ const AboutUs = () => {
         }
     ];
 
-    const cardsPerView = 3;
-    const maxIndex = awards.length - cardsPerView;
-
     const nextAward = () => {
-        setCurrentAward((prev) => (prev >= maxIndex ? 0 : prev + 1));
+        setCurrentAward((prev) => (prev + 1) % awards.length);
     };
 
     const prevAward = () => {
-        setCurrentAward((prev) => (prev <= 0 ? maxIndex : prev - 1));
+        setCurrentAward((prev) => (prev - 1 + awards.length) % awards.length);
+    };
+
+    // Get 3 cards with center card as active
+    const getVisibleCards = () => {
+        const visible = [];
+        for (let i = -1; i <= 1; i++) {
+            const index = (currentAward + i + awards.length) % awards.length;
+            visible.push({
+                ...awards[index],
+                isActive: i === 0,
+                position: i
+            });
+        }
+        return visible;
     };
 
     return (
@@ -198,16 +209,11 @@ const AboutUs = () => {
                         <button className="slider-btn prev" onClick={prevAward}>‹</button>
                         
                         <div className="awards-container">
-                            <div 
-                                className="awards-track"
-                                style={{
-                                    transform: `translateX(-${currentAward * (100 / 3)}%)`
-                                }}
-                            >
-                                {awards.map((award) => (
+                            <div className="awards-track">
+                                {getVisibleCards().map((award, index) => (
                                     <div 
-                                        key={award.id}
-                                        className="award-card"
+                                        key={`${award.id}-${award.position}`}
+                                        className={`award-card ${award.isActive ? 'active' : ''}`}
                                     >
                                         <div className="award-image">
                                             <img src={award.image} alt={award.title} />
