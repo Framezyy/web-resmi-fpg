@@ -278,49 +278,6 @@ const AboutUs = () => {
 
             <footer className="footer">
                 <div className="container">
-                    <div className="footer-grid">
-                        <div className="footer-column">
-                            <h4>Relasi Investor</h4>
-                            <ul>
-                                <li>Laporan Tahunan</li>
-                                <li>Laporan Keuangan</li>
-                                <li>Tata Kelola Perusahaan</li>
-                            </ul>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Keberlanjutan</h4>
-                            <ul>
-                                <li>Aktivitas SHE</li>
-                            </ul>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Produk & Layanan</h4>
-                            <ul>
-                                <li>WMA Realty Archipelago</li>
-                                <li>Pengembangan Properti</li>
-                                <li>Asset & Investasi Properti</li>
-                                <li>Hotel</li>
-                            </ul>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Berita & Acara</h4>
-                            <ul>
-                                <li>Media</li>
-                                <li>E-Magazine</li>
-                                <li>Promo</li>
-                            </ul>
-                        </div>
-                        <div className="footer-column">
-                            <h4>Perusahaan</h4>
-                            <ul>
-                                <li>Tentang kami</li>
-                                <li>Manajemen Perusahaan</li>
-                                <li>Sertifikat & Penghargaan</li>
-                                <li>Karir</li>
-                                <li>Hubungi Kami</li>
-                            </ul>
-                        </div>
-                    </div>
                     <div className="footer-bottom">
                         <p>Copyright © 2025 Fachri Property Group</p>
                     </div>
