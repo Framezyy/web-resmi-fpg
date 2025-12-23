@@ -58,7 +58,7 @@ const ContactUs = () => {
                         <FaPhone className="contact-icon" />
                         <div>
                             <h3>Telepon:</h3>
-                            <p>(+6221) 21011200, 21011201</p>
+                            <p>0561-8177746</p>
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@ const ContactUs = () => {
             </div>
             <section className="map-section">
                 <div className="container">
-                    <h2>Kantor WIKA Realty</h2>
+                    <h2>Kantor Fachri Property Group</h2>
                     <div className="map-container">
                         <iframe 
                             title="Office Location"
@@ -165,33 +165,6 @@ const ContactUs = () => {
                             allowFullScreen={true}
                             loading="lazy"
                         ></iframe>
-                    </div>
-                </div>
-            </section>
-
-            <section className="get-in-touch-section">
-                <div className="container">
-                    <h2>GET IN TOUCH WITH US</h2>
-                    <div className="touch-content">
-                        <div className="touch-logo-container">
-                            <div className="logo-box"></div>
-                            <h3>FACHRI PROPERTY GROUP</h3>
-                        </div>
-                        <div className="touch-details">
-                            <div className="touch-item">
-                                <h4>Alamat Perusahaan</h4>
-                                <p>Tamansari Hive Office, Lantai 12-15</p>
-                                <p>Jl. DI. Panjaitan Kav. 2, RT.7/RW.11, Cipinang Cempedak,</p>
-                                <p>Kecamatan Jatinegara, Kota Jakarta Timur,</p>
-                                <p>Daerah Khusus Ibukota Jakarta 13340</p>
-                            </div>
-                            <div className="touch-item">
-                                <h4>Kontak</h4>
-                                <p>Phone: (+6221) 21011200, 21011201</p>
-                                <p>Fax: (+6221) 22085123</p>
-                                <p>Email: cs@wikarealty.co.id</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
