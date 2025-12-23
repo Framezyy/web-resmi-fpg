@@ -115,13 +115,13 @@ const AboutUs = () => {
                             className={activeTab === 'vision' ? 'tab active' : 'tab'}
                             onClick={() => setActiveTab('vision')}
                         >
-                            Vision
+                            Visi
                         </button>
                         <button 
                             className={activeTab === 'mission' ? 'tab active' : 'tab'}
                             onClick={() => setActiveTab('mission')}
                         >
-                            Mision
+                            Misi
                         </button>
                         <button 
                             className={activeTab === 'history' ? 'tab active' : 'tab'}
@@ -149,7 +149,7 @@ const AboutUs = () => {
                                     <img src={visiImage} alt="Visi Fachri Group" />
                                 </div>
                                 <div className="vision-text">
-                                    <h2>Miri Fachri Group</h2>
+                                    <h2>Misi Fachri Group</h2>
                                     <p>Mengembangkan semua sumber daya yang dimilikiuntuk menerapkan tata kelola organisasi yangberorientasi pada peningkatan mutu dan menyediakanlayanan yang berkualitas</p>
                                 </div>
                             </div>
