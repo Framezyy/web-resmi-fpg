@@ -3,6 +3,8 @@ import axios from 'axios';
 import PropertyDetail from './PropertyDetail';
 import '../styles/Properties.css';
 import propertiesHeroImage from '../assets/images/hero-bg.png';
+import btnLogo from '../assets/images/btnlogo.png';
+
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
@@ -171,7 +173,60 @@ const Properties = () => {
                 </div>
             </section>
 
-            {/* Modal */}
+            <section className="partner-banner">
+                <div className="container">
+                    <h2>FACHRI PROPERTY GROUP MITRA</h2>
+                    <div className="partner-logo">
+                        <img src={btnLogo} alt="Bank BTN" />
+                    </div>
+                </div>
+            </section>
+
+            <section className="contact-section">
+                <div className="container">
+                    <h2>GET IN TOUCH WITH US</h2>
+                    <div className="contact-content">
+                        <div className="contact-info">
+                            <div className="contact-logo-container">
+                                <div className="logo-box"></div>
+                                <h3>FACHRI PROPERTY GROUP</h3>
+                            </div>
+                            <div className="address">
+                                <h4>Alamat Perusahaan</h4>
+                                <p>Panasonic Tower Lantai 16-G</p>
+                                <p>Jl. DR. Pengabean Km. 2, RT.7/RW.1, Gambir, Campaka</p>
+                                <p>Kecamatan Ciputat Utara, Kota Tangerang Selatan, Banten</p>
+                                <p>Indonesia 15340</p>
+                            </div>
+                            <div className="contact-details">
+                                <h4>Kontak</h4>
+                                <p>Phone: (+6221) 23581300, 21201301</p>
+                                <p>Fax: (+6221) 23581302</p>
+                                <p>Email: cs@fachrisaebaty.co.id</p>
+                            </div>
+                        </div>
+                        <div className="contact-map">
+                            <iframe 
+                                title="Map Location"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                                width="100%"
+                                height="400"
+                                style={{ border: 0 }}
+                                allowFullScreen={true}
+                                loading="lazy"
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer className="footer">
+                <div className="container">
+                    <div className="footer-bottom">
+                        <p>Copyright © 2025 Fachri Property Group</p>
+                    </div>
+                </div>
+            </footer>
             {showModal && selectedProperty && (
                 <PropertyDetail property={selectedProperty} onClose={handleCloseModal} />
             )}
