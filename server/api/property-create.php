@@ -13,30 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include_once '../config/database.php';
 
-// Verify token
-verifyToken();
-
-// Database connection
 $database = new Database();
 $db = $database->getConnection();
 
 try {
-    // Get form data
+    // Get form data - HAPUS video_url, features, amenities
     $title = $_POST['title'] ?? '';
     $location = $_POST['location'] ?? '';
     $type = $_POST['type'] ?? '';
+    $total_blocks = $_POST['total_blocks'] ?? 0;
+    $total_units = $_POST['total_units'] ?? 0;
+    $units_sold = $_POST['units_sold'] ?? 0;
+    $units_available = $_POST['units_available'] ?? 0;
     $description = $_POST['description'] ?? '';
-    $land_area = $_POST['land_area'] ?? '';
-    $development_type = $_POST['development_type'] ?? 'Pengembangan Terintegrasi';
-    $city_distance = $_POST['city_distance'] ?? '';
-    $airport_distance = $_POST['airport_distance'] ?? '';
     $welcome_text = $_POST['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP';
     $about_text = $_POST['about_text'] ?? '';
-    $video_url = $_POST['video_url'] ?? '';
-    $features = $_POST['features'] ?? '';
-    $amenities = $_POST['amenities'] ?? '';
     
-    // Validate required fields
     if (empty($title) || empty($location) || empty($type)) {
         throw new Exception("Title, location, and type are required");
     }
@@ -46,7 +38,6 @@ try {
     if (isset($_FILES['mainImage']) && $_FILES['mainImage']['error'] === 0) {
         $upload_dir = '../uploads/properties/main/';
         
-        // Create directory if not exists
         if (!file_exists($upload_dir)) {
             mkdir($upload_dir, 0777, true);
         }
@@ -60,16 +51,16 @@ try {
         }
     }
     
-    // Insert property dengan SEMUA field
+    // Insert property - HAPUS video_url, features, amenities
     $query = "INSERT INTO properties (
-                title, location, type, description, 
-                land_area, development_type, city_distance, airport_distance,
-                welcome_text, about_text, video_url, features, amenities,
+                title, location, type, 
+                total_blocks, total_units, units_sold, units_available,
+                description, welcome_text, about_text, 
                 main_image, created_at
               ) VALUES (
-                :title, :location, :type, :description,
-                :land_area, :development_type, :city_distance, :airport_distance,
-                :welcome_text, :about_text, :video_url, :features, :amenities,
+                :title, :location, :type,
+                :total_blocks, :total_units, :units_sold, :units_available,
+                :description, :welcome_text, :about_text,
                 :main_image, NOW()
               )";
     
@@ -77,16 +68,13 @@ try {
     $stmt->bindParam(':title', $title);
     $stmt->bindParam(':location', $location);
     $stmt->bindParam(':type', $type);
+    $stmt->bindParam(':total_blocks', $total_blocks);
+    $stmt->bindParam(':total_units', $total_units);
+    $stmt->bindParam(':units_sold', $units_sold);
+    $stmt->bindParam(':units_available', $units_available);
     $stmt->bindParam(':description', $description);
-    $stmt->bindParam(':land_area', $land_area);
-    $stmt->bindParam(':development_type', $development_type);
-    $stmt->bindParam(':city_distance', $city_distance);
-    $stmt->bindParam(':airport_distance', $airport_distance);
     $stmt->bindParam(':welcome_text', $welcome_text);
     $stmt->bindParam(':about_text', $about_text);
-    $stmt->bindParam(':video_url', $video_url);
-    $stmt->bindParam(':features', $features);
-    $stmt->bindParam(':amenities', $amenities);
     $stmt->bindParam(':main_image', $main_image);
     
     if ($stmt->execute()) {
@@ -109,7 +97,6 @@ try {
                     if (move_uploaded_file($tmp_name, $gallery_path)) {
                         $gallery_url = 'http://localhost/web-resmi-fpg/server/uploads/properties/gallery/' . $gallery_filename;
                         
-                        // Insert to property_galleries table
                         $gallery_query = "INSERT INTO property_galleries (property_id, image_url, created_at) 
                                         VALUES (:property_id, :image_url, NOW())";
                         $gallery_stmt = $db->prepare($gallery_query);

@@ -50,26 +50,23 @@ try {
         }
     }
     
-    // Return SEMUA field dari database
+    // Return data - HAPUS video_url, features, amenities
     $response = [
         'success' => true,
         'id' => (int)$property['id'],
         'title' => $property['title'],
         'location' => $property['location'],
         'type' => $property['type'],
+        'total_blocks' => (int)($property['total_blocks'] ?? 0),
+        'total_units' => (int)($property['total_units'] ?? 0),
+        'units_sold' => (int)($property['units_sold'] ?? 0),
+        'units_available' => (int)($property['units_available'] ?? 0),
         'description' => $property['description'] ?? '',
         'main_image' => $property['main_image'] ?? null,
         'image' => $property['main_image'] ?? null,
         'gallery_images' => $galleries,
-        'land_area' => $property['land_area'] ?? '2.000 hektar',
-        'development_type' => $property['development_type'] ?? 'Pengembangan Terintegrasi',
-        'city_distance' => $property['city_distance'] ?? '15 km dari Pusat Kota Surabaya',
-        'airport_distance' => $property['airport_distance'] ?? '20 km dari Bandara Internasional Juanda',
         'welcome_text' => $property['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP',
         'about_text' => $property['about_text'] ?? 'Borneo Real Properti Adalah Perusahaan...',
-        'video_url' => $property['video_url'] ?? '',
-        'features' => $property['features'] ?? '',
-        'amenities' => $property['amenities'] ?? '',
         'created_at' => $property['created_at'],
         'updated_at' => $property['updated_at'] ?? null
     ];

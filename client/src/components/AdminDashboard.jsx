@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AdminDashboard.css';
+import logoColor from '../assets/images/logo-warna.png'; // ← TAMBAH INI
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
@@ -15,25 +16,30 @@ const AdminDashboard = () => {
         title: '',
         location: '',
         type: '',
-        description: '',
-        land_area: '',
-        development_type: '',
-        city_distance: '',
-        airport_distance: '',
+        total_blocks: 0,
+        total_units: 0,
+        units_sold: 0,
+        units_available: 0,
         welcome_text: '',
-        about_text: '',
-        video_url: '',
-        features: '',
-        amenities: ''
+        about_text: ''
     });
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [previewMainImage, setPreviewMainImage] = useState(null);
+    const [activeSection, setActiveSection] = useState('properties'); // TAMBAH INI
+    const [awards, setAwards] = useState([]); // TAMBAH INI
+    const [awardFormData, setAwardFormData] = useState({ // TAMBAH INI
+        title: '',
+        year: '',
+        display_order: 0
+    });
+    const [awardImage, setAwardImage] = useState(null); // TAMBAH INI
     const navigate = useNavigate();
 
     useEffect(() => {
         checkAuth();
         fetchProperties();
+        fetchAwards(); // TAMBAH INI
     }, []);
 
     const checkAuth = () => {
@@ -52,6 +58,18 @@ const AdminDashboard = () => {
             console.error('Error:', error);
             setProperties([]);
             setLoading(false);
+        }
+    };
+
+    // TAMBAH FUNCTION INI
+    const fetchAwards = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/awards-list.php`);
+            if (response.data.success) {
+                setAwards(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching awards:', error);
         }
     };
 
@@ -141,16 +159,12 @@ const AdminDashboard = () => {
             title: property.title,
             location: property.location,
             type: property.type,
-            description: property.description || '',
-            land_area: property.land_area || '',
-            development_type: property.development_type || '',
-            city_distance: property.city_distance || '',
-            airport_distance: property.airport_distance || '',
+            total_blocks: property.total_blocks || 0,
+            total_units: property.total_units || 0,
+            units_sold: property.units_sold || 0,
+            units_available: property.units_available || 0,
             welcome_text: property.welcome_text || '',
-            about_text: property.about_text || '',
-            video_url: property.video_url || '',
-            features: property.features || '',
-            amenities: property.amenities || ''
+            about_text: property.about_text || ''
         });
         setPreviewMainImage(property.image || property.main_image);
         setShowModal(true);
@@ -180,6 +194,66 @@ const AdminDashboard = () => {
         }
     };
 
+    // TAMBAH FUNCTION INI
+    const handleAwardInputChange = (e) => {
+        const { name, value } = e.target;
+        setAwardFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // TAMBAH FUNCTION INI
+    const handleAwardImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setAwardImage(e.target.files[0]);
+        }
+    };
+
+    // TAMBAH FUNCTION INI
+    const handleAwardSubmit = async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('title', awardFormData.title);
+        formData.append('year', awardFormData.year);
+        formData.append('display_order', awardFormData.display_order);
+        if (awardImage) {
+            formData.append('image', awardImage);
+        }
+
+        try {
+            const response = await axios.post(`${API_URL}/award-create.php`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            if (response.data.success) {
+                alert('Award added successfully!');
+                fetchAwards();
+                setShowModal(false);
+                setAwardFormData({ title: '', year: '', display_order: 0 });
+                setAwardImage(null);
+            }
+        } catch (error) {
+            alert('Error adding award: ' + (error.response?.data?.message || error.message));
+        }
+    };
+
+    // TAMBAH FUNCTION INI
+    const handleDeleteAward = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this award?')) return;
+
+        try {
+            const response = await axios.delete(`${API_URL}/award-delete.php?id=${id}`);
+            if (response.data.success) {
+                alert('Award deleted successfully!');
+                fetchAwards();
+            }
+        } catch (error) {
+            alert('Error deleting award: ' + (error.response?.data?.message || error.message));
+        }
+    };
+
     const openModal = () => {
         setShowModal(true);
         setEditMode(false);
@@ -188,20 +262,18 @@ const AdminDashboard = () => {
             title: '',
             location: '',
             type: '',
-            description: '',
-            land_area: '',
-            development_type: '',
-            city_distance: '',
-            airport_distance: '',
+            total_blocks: 0,
+            total_units: 0,
+            units_sold: 0,
+            units_available: 0,
             welcome_text: '',
-            about_text: '',
-            video_url: '',
-            features: '',
-            amenities: ''
+            about_text: ''
         });
         setMainImage(null);
         setGalleryImages([]);
         setPreviewMainImage(null);
+        setAwardFormData({ title: '', year: '', display_order: 0 });
+        setAwardImage(null);
     };
 
     const closeModal = () => {
@@ -212,20 +284,18 @@ const AdminDashboard = () => {
             title: '',
             location: '',
             type: '',
-            description: '',
-            land_area: '',
-            development_type: '',
-            city_distance: '',
-            airport_distance: '',
+            total_blocks: 0,
+            total_units: 0,
+            units_sold: 0,
+            units_available: 0,
             welcome_text: '',
-            about_text: '',
-            video_url: '',
-            features: '',
-            amenities: ''
+            about_text: ''
         });
         setMainImage(null);
         setGalleryImages([]);
         setPreviewMainImage(null);
+        setAwardFormData({ title: '', year: '', display_order: 0 });
+        setAwardImage(null);
     };
 
     if (loading) {
@@ -239,304 +309,424 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-dashboard">
+            {/* UPDATE HEADER INI */}
             <header className="admin-header">
-                <div className="admin-header-content">
-                    <h1>Admin Dashboard</h1>
-                    <p className="admin-subtitle">PT. Fajar Perkasa Group - Property Management</p>
+                <div className="admin-header-left">
+                    <div className="admin-logo">
+                        <img src={logoColor} alt="Fachri Property Group" />
+                        <div className="admin-header-content">
+                            <h1>Admin Dashboard</h1>
+                        </div>
+                    </div>
                 </div>
                 <div className="admin-actions">
-                    <button className="btn-add" onClick={openModal}>
-                        <span>+</span> Add New Property
-                    </button>
+                    {/* TAMBAHKAN CONDITIONAL BUTTON INI */}
+                    {activeSection === 'properties' ? (
+                        <button className="btn-add" onClick={openModal}>
+                            <span>+</span> Add New Property
+                        </button>
+                    ) : (
+                        <button className="btn-add" onClick={openModal}>
+                            <span>+</span> Add New Award
+                        </button>
+                    )}
                     <button className="btn-logout" onClick={handleLogout}>
                         Logout
                     </button>
                 </div>
             </header>
 
-            <div className="dashboard-stats">
-                <div className="stat-card">
-                    <h3>{properties.length}</h3>
-                    <p>Total Properties</p>
-                </div>
-                <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Tipe 36').length}</h3>
-                    <p>Tipe 36</p>
-                </div>
-                <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Tipe 40').length}</h3>
-                    <p>Tipe 40</p>
-                </div>
-                <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Tipe 50').length}</h3>
-                    <p>Tipe 50</p>
-                </div>
+            {/* TAMBAH NAVIGATION TABS */}
+            <div className="admin-navigation">
+                <button 
+                    className={activeSection === 'properties' ? 'nav-btn active' : 'nav-btn'}
+                    onClick={() => setActiveSection('properties')}
+                >
+                    Properties
+                </button>
+                <button 
+                    className={activeSection === 'awards' ? 'nav-btn active' : 'nav-btn'}
+                    onClick={() => setActiveSection('awards')}
+                >
+                    Awards
+                </button>
             </div>
 
-            <div className="properties-table-container">
-                <h2>All Properties</h2>
-                {properties.length > 0 ? (
-                    <table className="properties-table">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th>Location</th>
-                                <th>Type</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {properties.map(property => (
-                                <tr key={property.id}>
-                                    <td>
-                                        <img 
-                                            src={property.image || property.main_image} 
-                                            alt={property.title}
-                                            className="table-image"
-                                        />
-                                    </td>
-                                    <td>{property.title}</td>
-                                    <td>{property.location}</td>
-                                    <td><span className="badge">{property.type}</span></td>
-                                    <td>
-                                        <div className="action-buttons">
-                                            <button 
-                                                className="btn-edit"
-                                                onClick={() => handleEdit(property)}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button 
-                                                className="btn-delete"
-                                                onClick={() => handleDelete(property.id)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <div className="no-data">
-                        <p>No properties found. Click "Add New Property" to create one.</p>
+            {/* PROPERTIES SECTION */}
+            {activeSection === 'properties' && (
+                <>
+                    <div className="dashboard-stats">
+                        <div className="stat-card">
+                            <h3>{properties.length}</h3>
+                            <p>Total Properties</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>{properties.filter(p => p.type === 'Tipe 36').length}</h3>
+                            <p>Tipe 36</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>{properties.filter(p => p.type === 'Tipe 40').length}</h3>
+                            <p>Tipe 40</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>{properties.filter(p => p.type === 'Tipe 50').length}</h3>
+                            <p>Tipe 50</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>{properties.filter(p => p.type === 'Tipe 60').length}</h3>
+                            <p>Tipe 60</p>
+                        </div>
                     </div>
-                )}
-            </div>
 
+                    <div className="properties-table-container">
+                        <h2>All Properties</h2>
+                        {properties.length > 0 ? (
+                            <table className="properties-table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Location</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {properties.map(property => (
+                                        <tr key={property.id}>
+                                            <td>
+                                                <img 
+                                                    src={property.image || property.main_image} 
+                                                    alt={property.title}
+                                                    className="table-image"
+                                                />
+                                            </td>
+                                            <td>{property.title}</td>
+                                            <td>{property.location}</td>
+                                            <td><span className="badge">{property.type}</span></td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button 
+                                                        className="btn-edit"
+                                                        onClick={() => handleEdit(property)}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button 
+                                                        className="btn-delete"
+                                                        onClick={() => handleDelete(property.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div className="no-data">
+                                <p>No properties found. Click "Add New Property" to create one.</p>
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
+
+            {/* AWARDS SECTION */}
+            {activeSection === 'awards' && (
+                <>
+                    <div className="awards-stats">
+                        <div className="stat-card">
+                            <h3>{awards.length}</h3>
+                            <p>Total Awards</p>
+                        </div>
+                    </div>
+
+                    <div className="awards-table-container">
+                        <h2>Awards Management</h2>
+                        {awards.length === 0 ? (
+                            <div className="no-data">
+                                <p>No awards found. Add your first award!</p>
+                            </div>
+                        ) : (
+                            <table className="properties-table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Year</th>
+                                        <th>Order</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {awards.map((award) => (
+                                        <tr key={award.id}>
+                                            <td>
+                                                <img 
+                                                    src={award.image} 
+                                                    alt={award.title}
+                                                    className="table-image"
+                                                    onError={(e) => {
+                                                        e.target.src = 'https://via.placeholder.com/80x60?text=Award';
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>{award.title}</td>
+                                            <td>{award.year || '-'}</td>
+                                            <td>{award.display_order}</td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button 
+                                                        className="btn-delete"
+                                                        onClick={() => handleDeleteAward(award.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                </>
+            )}
+
+            {/* MODAL - UPDATE INI */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2>{editMode ? 'Edit Property' : 'Add New Property'}</h2>
+                            <h2>
+                                {activeSection === 'properties' 
+                                    ? (editMode ? 'Edit Property' : 'Add New Property')
+                                    : 'Add New Award'
+                                }
+                            </h2>
                             <button className="close-btn" onClick={closeModal}>&times;</button>
                         </div>
                         
-                        <form onSubmit={handleSubmit}>
-                            {/* Row 1: Title & Type */}
-                            <div className="form-row">
+                        {activeSection === 'properties' ? (
+                            <form onSubmit={handleSubmit}>
+                                {/* Row 1: Title & Type */}
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Title *</label>
+                                        <input
+                                            type="text"
+                                            name="title"
+                                            value={formData.title}
+                                            onChange={handleInputChange}
+                                            placeholder="Enter property title"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Type *</label>
+                                        <select
+                                            name="type"
+                                            value={formData.type}
+                                            onChange={handleInputChange}
+                                            required
+                                        >
+                                            <option value="">Select Type</option>
+                                            <option value="Tipe 36">Tipe 36</option>
+                                            <option value="Tipe 40">Tipe 40</option>
+                                            <option value="Tipe 50">Tipe 50</option>
+                                            <option value="Tipe 60">Tipe 60</option>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {/* Location */}
+                                <div className="form-group">
+                                    <label>Location *</label>
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter location"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Row 2: Total Blok & Total Unit */}
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Total Blok</label>
+                                        <input
+                                            type="number"
+                                            name="total_blocks"
+                                            value={formData.total_blocks}
+                                            onChange={handleInputChange}
+                                            placeholder="5"
+                                            min="0"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Total Unit</label>
+                                        <input
+                                            type="number"
+                                            name="total_units"
+                                            value={formData.total_units}
+                                            onChange={handleInputChange}
+                                            placeholder="120"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Row 3: Unit Terjual & Unit Tersedia */}
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Unit Terjual</label>
+                                        <input
+                                            type="number"
+                                            name="units_sold"
+                                            value={formData.units_sold}
+                                            onChange={handleInputChange}
+                                            placeholder="85"
+                                            min="0"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Unit Tersedia</label>
+                                        <input
+                                            type="number"
+                                            name="units_available"
+                                            value={formData.units_available}
+                                            onChange={handleInputChange}
+                                            placeholder="35"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Welcome Text */}
+                                <div className="form-group">
+                                    <label>Welcome Text</label>
+                                    <input
+                                        type="text"
+                                        name="welcome_text"
+                                        value={formData.welcome_text}
+                                        onChange={handleInputChange}
+                                        placeholder="Selamat datang di PT FACHRI PROPERTY GROUP"
+                                    />
+                                </div>
+
+                                {/* About Text */}
+                                <div className="form-group">
+                                    <label>About Text</label>
+                                    <textarea
+                                        name="about_text"
+                                        value={formData.about_text}
+                                        onChange={handleInputChange}
+                                        placeholder="Borneo Real Properti Adalah Perusahaan..."
+                                        rows="4"
+                                    />
+                                </div>
+
+                                {/* Main Image */}
+                                <div className="form-group">
+                                    <label>Main Image {editMode && '(Leave empty to keep current)'}</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleMainImageChange}
+                                    />
+                                    {previewMainImage && (
+                                        <div className="image-preview">
+                                            <img src={previewMainImage} alt="Preview" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Gallery Images */}
+                                <div className="form-group">
+                                    <label>Gallery Images (Multiple)</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleGalleryImagesChange}
+                                    />
+                                    <small>You can select multiple images</small>
+                                </div>
+
+                                <div className="form-actions">
+                                    <button type="button" className="btn-cancel" onClick={closeModal}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="btn-submit">
+                                        {editMode ? 'Update' : 'Create'} Property
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleAwardSubmit}>
                                 <div className="form-group">
                                     <label>Title *</label>
                                     <input
                                         type="text"
                                         name="title"
-                                        value={formData.title}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter property title"
+                                        value={awardFormData.title}
+                                        onChange={handleAwardInputChange}
+                                        placeholder="Enter award title"
                                         required
                                     />
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Type *</label>
-                                    <select
-                                        name="type"
-                                        value={formData.type}
-                                        onChange={handleInputChange}
+                                    <label>Year</label>
+                                    <input
+                                        type="text"
+                                        name="year"
+                                        value={awardFormData.year}
+                                        onChange={handleAwardInputChange}
+                                        placeholder="2024"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Display Order</label>
+                                    <input
+                                        type="number"
+                                        name="display_order"
+                                        value={awardFormData.display_order}
+                                        onChange={handleAwardInputChange}
+                                        placeholder="0"
+                                    />
+                                    <small>Lower number = displayed first</small>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Award Image *</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleAwardImageChange}
                                         required
-                                    >
-                                        <option value="">Select Type</option>
-                                        <option value="Tipe 36">Tipe 36</option>
-                                        <option value="Tipe 40">Tipe 40</option>
-                                        <option value="Tipe 50">Tipe 50</option>
-                                        <option value="Tipe 60">Tipe 60</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Location */}
-                            <div className="form-group">
-                                <label>Location *</label>
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={formData.location}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter location"
-                                    required
-                                />
-                            </div>
-
-                            {/* Welcome Text */}
-                            <div className="form-group">
-                                <label>Welcome Text</label>
-                                <input
-                                    type="text"
-                                    name="welcome_text"
-                                    value={formData.welcome_text}
-                                    onChange={handleInputChange}
-                                    placeholder="Selamat datang di PT FACHRI PROPERTY GROUP"
-                                />
-                            </div>
-
-                            {/* About Text */}
-                            <div className="form-group">
-                                <label>About Text</label>
-                                <textarea
-                                    name="about_text"
-                                    value={formData.about_text}
-                                    onChange={handleInputChange}
-                                    placeholder="Borneo Real Properti Adalah Perusahaan..."
-                                    rows="3"
-                                />
-                            </div>
-
-                            {/* Row 2: Land Area & Development Type */}
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Land Area</label>
-                                    <input
-                                        type="text"
-                                        name="land_area"
-                                        value={formData.land_area}
-                                        onChange={handleInputChange}
-                                        placeholder="2.000 hektar"
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label>Development Type</label>
-                                    <input
-                                        type="text"
-                                        name="development_type"
-                                        value={formData.development_type}
-                                        onChange={handleInputChange}
-                                        placeholder="Pengembangan Terintegrasi"
-                                    />
+                                <div className="form-actions">
+                                    <button type="button" className="btn-cancel" onClick={closeModal}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="btn-submit">
+                                        Create Award
+                                    </button>
                                 </div>
-                            </div>
-
-                            {/* Row 3: City Distance & Airport Distance */}
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Distance to City</label>
-                                    <input
-                                        type="text"
-                                        name="city_distance"
-                                        value={formData.city_distance}
-                                        onChange={handleInputChange}
-                                        placeholder="15 km dari Pusat Kota Surabaya"
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Distance to Airport</label>
-                                    <input
-                                        type="text"
-                                        name="airport_distance"
-                                        value={formData.airport_distance}
-                                        onChange={handleInputChange}
-                                        placeholder="20 km dari Bandara Internasional Juanda"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <div className="form-group">
-                                <label>Description</label>
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter property description"
-                                    rows="4"
-                                />
-                            </div>
-
-                            {/* Video URL */}
-                            <div className="form-group">
-                                <label>Video URL (YouTube/Vimeo)</label>
-                                <input
-                                    type="text"
-                                    name="video_url"
-                                    value={formData.video_url}
-                                    onChange={handleInputChange}
-                                    placeholder="https://youtube.com/..."
-                                />
-                            </div>
-
-                            {/* Features */}
-                            <div className="form-group">
-                                <label>Features (comma separated)</label>
-                                <textarea
-                                    name="features"
-                                    value={formData.features}
-                                    onChange={handleInputChange}
-                                    placeholder="Security 24/7, Swimming Pool, Gym"
-                                    rows="2"
-                                />
-                            </div>
-
-                            {/* Amenities */}
-                            <div className="form-group">
-                                <label>Amenities (comma separated)</label>
-                                <textarea
-                                    name="amenities"
-                                    value={formData.amenities}
-                                    onChange={handleInputChange}
-                                    placeholder="Park, Playground, Shopping Center"
-                                    rows="2"
-                                />
-                            </div>
-
-                            {/* Main Image */}
-                            <div className="form-group">
-                                <label>Main Image {editMode && '(Leave empty to keep current)'}</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleMainImageChange}
-                                />
-                                {previewMainImage && (
-                                    <div className="image-preview">
-                                        <img src={previewMainImage} alt="Preview" />
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Gallery Images */}
-                            <div className="form-group">
-                                <label>Gallery Images (Multiple)</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handleGalleryImagesChange}
-                                />
-                                <small>You can select multiple images</small>
-                            </div>
-
-                            <div className="form-actions">
-                                <button type="button" className="btn-cancel" onClick={closeModal}>
-                                    Cancel
-                                </button>
-                                <button type="submit" className="btn-submit">
-                                    {editMode ? 'Update' : 'Create'} Property
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        )}
                     </div>
                 </div>
             )}

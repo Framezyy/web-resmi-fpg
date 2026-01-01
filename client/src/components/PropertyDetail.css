@@ -449,6 +449,31 @@
     100% { transform: rotate(360deg); }
 }
 
+/* Description Section - TAMBAH INI */
+.description-section {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.description-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.description-section p {
+    margin: 0;
+    line-height: 1.8;
+    color: #555;
+    font-size: 14px;
+    white-space: pre-line;
+    text-align: justify;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .modal-close {
@@ -562,6 +587,19 @@
     .contact-info-card {
         padding: 25px 20px;
     }
+
+    .description-section {
+        margin: 25px 20px;
+        padding: 20px;
+    }
+
+    .description-section h3 {
+        font-size: 18px;
+    }
+
+    .description-section p {
+        font-size: 13px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -623,5 +661,20 @@
 
     .carousel-nav-btn.next-btn {
         right: 5px;
+    }
+
+    .description-section {
+        margin: 20px 15px;
+        padding: 18px;
+    }
+
+    .description-section h3 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .description-section p {
+        font-size: 12px;
+        line-height: 1.7;
     }
 }

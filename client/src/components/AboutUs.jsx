@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './AboutUs.css';
 import heroBg from '../assets/images/homedua.png';
 import visiImage from '../assets/images/Kantor.png';
@@ -13,10 +14,35 @@ import award3 from '../assets/images/penghargaantiga.jpeg';
 import logo1 from '../assets/images/anak2.png';
 import logo2 from '../assets/images/anak3.png';
 
+const API_URL = 'http://localhost/web-resmi-fpg/server/api';
+
 const AboutUs = () => {
     const location = useLocation();
     const [activeTab, setActiveTab] = useState('vision');
     const [currentAward, setCurrentAward] = useState(0);
+    const [awards, setAwards] = useState([]);
+    const [loadingAwards, setLoadingAwards] = useState(true);
+
+    // Fetch awards from backend
+    useEffect(() => {
+        fetchAwards();
+    }, []);
+
+    const fetchAwards = async () => {
+        try {
+            setLoadingAwards(true);
+            const response = await axios.get(`${API_URL}/awards-list.php`);
+            if (response.data.success) {
+                setAwards(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching awards:', error);
+            // Fallback ke data dummy jika error
+            setAwards([]);
+        } finally {
+            setLoadingAwards(false);
+        }
+    };
 
     // Baca URL parameter saat komponen dimuat
     useEffect(() => {
@@ -47,39 +73,6 @@ const AboutUs = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }, [location]);
-
-    const awards = [
-        {
-            id: 1,
-            image: award1,
-            title: 'BCI ASIA TOP 10 DEVELOPERS AWARD',
-            year: '2022'
-        },
-        {
-            id: 2,
-            image: award2,
-            title: 'BEST AFFORDABLE HOUSING JABODETABEK AREA',
-            year: '2022'
-        },
-        {
-            id: 3,
-            image: award3,
-            title: 'Golden Winner Master Plan',
-            year: ''
-        },
-        {
-            id: 4,
-            image: award1,
-            title: 'EXCELLENCE IN PROPERTY DEVELOPMENT',
-            year: '2023'
-        },
-        {
-            id: 5,
-            image: award2,
-            title: 'BEST RESIDENTIAL PROJECT AWARD',
-            year: '2023'
-        }
-    ];
 
     const nextAward = () => {
         setCurrentAward((prev) => (prev + 1) % awards.length);
@@ -194,8 +187,8 @@ const AboutUs = () => {
                         <div className="ceo-image-wrapper">
                             <img src={ceoImage} alt="CEO Fachri" />
                         </div>
-                        <h3>CEO FACHRI</h3>
-                        <p>Mochammad Fachri HM, S.Sos, M.A.P</p>
+                        <h3>Mochammad Fachri HM, S.Sos, M.A.P</h3>
+                        <p>CEO FACHRI PROPERTY GROUP</p>
                     </div>
                 </div>
             </section>
@@ -205,28 +198,38 @@ const AboutUs = () => {
                     <h2>PENGHARGAAN</h2>
                     <p className="awards-subtitle">PT Fachri Property Group menerima pengakuan publik melalui berbagai penghargaan bergengsi</p>
                     
-                    <div className="awards-slider">
-                        <button className="slider-btn prev" onClick={prevAward}>‹</button>
-                        
-                        <div className="awards-container">
-                            <div className="awards-track">
-                                {getVisibleCards().map((award, index) => (
-                                    <div 
-                                        key={`${award.id}-${award.position}`}
-                                        className={`award-card ${award.isActive ? 'active' : ''}`}
-                                    >
-                                        <div className="award-image">
-                                            <img src={award.image} alt={award.title} />
-                                        </div>
-                                        <h4>{award.title}</h4>
-                                        {award.year && <p>{award.year}</p>}
-                                    </div>
-                                ))}
-                            </div>
+                    {loadingAwards ? (
+                        <div className="awards-loading">
+                            <p>Loading awards...</p>
                         </div>
-                        
-                        <button className="slider-btn next" onClick={nextAward}>›</button>
-                    </div>
+                    ) : awards.length === 0 ? (
+                        <div className="awards-empty">
+                            <p>Belum ada penghargaan</p>
+                        </div>
+                    ) : (
+                        <div className="awards-slider">
+                            <button className="slider-btn prev" onClick={prevAward}>‹</button>
+                            
+                            <div className="awards-container">
+                                <div className="awards-track">
+                                    {getVisibleCards().map((award, index) => (
+                                        <div 
+                                            key={`${award.id}-${award.position}`}
+                                            className={`award-card ${award.isActive ? 'active' : ''}`}
+                                        >
+                                            <div className="award-image">
+                                                <img src={award.image} alt={award.title} />
+                                            </div>
+                                            <h4>{award.title}</h4>
+                                            {award.year && <p>{award.year}</p>}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            <button className="slider-btn next" onClick={nextAward}>›</button>
+                        </div>
+                    )}
                 </div>
             </section>
 
