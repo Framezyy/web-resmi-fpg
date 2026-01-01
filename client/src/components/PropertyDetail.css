@@ -214,41 +214,90 @@
 
 /* Gallery Slider Section */
 .gallery-slider-section {
-    max-width: 800px;
-    margin: 40px auto;
+    max-width: 900px;
+    margin: 50px auto;
     padding: 0 25px;
 }
 
-.gallery-slider-container {
+.gallery-carousel {
     position: relative;
-    width: 100%;
-    height: 360px;
-    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-height: 500px;
+    padding: 30px 80px;
+}
+
+/* Carousel Cards */
+.carousel-card {
+    position: relative;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
 }
 
-.gallery-slide {
-    width: 100%;
-    height: 100%;
-}
-
-.gallery-slide-image {
+.carousel-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
-.slider-nav {
+/* Current Card (Center - Large) */
+.current-card {
+    width: 380px;
+    height: 480px;
+    z-index: 3;
+    transform: scale(1);
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Side Cards (Smaller) */
+.prev-card,
+.next-card {
+    width: 280px;
+    height: 380px;
+    z-index: 1;
+    opacity: 0.7;
+    transform: scale(0.85);
+}
+
+.prev-card {
+    margin-right: -30px;
+}
+
+.next-card {
+    margin-left: -30px;
+}
+
+/* Card Label */
+.card-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 25px 20px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Navigation Buttons */
+.carousel-nav-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 45px;
-    height: 45px;
-    background: rgba(255, 255, 255, 0.95);
+    width: 50px;
+    height: 50px;
+    background: white;
     border: none;
     border-radius: 50%;
-    font-size: 26px;
+    font-size: 28px;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
@@ -259,17 +308,18 @@
     color: #333;
 }
 
-.slider-nav:hover {
-    background: white;
+.carousel-nav-btn:hover {
+    background: #f8f9fa;
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
 }
 
-.slider-nav.prev {
-    left: 15px;
+.carousel-nav-btn.prev-btn {
+    left: 0;
 }
 
-.slider-nav.next {
-    right: 15px;
+.carousel-nav-btn.next-btn {
+    right: 0;
 }
 
 /* Map and Contact Section */
@@ -412,6 +462,22 @@
     .map-contact-section {
         grid-template-columns: 1fr;
     }
+
+    .gallery-carousel {
+        padding: 30px 60px;
+        min-height: 450px;
+    }
+
+    .current-card {
+        width: 340px;
+        height: 430px;
+    }
+
+    .prev-card,
+    .next-card {
+        width: 250px;
+        height: 340px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -526,5 +592,36 @@
 
     .gallery-slider-container {
         height: 240px;
+    }
+
+    .gallery-carousel {
+        padding: 20px 40px;
+        min-height: 380px;
+    }
+
+    /* Hide side cards on mobile */
+    .prev-card,
+    .next-card {
+        display: none;
+    }
+
+    .current-card {
+        width: 100%;
+        max-width: 320px;
+        height: 420px;
+    }
+
+    .carousel-nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+    }
+
+    .carousel-nav-btn.prev-btn {
+        left: 5px;
+    }
+
+    .carousel-nav-btn.next-btn {
+        right: 5px;
     }
 }

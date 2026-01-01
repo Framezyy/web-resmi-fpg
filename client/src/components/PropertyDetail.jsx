@@ -152,28 +152,59 @@ const PropertyDetail = ({ property, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Gallery Slider */}
+                    {/* Gallery Slider - GANTI SECTION INI SAJA */}
                     {galleryImages.length > 0 && (
                         <div className="gallery-slider-section">
-                            <div className="gallery-slider-container">
-                                <button className="slider-nav prev" onClick={handlePrevImage}>
-                                    ‹
-                                </button>
-                                
-                                <div className="gallery-slide">
+                            <div className="gallery-carousel">
+                                {/* Previous Card (Small) */}
+                                {galleryImages.length > 1 && (
+                                    <div className="carousel-card prev-card">
+                                        <img 
+                                            src={galleryImages[currentImageIndex === 0 ? galleryImages.length - 1 : currentImageIndex - 1]} 
+                                            alt="Previous"
+                                            onError={(e) => {
+                                                e.target.src = 'https://via.placeholder.com/300x400?text=Gallery';
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Current Card (Large - Center) */}
+                                <div className="carousel-card current-card">
                                     <img 
                                         src={galleryImages[currentImageIndex]} 
                                         alt={`Gallery ${currentImageIndex + 1}`}
-                                        className="gallery-slide-image"
                                         onError={(e) => {
-                                            e.target.src = 'https://via.placeholder.com/800x500?text=Gallery+Image';
+                                            e.target.src = 'https://via.placeholder.com/400x500?text=Gallery';
                                         }}
                                     />
+                                    <div className="card-label">{data.title}</div>
                                 </div>
 
-                                <button className="slider-nav next" onClick={handleNextImage}>
-                                    ›
-                                </button>
+                                {/* Next Card (Small) */}
+                                {galleryImages.length > 1 && (
+                                    <div className="carousel-card next-card">
+                                        <img 
+                                            src={galleryImages[currentImageIndex === galleryImages.length - 1 ? 0 : currentImageIndex + 1]} 
+                                            alt="Next"
+                                            onError={(e) => {
+                                                e.target.src = 'https://via.placeholder.com/300x400?text=Gallery';
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Navigation Buttons */}
+                                {galleryImages.length > 1 && (
+                                    <>
+                                        <button className="carousel-nav-btn prev-btn" onClick={handlePrevImage}>
+                                            ‹
+                                        </button>
+                                        <button className="carousel-nav-btn next-btn" onClick={handleNextImage}>
+                                            ›
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}
