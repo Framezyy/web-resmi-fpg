@@ -1,155 +1,221 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './PropertyDetail.css';
 import logoImg from '../assets/images/logo-warna.png';
 
-// Import gallery images
-import gallery1 from '../assets/images/gallery/gallery1.png';
-import gallery2 from '../assets/images/gallery/gallery2.png';
-import gallery3 from '../assets/images/gallery/gallery3.png';
-import gallery4 from '../assets/images/gallery/gallery4.png';
+const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const PropertyDetail = ({ property, onClose }) => {
-    const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [propertyDetail, setPropertyDetail] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Gallery images - untuk slider galeri di bawah
-    const galleryImages = [
-        gallery1,
-        gallery2,
-        gallery3,
-        gallery4
-    ];
+    useEffect(() => {
+        fetchPropertyDetail();
+    }, [property.id]);
 
-    const nextGallery = () => {
-        setCurrentGalleryIndex((prev) => 
-            prev === galleryImages.length - 1 ? 0 : prev + 1
-        );
+    const fetchPropertyDetail = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`${API_URL}/property-detail.php?id=${property.id}`);
+            
+            if (response.data.success) {
+                setPropertyDetail(response.data);
+            } else {
+                setPropertyDetail(property);
+            }
+        } catch (error) {
+            console.error('Error fetching property detail:', error);
+            setPropertyDetail(property);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const prevGallery = () => {
-        setCurrentGalleryIndex((prev) => 
-            prev === 0 ? galleryImages.length - 1 : prev - 1
-        );
+    const handlePrevImage = () => {
+        const images = propertyDetail?.gallery_images || [];
+        if (images.length === 0) return;
+        setCurrentImageIndex((prev) => prev === 0 ? images.length - 1 : prev - 1);
     };
+
+    const handleNextImage = () => {
+        const images = propertyDetail?.gallery_images || [];
+        if (images.length === 0) return;
+        setCurrentImageIndex((prev) => prev === images.length - 1 ? 0 : prev + 1);
+    };
+
+    const handleWhatsApp = () => {
+        const data = propertyDetail || property;
+        const message = encodeURIComponent(
+            `Halo, saya tertarik dengan properti:\n\n` +
+            `Nama: ${data.title}\n` +
+            `Lokasi: ${data.location}\n` +
+            `Tipe: ${data.type}\n\n` +
+            `Mohon informasi lebih lanjut. Terima kasih.`
+        );
+        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+    };
+
+    if (loading) {
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content loading-modal">
+                    <div className="loading-spinner"></div>
+                    <p>Memuat detail properti...</p>
+                </div>
+                <button className="modal-close" onClick={onClose}>×</button>
+            </div>
+        );
+    }
+
+    const data = propertyDetail || property;
+    const galleryImages = data.gallery_images || [];
+    const mainImage = data.main_image || data.image;
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="modal-close" onClick={onClose}>
-                    ×
-                </button>
-                
+            <div className="modal-content figma-design" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close" onClick={onClose}>×</button>
+
                 <div className="modal-body">
-                    {/* Top Section - Gambar Utama */}
-                    <div className="main-image-section">
+                    {/* Hero Image - Full Width */}
+                    <div className="hero-image-section">
                         <img 
-                            src={property.image} 
-                            alt={property.title}
-                            className="main-property-image"
+                            src={mainImage} 
+                            alt={data.title}
+                            className="hero-image"
+                            onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/1200x500?text=Property+Image';
+                            }}
                         />
                     </div>
 
-                    {/* Penjelasan */}
-                    <div className="detail-content">
-                        <div className="detail-intro">
-                            <h2>{property.title}</h2>
-                            <p className="intro-text">
-                                Selaah Satu Unit Hunian Property Group. Lorem ipsum dolor sit amet, 
-                                consectetur adipiscing elit. Properti dengan lokasi strategis dan fasilitas lengkap. 
-                                Nikmati hunian modern dengan kualitas terbaik di lokasi yang strategis. 
-                                Dekat dengan pusat kota, sekolah, rumah sakit, dan berbagai fasilitas umum lainnya.
-                            </p>
+                    {/* Company Header with Logo */}
+                    <div className="company-header">
+                        <img src={logoImg} alt="FPG Logo" className="company-logo-img" />
+                        <h1 className="company-title">PT FACHRI PROPERTY GROUP</h1>
+                        <p className="welcome-text">{data.welcome_text || 'Selamat datang di PT FACHRI PROPERTY GROUP'}</p>
+                    </div>
+
+                    {/* About Section */}
+                    <div className="about-section">
+                        <p className="about-text">
+                            {data.about_text || 'Borneo Real Properti Adalah Perusahaan Yang Bergerak Di Bidang Pengembangan Dan Pemasaran Properti, Dengan Fokus Pada Penyediaan Hunian Dan Aset Properti Yang Berkualitas, Bernilai Investasi, Serta Sesuai Dengan Kebutuhan Pasar.'}
+                        </p>
+                    </div>
+
+                    {/* Statistics Icons - 4 Columns */}
+                    <div className="statistics-section">
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <path d="M10 50H50M15 50V30L30 15L45 30V50M20 50V35H40V50" stroke="#4CAF50" strokeWidth="2"/>
+                                </svg>
+                            </div>
+                            <div className="stat-value">{data.land_area || '2.000 hektar'}</div>
+                            <div className="stat-label">LAHAN PENGEMBANGAN</div>
                         </div>
 
-                        {/* Fasilitas dengan Icon */}
-                        <div className="facilities-section">
-                            <div className="facility-item">
-                                <div className="facility-icon">🏠</div>
-                                <p>Rumah Subsidi</p>
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <circle cx="30" cy="30" r="20" stroke="#2196F3" strokeWidth="2"/>
+                                    <path d="M30 20V30L35 35" stroke="#2196F3" strokeWidth="2"/>
+                                </svg>
                             </div>
-                            <div className="facility-item">
-                                <div className="facility-icon">🏡</div>
-                                <p>Strategis</p>
+                            <div className="stat-value" style={{fontSize: '14px', lineHeight: '1.3'}}>
+                                {data.integration_type || 'Pengembangan Terintegrasi'}
                             </div>
-                            <div className="facility-item">
-                                <div className="facility-icon">📍</div>
-                                <p>Dekat Pusat Kota</p>
-                            </div>
-                            <div className="facility-item">
-                                <div className="facility-icon">✓</div>
-                                <p>Fasilitas Lengkap</p>
-                            </div>
+                            <div className="stat-label">KOTA YANG BERSIH, HIJAU DAN MODERN</div>
                         </div>
 
-                        {/* Slider Galeri */}
-                        <div className="gallery-section">
-                            <h3>Galeri</h3>
-                            <div className="gallery-slider">
-                                <button className="gallery-btn prev" onClick={prevGallery}>
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <rect x="15" y="15" width="30" height="30" stroke="#FF9800" strokeWidth="2"/>
+                                    <circle cx="30" cy="30" r="5" fill="#FF9800"/>
+                                </svg>
+                            </div>
+                            <div className="stat-value">{data.city_distance || '15 km'}</div>
+                            <div className="stat-label">DARI PUSAT KOTA SURABAYA</div>
+                        </div>
+
+                        <div className="stat-item">
+                            <div className="stat-icon">
+                                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                                    <path d="M20 25L30 15L40 25M30 15V45" stroke="#9C27B0" strokeWidth="2"/>
+                                    <circle cx="30" cy="20" r="3" fill="#9C27B0"/>
+                                </svg>
+                            </div>
+                            <div className="stat-value">{data.airport_distance || '20 km'}</div>
+                            <div className="stat-label">DARI BANDARA INTERNASIONAL JUANDA</div>
+                        </div>
+                    </div>
+
+                    {/* Gallery Slider */}
+                    {galleryImages.length > 0 && (
+                        <div className="gallery-slider-section">
+                            <div className="gallery-slider-container">
+                                <button className="slider-nav prev" onClick={handlePrevImage}>
                                     ‹
                                 </button>
-                                <div className="gallery-images">
+                                
+                                <div className="gallery-slide">
                                     <img 
-                                        src={galleryImages[currentGalleryIndex]} 
-                                        alt={`Gallery ${currentGalleryIndex + 1}`}
-                                        className="gallery-main-image"
+                                        src={galleryImages[currentImageIndex]} 
+                                        alt={`Gallery ${currentImageIndex + 1}`}
+                                        className="gallery-slide-image"
+                                        onError={(e) => {
+                                            e.target.src = 'https://via.placeholder.com/800x500?text=Gallery+Image';
+                                        }}
                                     />
                                 </div>
-                                <button className="gallery-btn next" onClick={nextGallery}>
+
+                                <button className="slider-nav next" onClick={handleNextImage}>
                                     ›
                                 </button>
                             </div>
-                            <div className="gallery-indicators">
-                                {galleryImages.map((_, index) => (
-                                    <span 
-                                        key={index}
-                                        className={`indicator ${index === currentGalleryIndex ? 'active' : ''}`}
-                                        onClick={() => setCurrentGalleryIndex(index)}
-                                    />
-                                ))}
-                            </div>
+                        </div>
+                    )}
+
+                    {/* Map and Contact Info */}
+                    <div className="map-contact-section">
+                        <div className="map-wrapper">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.56347862248!2d107.57311709453124!3d-6.903444400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Bandung%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1234567890"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                title="Property Location"
+                            ></iframe>
                         </div>
 
-                        {/* Map dan Info Box */}
-                        <div className="location-section">
-                            <div className="map-container">
-                                <iframe 
-                                    title="Property Location"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen={true}
-                                    loading="lazy"
-                                ></iframe>
+                        <div className="contact-info-card">
+                            <div className="contact-logo">
+                                <img src={logoImg} alt="FPG Logo" />
                             </div>
+                            <h3 className="contact-company-name">PT Fachri Property Group</h3>
                             
-                            <div className="info-box">
-                                <div className="info-header">
-                                    <img src={logoImg} alt="Logo" className="info-logo" />
-                                    <h4>FACHRI PROPERTY GROUP</h4>
-                                </div>
-                                
-                                <div className="info-details">
-                                    <h5>Alamat Perusahaan</h5>
-                                    <p>Panasonic Tower Lantai 16-G</p>
-                                    <p>Jl. DR. Pengabean Km. 2, RT.7/RW.1</p>
-                                    <p>Gambir, Campaka</p>
-                                    <p>Kecamatan Ciputat Utara</p>
-                                    <p>Kota Tangerang Selatan, Banten</p>
-                                    <p>Indonesia 15340</p>
-                                </div>
-
-                                <div className="info-details">
-                                    <h5>Kontak</h5>
-                                    <p>Phone: (+6221) 23581300, 21201301</p>
-                                    <p>Fax: (+6221) 23581302</p>
-                                    <p>Email: cs@fachrisaebaty.co.id</p>
-                                </div>
-
-                                <button className="contact-button">
-                                    HUBUNGI KAMI
-                                </button>
+                            <div className="contact-detail">
+                                <h4>Alamat Perusahaan</h4>
+                                <p>Tanamas Hive Office, Lantai 12-15,</p>
+                                <p>Jl. Let. Jend. Suprapto No.60, Kec. Cempaka</p>
+                                <p>Putih, Kecamatan Johar Baru, Kota Jakarta Pusat,</p>
+                                <p>Daerah Khusus Ibukota Jakarta 10510</p>
                             </div>
+
+                            <div className="contact-detail">
+                                <h4>Kontak</h4>
+                                <p>Telepon: (+6221) 21101200, 21101201</p>
+                                <p>Fax: (+6221) 21101202, 23582303</p>
+                                <p>Email: cs@wmarkarealty.co.id</p>
+                            </div>
+
+                            <button className="contact-whatsapp-btn" onClick={handleWhatsApp}>
+                                Hubungi kami
+                            </button>
                         </div>
                     </div>
 

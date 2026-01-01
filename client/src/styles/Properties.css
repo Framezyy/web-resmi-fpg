@@ -1,0 +1,375 @@
+/* Properties Page */
+.properties-page {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: #f8f9fa;
+}
+
+/* Hero Section */
+.properties-hero {
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0;
+}
+
+.properties-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.properties-page .hero-overlay {
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    z-index: 2;
+    text-align: left;
+    color: white;
+    max-width: 700px;
+}
+
+.properties-page .hero-overlay h1 {
+    font-size: 64px;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    color: white;
+    line-height: 1.1;
+    letter-spacing: 2px;
+}
+
+.properties-page .hero-overlay p {
+    font-size: 28px;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 300;
+    color: white;
+}
+
+.highlight {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+/* Filter Section */
+.properties-filter {
+    background: white;
+    padding: 40px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 10;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.filter-input,
+.filter-select {
+    padding: 15px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 15px;
+    color: #333;
+    background: white;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    border-color: #333;
+}
+
+.filter-input::placeholder {
+    color: #aaa;
+}
+
+/* Properties List Section */
+.properties-list-section {
+    padding: 60px 0 80px;
+    background: #f8f9fa;
+}
+
+.properties-horizontal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* ========================================
+   CARD WRAPPER - INI YANG PENTING!
+   Setiap property punya card terpisah
+======================================== */
+.property-card-wrapper {
+    background: white;
+    border-radius: 0;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.property-card-wrapper:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Property Item - Layout Horizontal */
+.property-horizontal-item {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: white;
+    min-height: 380px; /* UBAH dari 280px jadi 380px */
+}
+
+/* Gambar Kiri - 50% - PANJANGKAN */
+.property-image-box {
+    flex: 0 0 50%;
+    height: 380px; /* UBAH dari 280px jadi 380px */
+    overflow: hidden;
+    position: relative;
+}
+
+.property-image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.property-card-wrapper:hover .property-image-box img {
+    transform: scale(1.05);
+}
+
+/* Info Kanan - 50% - TAMBAH PADDING */
+.property-info-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 40px; /* UBAH dari 40px 30px jadi 50px 40px */
+    background: white;
+}
+
+.property-title-main {
+    font-size: 32px; /* UBAH dari 28px jadi 32px */
+    font-weight: 700;
+    margin: 0 0 15px 0; /* UBAH dari 12px jadi 15px */
+    color: #1a1a2e;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.property-location-text {
+    font-size: 16px; /* UBAH dari 15px jadi 16px */
+    color: #666;
+    margin: 0 0 30px 0; /* UBAH dari 25px jadi 30px */
+    line-height: 1.5;
+}
+
+.detail-link-btn {
+    display: inline-block;
+    background: transparent;
+    color: #333;
+    border: 2px solid #333;
+    font-size: 15px; /* UBAH dari 14px jadi 15px */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 12px 35px; /* UBAH dari 10px 28px jadi 12px 35px */
+    border-radius: 0;
+    transition: all 0.3s ease;
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+}
+
+/* Loading & Error States */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 40px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #1a1a2e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 40px;
+}
+
+.error-container p {
+    color: #f44336;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.error-container button {
+    padding: 12px 30px;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.error-container button:hover {
+    background: #2d2d44;
+}
+
+.no-properties {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-properties p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .properties-page .hero-overlay {
+        left: 40px;
+        bottom: 40px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 48px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 22px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .property-horizontal-item {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .property-image-box {
+        flex: none;
+        width: 100%;
+        height: 250px;
+    }
+
+    .property-info-box {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .properties-page .hero-overlay {
+        left: 30px;
+        bottom: 30px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 40px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 18px;
+    }
+
+    .properties-list-section {
+        padding: 40px 0 60px;
+    }
+
+    .properties-horizontal-list {
+        gap: 25px;
+    }
+
+    .property-title-main {
+        font-size: 24px;
+    }
+
+    .property-location-text {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .properties-page .hero-overlay {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 32px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 16px;
+    }
+
+    .property-image-box {
+        height: 220px;
+    }
+
+    .property-info-box {
+        padding: 25px 15px;
+    }
+
+    .property-title-main {
+        font-size: 22px;
+    }
+
+    .detail-link-btn {
+        padding: 8px 24px;
+        font-size: 13px;
+    }
+}

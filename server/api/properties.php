@@ -1,67 +1,86 @@
 <?php
-// filepath: d:\xampp\htdocs\pt-fachri-property-group\server\api\properties.php
+// filepath: d:\xampp\htdocs\web-resmi-fpg\server\api\properties.php
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 include_once '../config/database.php';
 
-$database = new Database();
-$db = $database->getConnection();
-
 try {
+    $database = new Database();
+    $db = $database->getConnection();
+    
+    if ($db === null) {
+        throw new Exception("Database connection failed");
+    }
+    
+    // Query untuk get semua properties
     $query = "SELECT 
-                id, 
-                name, 
-                location, 
-                price, 
-                description, 
-                type,
-                bedrooms,
-                bathrooms,
-                land_area,
-                building_area,
-                image, 
-                status,
-                created_at 
-              FROM properties 
-              WHERE status = 'available'
-              ORDER BY created_at DESC";
+                p.id,
+                p.title,
+                p.location,
+                p.type,
+                p.description,
+                p.main_image,
+                p.created_at,
+                p.updated_at
+              FROM properties p
+              ORDER BY p.created_at DESC";
     
     $stmt = $db->prepare($query);
     $stmt->execute();
     
-    $properties = array();
+    $properties = [];
     
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $property_item = array(
-            "id" => $row['id'],
-            "name" => $row['name'],
-            "location" => $row['location'],
-            "price" => number_format($row['price'], 0, ',', '.'),
-            "priceRaw" => $row['price'],
-            "description" => $row['description'],
-            "type" => $row['type'],
-            "bedrooms" => $row['bedrooms'],
-            "bathrooms" => $row['bathrooms'],
-            "landArea" => $row['land_area'],
-            "buildingArea" => $row['building_area'],
-            "image" => $row['image'],
-            "status" => $row['status'],
-            "created_at" => $row['created_at']
-        );
-        array_push($properties, $property_item);
+        // Get gallery images untuk setiap property
+        $gallery_query = "SELECT image_url FROM property_galleries WHERE property_id = :property_id ORDER BY created_at";
+        $gallery_stmt = $db->prepare($gallery_query);
+        $gallery_stmt->bindParam(':property_id', $row['id']);
+        $gallery_stmt->execute();
+        
+        $gallery_images = [];
+        while ($gallery_row = $gallery_stmt->fetch(PDO::FETCH_ASSOC)) {
+            $gallery_images[] = $gallery_row['image_url'];
+        }
+        
+        $property = [
+            'id' => $row['id'],
+            'title' => $row['title'],
+            'location' => $row['location'],
+            'type' => $row['type'],
+            'description' => $row['description'],
+            'image' => $row['main_image'],
+            'main_image' => $row['main_image'],
+            'gallery' => $gallery_images,
+            'created_at' => $row['created_at'],
+            'updated_at' => $row['updated_at']
+        ];
+        
+        $properties[] = $property;
     }
     
-    echo json_encode(array(
-        "success" => true,
-        "data" => $properties
-    ));
+    http_response_code(200);
+    echo json_encode($properties);
     
-} catch(Exception $e) {
-    echo json_encode(array(
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
         "success" => false,
-        "message" => "Error: " . $e->getMessage()
-    ));
+        "message" => "Database error: " . $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
 }
 ?>
