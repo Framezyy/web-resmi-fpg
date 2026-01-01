@@ -43,6 +43,12 @@ const Properties = () => {
         }
     };
 
+    // TAMBAHKAN FUNCTION INI - Get unique types dari database
+    const getUniqueTypes = () => {
+        const types = properties.map(p => p.type).filter(Boolean);
+        return [...new Set(types)].sort();
+    };
+
     const handlePropertyClick = (property) => {
         setSelectedProperty(property);
         setShowModal(true);
@@ -98,7 +104,7 @@ const Properties = () => {
                 </div>
             </section>
 
-            {/* Filter Section */}
+            {/* Filter Section - UPDATE INI */}
             <section className="properties-filter">
                 <div className="container">
                     <div className="filter-grid">
@@ -110,21 +116,21 @@ const Properties = () => {
                             className="filter-input"
                         />
                         
+                        {/* UBAH SELECT INI - Dynamic options dari database */}
                         <select
                             value={selectedType}
                             onChange={(e) => setSelectedType(e.target.value)}
                             className="filter-select"
                         >
-                            <option value="">Tipe</option>
-                            <option value="Residential">Residential</option>
-                            <option value="Commercial">Commercial</option>
-                            <option value="Industrial">Industrial</option>
-                            <option value="Land">Land</option>
+                            <option value="">Semua Tipe</option>
+                            {getUniqueTypes().map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
                         </select>
                         
                         <input
                             type="text"
-                            placeholder="Cari"
+                            placeholder="Cari Lokasi"
                             value={selectedLocation}
                             onChange={(e) => setSelectedLocation(e.target.value)}
                             className="filter-input"

@@ -260,16 +260,16 @@ const AdminDashboard = () => {
                     <p>Total Properties</p>
                 </div>
                 <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Residential').length}</h3>
-                    <p>Residential</p>
+                    <h3>{properties.filter(p => p.type === 'Tipe 36').length}</h3>
+                    <p>Tipe 36</p>
                 </div>
                 <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Commercial').length}</h3>
-                    <p>Commercial</p>
+                    <h3>{properties.filter(p => p.type === 'Tipe 40').length}</h3>
+                    <p>Tipe 40</p>
                 </div>
                 <div className="stat-card">
-                    <h3>{properties.filter(p => p.type === 'Industrial').length}</h3>
-                    <p>Industrial</p>
+                    <h3>{properties.filter(p => p.type === 'Tipe 50').length}</h3>
+                    <p>Tipe 50</p>
                 </div>
             </div>
 
@@ -358,10 +358,10 @@ const AdminDashboard = () => {
                                         required
                                     >
                                         <option value="">Select Type</option>
-                                        <option value="Residential">Residential</option>
-                                        <option value="Commercial">Commercial</option>
-                                        <option value="Industrial">Industrial</option>
-                                        <option value="Land">Land</option>
+                                        <option value="Tipe 36">Tipe 36</option>
+                                        <option value="Tipe 40">Tipe 40</option>
+                                        <option value="Tipe 50">Tipe 50</option>
+                                        <option value="Tipe 60">Tipe 60</option>
                                     </select>
                                 </div>
                             </div>
