@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './SubsidiaryTwo.css';
 import heroBg from '../assets/images/homedua.png';
 import logo2 from '../assets/images/anak3.png';
-import aboutImage from '../assets/images/Kantor.png';
 
 const SubsidiaryTwo = () => {
     const [activeTab, setActiveTab] = useState('vision');
@@ -39,12 +38,12 @@ const SubsidiaryTwo = () => {
                 </div>
             </section>
 
-            <section className="description-section">
-                <div className="description-content">
-                    <div className="description-logo">
+            <section className="subsidiary-description-section">
+                <div className="subsidiary-description-content">
+                    <div className="subsidiary-description-logo">
                         <img src={logo2} alt="Borneo Real Estate" />
                     </div>
-                    <div className="description-text">
+                    <div className="subsidiary-description-text">
                         <h2>Deskripsi Perusahaan</h2>
                         <p>
                             PT Borneo Real Estate adalah perusahaan yang berfokus pada manajemen dan investasi properti. 
@@ -110,7 +109,8 @@ const SubsidiaryTwo = () => {
             <section className="map-section">
                 <div className="container">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                        title="Borneo Real Property Location"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4319.162899218581!2d109.30664811610173!3d-0.06026451972279657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e1d5960bcf26c5f%3A0xc136f843636b7ee7!2sPT.%20BORNEO%20REAL%20PROPERTI!5e0!3m2!1sid!2sid!4v1766506631653!5m2!1sid!2sid"
                         width="100%"
                         height="500"
                         style={{ border: 0 }}

@@ -58,7 +58,7 @@ const ContactUs = () => {
                         <FaPhone className="contact-icon" />
                         <div>
                             <h3>Telepon:</h3>
-                            <p>0561-8177746</p>
+                            <p>+62 822-9899-0669</p>
                         </div>
                     </div>
 
@@ -66,7 +66,7 @@ const ContactUs = () => {
                         <FaFax className="contact-icon" />
                         <div>
                             <h3>Fax:</h3>
-                            <p>(+6221) 22085123</p>
+                            <p>(0561) 8177746</p>
                         </div>
                     </div>
 
@@ -74,7 +74,7 @@ const ContactUs = () => {
                         <FaEnvelope className="contact-icon" />
                         <div>
                             <h3>Email:</h3>
-                            <p>cs@wikarealty.co.id</p>
+                            <p>fachripropertygroup@gmail.com</p>
                         </div>
                     </div>
 
@@ -82,18 +82,18 @@ const ContactUs = () => {
                         <FaMapMarkerAlt className="contact-icon" />
                         <div>
                             <h3>Alamat:</h3>
-                            <p>Tamansari Hive Office, Lantai 12-15. Jl. D.I. Panjaitan Kav. 2, RT.7/RW.11, Cipinang Cempedak, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13340</p>
-                        </div>
+                                <p>Jl. Ampera No.02, Sungai Jawi, Kec. Pontianak Kota,</p>
+                                <p>Kota Pontianak, Kalimantan Barat 78114</p>                        </div>
                     </div>
 
                     <div className="social-media">
                         <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon">
                             <FaYoutube />
                         </a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <a href="https://www.instagram.com/pt.fachri.property.land?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="social-icon">
                             <FaInstagram />
                         </a>
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <a href="https://www.facebook.com/FachriiPropertyland/" target="_blank" rel="noopener noreferrer" className="social-icon">
                             <FaFacebookF />
                         </a>
                     </div>
@@ -158,7 +158,7 @@ const ContactUs = () => {
                     <div className="map-container">
                         <iframe 
                             title="Office Location"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.816827422188!2d109.2972812!3d-0.0495655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e1d5939bcb36055%3A0xbbfe8d8aa6d9c520!2sPT.FACHRI%20PROPERTY%20LAND!5e0!3m2!1sid!2sid!4v1766506338420!5m2!1sid!2sid"
                             width="100%"
                             height="400"
                             style={{ border: 0 }}

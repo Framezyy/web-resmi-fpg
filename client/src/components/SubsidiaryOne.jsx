@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './SubsidiaryOne.css';
 import heroBg from '../assets/images/homesatu.png';
 import logo1 from '../assets/images/anak2.png';
-import aboutImage from '../assets/images/Kantor.png';
 
 const SubsidiaryOne = () => {
     const [activeTab, setActiveTab] = useState('vision');
@@ -39,12 +38,12 @@ const SubsidiaryOne = () => {
                 </div>
             </section>
 
-            <section className="description-section">
-                <div className="description-content">
-                    <div className="description-logo">
+            <section className="subsidiary-description-section">
+                <div className="subsidiary-description-content">
+                    <div className="subsidiary-description-logo">
                         <img src={logo1} alt="Borneo Icon Development" />
                     </div>
-                    <div className="description-text">
+                    <div className="subsidiary-description-text">
                         <h2>Deskripsi Perusahaan</h2>
                         <p>
                             PT Borneo Icon Developer adalah perusahaan pengembang properti yang berfokus pada perencanaan, 
@@ -109,7 +108,8 @@ const SubsidiaryOne = () => {
             <section className="map-section">
                 <div className="container">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                        title="Borneo Icon Development Location"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.816737220806!2d109.3167657!3d-0.0510409!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e1d5912f0f922db%3A0x36a6b50bbb15825!2sPT.%20BORNEO%20ICON%20PROPERTI!5e0!3m2!1sid!2sid!4v1766506532550!5m2!1sid!2sid"
                         width="100%"
                         height="500"
                         style={{ border: 0 }}

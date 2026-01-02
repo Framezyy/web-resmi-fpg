@@ -145,9 +145,9 @@ const LandingPage = () => {
                             </div>
                             <div className="contact-details">
                                 <h4>Kontak</h4>
-                                <p>Phone: (+6221) 23581300, 21201301</p>
-                                <p>Fax: (+6221) 23581302</p>
-                                <p>Email: info@fachriproperti.com</p>
+                                <p>Phone: +62 822-9899-0669</p>
+                                <p>Fax: (0561) 8177746</p>
+                                <p>Email: fachripropertygroup@gmail.com</p>
                             </div>
                         </div>
                         <div className="contact-map animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
