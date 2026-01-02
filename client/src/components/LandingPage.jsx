@@ -140,22 +140,20 @@ const LandingPage = () => {
                             </div>
                             <div className="address">
                                 <h4>Alamat Perusahaan</h4>
-                                <p>Panasonic Tower Lantai 16-G</p>
-                                <p>Jl. DR. Pengabean Km. 2, RT.7/RW.1, Gambir, Campaka</p>
-                                <p>Kecamatan Ciputat Utara, Kota Tangerang Selatan, Banten</p>
-                                <p>Indonesia 15340</p>
+                                <p>Jl. Ampera No.02, Sungai Jawi, Kec. Pontianak Kota,</p>
+                                <p>Kota Pontianak, Kalimantan Barat 78114</p>
                             </div>
                             <div className="contact-details">
                                 <h4>Kontak</h4>
                                 <p>Phone: (+6221) 23581300, 21201301</p>
                                 <p>Fax: (+6221) 23581302</p>
-                                <p>Email: cs@fachrisaebaty.co.id</p>
+                                <p>Email: info@fachriproperti.com</p>
                             </div>
                         </div>
                         <div className="contact-map animate-on-scroll" style={{ transitionDelay: '0.4s' }}>
                             <iframe 
                                 title="Map Location"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194407!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTEnMzkuOSJTIDEwNsKwNDknMTAuNCJF!5e0!3m2!1sen!2sid!4v1234567890"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.816827422188!2d109.2972812!3d-0.0495655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e1d5939bcb36055%3A0xbbfe8d8aa6d9c520!2sPT.FACHRI%20PROPERTY%20LAND!5e0!3m2!1sid!2sid!4v1766506338420!5m2!1sid!2sid"
                                 width="100%"
                                 height="400"
                                 style={{ border: 0 }}
