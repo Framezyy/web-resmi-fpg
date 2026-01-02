@@ -20,86 +20,111 @@ $db = $database->getConnection();
 
 $uploadDir = "../uploads/properties/";
 
+// Get data - TAMBAH field yang kurang
 $id = $_POST['id'] ?? '';
 $title = $_POST['title'] ?? '';
 $location = $_POST['location'] ?? '';
+$map_embed_url = $_POST['map_embed_url'] ?? null;
 $type = $_POST['type'] ?? '';
 $description = $_POST['description'] ?? '';
+$total_blocks = $_POST['total_blocks'] ?? 0;          // ← TAMBAH
+$total_units = $_POST['total_units'] ?? 0;            // ← TAMBAH
+$units_sold = $_POST['units_sold'] ?? 0;              // ← TAMBAH
+$units_available = $_POST['units_available'] ?? 0;    // ← TAMBAH
+$welcome_text = $_POST['welcome_text'] ?? '';         // ← TAMBAH
+$about_text = $_POST['about_text'] ?? '';             // ← TAMBAH
 
-if (empty($id) || empty($title) || empty($location) || empty($type)) {
-    http_response_code(400);
-    echo json_encode(["message" => "Required fields missing"]);
-    exit();
+// Extract src from iframe
+if ($map_embed_url && strpos($map_embed_url, '<iframe') !== false) {
+    preg_match('/src="([^"]+)"/', $map_embed_url, $matches);
+    $map_embed_url = $matches[1] ?? null;
 }
 
-$mainImage = null;
+try {
+    // Handle main image if uploaded
+    $mainImage = null;
+    if (isset($_FILES['mainImage']) && $_FILES['mainImage']['error'] === 0) {
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
 
-// Upload new main image if provided
-if (isset($_FILES['mainImage']) && $_FILES['mainImage']['error'] === 0) {
-    // Get old image
-    $oldQuery = "SELECT main_image FROM properties WHERE id = :id";
-    $oldStmt = $db->prepare($oldQuery);
-    $oldStmt->bindParam(':id', $id);
-    $oldStmt->execute();
-    $oldData = $oldStmt->fetch(PDO::FETCH_ASSOC);
-    
-    // Delete old image
-    if ($oldData['main_image'] && file_exists($uploadDir . $oldData['main_image'])) {
-        unlink($uploadDir . $oldData['main_image']);
-    }
-    
-    $fileExt = pathinfo($_FILES['mainImage']['name'], PATHINFO_EXTENSION);
-    $mainImage = 'main_' . time() . '_' . uniqid() . '.' . $fileExt;
-    move_uploaded_file($_FILES['mainImage']['tmp_name'], $uploadDir . $mainImage);
-}
-
-// Update property
-$query = "UPDATE properties SET 
-          title = :title, 
-          location = :location, 
-          type = :type, 
-          description = :description";
-
-if ($mainImage) {
-    $query .= ", main_image = :main_image";
-}
-
-$query .= " WHERE id = :id";
-
-$stmt = $db->prepare($query);
-$stmt->bindParam(':title', $title);
-$stmt->bindParam(':location', $location);
-$stmt->bindParam(':type', $type);
-$stmt->bindParam(':description', $description);
-$stmt->bindParam(':id', $id);
-
-if ($mainImage) {
-    $stmt->bindParam(':main_image', $mainImage);
-}
-
-if ($stmt->execute()) {
-    // Upload additional gallery images
-    if (isset($_FILES['galleryImages'])) {
-        $galleryQuery = "INSERT INTO property_galleries (property_id, image_path) VALUES (:property_id, :image_path)";
-        $galleryStmt = $db->prepare($galleryQuery);
-        
-        foreach ($_FILES['galleryImages']['tmp_name'] as $key => $tmpName) {
-            if ($_FILES['galleryImages']['error'][$key] === 0) {
-                $fileExt = pathinfo($_FILES['galleryImages']['name'][$key], PATHINFO_EXTENSION);
-                $galleryImage = 'gallery_' . time() . '_' . $key . '_' . uniqid() . '.' . $fileExt;
-                move_uploaded_file($tmpName, $uploadDir . $galleryImage);
-                
-                $galleryStmt->bindParam(':property_id', $id);
-                $galleryStmt->bindParam(':image_path', $galleryImage);
-                $galleryStmt->execute();
-            }
+        $mainImageName = time() . '_' . $_FILES['mainImage']['name'];
+        if (move_uploaded_file($_FILES['mainImage']['tmp_name'], $uploadDir . $mainImageName)) {
+            $mainImage = 'http://localhost/web-resmi-fpg/server/uploads/properties/' . $mainImageName;
         }
     }
-    
-    http_response_code(200);
-    echo json_encode(["message" => "Property updated successfully"]);
-} else {
-    http_response_code(500);
-    echo json_encode(["message" => "Failed to update property"]);
+
+    // Update query - TAMBAH semua field
+    $query = "UPDATE properties SET 
+              title = :title,
+              location = :location,
+              map_embed_url = :map_embed_url,
+              type = :type,
+              description = :description,
+              total_blocks = :total_blocks,
+              total_units = :total_units,
+              units_sold = :units_sold,
+              units_available = :units_available,
+              welcome_text = :welcome_text,
+              about_text = :about_text" . 
+              ($mainImage ? ", main_image = :main_image" : "") . 
+              " WHERE id = :id";
+
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':title', $title);
+    $stmt->bindParam(':location', $location);
+    $stmt->bindParam(':map_embed_url', $map_embed_url);
+    $stmt->bindParam(':type', $type);
+    $stmt->bindParam(':description', $description);
+    $stmt->bindParam(':total_blocks', $total_blocks, PDO::PARAM_INT);      // ← TAMBAH
+    $stmt->bindParam(':total_units', $total_units, PDO::PARAM_INT);        // ← TAMBAH
+    $stmt->bindParam(':units_sold', $units_sold, PDO::PARAM_INT);          // ← TAMBAH
+    $stmt->bindParam(':units_available', $units_available, PDO::PARAM_INT);// ← TAMBAH
+    $stmt->bindParam(':welcome_text', $welcome_text);                      // ← TAMBAH
+    $stmt->bindParam(':about_text', $about_text);                          // ← TAMBAH
+
+    if ($mainImage) {
+        $stmt->bindParam(':main_image', $mainImage);
+    }
+
+    if ($stmt->execute()) {
+        // Handle gallery images if uploaded
+        if (isset($_FILES['galleryImages'])) {
+            $galleryDir = $uploadDir . 'gallery/';
+            if (!file_exists($galleryDir)) {
+                mkdir($galleryDir, 0777, true);
+            }
+
+            foreach ($_FILES['galleryImages']['tmp_name'] as $key => $tmp_name) {
+                if ($_FILES['galleryImages']['error'][$key] === 0) {
+                    $galleryImageName = time() . '_' . $key . '_' . $_FILES['galleryImages']['name'][$key];
+                    if (move_uploaded_file($tmp_name, $galleryDir . $galleryImageName)) {
+                        $imageUrl = 'http://localhost/web-resmi-fpg/server/uploads/properties/gallery/' . $galleryImageName;
+                        
+                        $galleryQuery = "INSERT INTO property_galleries (property_id, image_url) VALUES (:property_id, :image_url)";
+                        $galleryStmt = $db->prepare($galleryQuery);
+                        $galleryStmt->bindParam(':property_id', $id);
+                        $galleryStmt->bindParam(':image_url', $imageUrl);
+                        $galleryStmt->execute();
+                    }
+                }
+            }
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            "success" => true,
+            "message" => "Property updated successfully"
+        ]);
+    } else {
+        throw new Exception("Failed to update property");
+    }
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
 }
 ?>

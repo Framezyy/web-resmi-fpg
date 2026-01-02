@@ -216,15 +216,18 @@ const PropertyDetail = ({ property, onClose }) => {
 
                     {/* Map and Contact Section */}
                     <div className="map-contact-section">
-                        <div className="map-wrapper">
+                        <div className="map-container">
                             <iframe
-                                src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(data.location)}`}
+                                src={
+                                    data.map_embed_url 
+                                        ? data.map_embed_url
+                                        : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126748.5634786!2d107.5731170945312!3d-6.903444400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung!5e0!3m2!1sen!2sid!4v1234567890`
+                                }
                                 width="100%"
                                 height="100%"
-                                style={{ border: 0 }}
+                                style={{ border: 0, borderRadius: '15px' }}
                                 allowFullScreen=""
                                 loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
                                 title="Property Location"
                             ></iframe>
                         </div>

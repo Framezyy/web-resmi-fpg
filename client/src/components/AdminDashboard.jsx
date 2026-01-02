@@ -15,13 +15,9 @@ const AdminDashboard = () => {
     const [formData, setFormData] = useState({
         title: '',
         location: '',
+        map_embed_url: '',  // ← GANTI dari latitude/longitude
         type: '',
-        total_blocks: 0,
-        total_units: 0,
-        units_sold: 0,
-        units_available: 0,
-        welcome_text: '',
-        about_text: ''
+        description: ''
     });
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -117,9 +113,12 @@ const AdminDashboard = () => {
         });
 
         try {
+            // ← TAMBAH: Show loading
+            alert('Uploading... Please wait.');
+
             if (editMode && currentProperty) {
                 formDataToSend.append('id', currentProperty.id);
-                await axios.post(
+                const response = await axios.post(
                     `${API_URL}/property-update.php`,
                     formDataToSend,
                     {
@@ -129,9 +128,15 @@ const AdminDashboard = () => {
                         }
                     }
                 );
-                alert('Property updated successfully!');
+                
+                // ← TAMBAH: Show detailed message
+                if (response.data.gallery_uploaded !== undefined) {
+                    alert(`Property updated! ${response.data.gallery_uploaded} gallery images uploaded.`);
+                } else {
+                    alert('Property updated successfully!');
+                }
             } else {
-                await axios.post(
+                const response = await axios.post(
                     `${API_URL}/property-create.php`,
                     formDataToSend,
                     {
@@ -141,30 +146,41 @@ const AdminDashboard = () => {
                         }
                     }
                 );
-                alert('Property created successfully!');
+                
+                // ← TAMBAH: Show detailed message
+                if (response.data.gallery_uploaded !== undefined) {
+                    alert(`Property created! ${response.data.gallery_uploaded} gallery images uploaded.${response.data.failed_uploads.length > 0 ? '\n\nFailed uploads:\n' + response.data.failed_uploads.join('\n') : ''}`);
+                } else {
+                    alert('Property created successfully!');
+                }
             }
             
             closeModal();
             fetchProperties();
         } catch (error) {
             console.error('Error:', error);
-            alert(error.response?.data?.message || 'Failed to save property');
+            // ← TAMBAH: Show detailed error
+            const errorMsg = error.response?.data?.message || error.message || 'Failed to save property';
+            alert('Error: ' + errorMsg + '\n\nTips:\n- Check file sizes (max 5MB per image)\n- Make sure all images are valid\n- Try uploading fewer images at once');
         }
     };
 
+    // GANTI FUNCTION handleEdit dengan yang lengkap:
     const handleEdit = (property) => {
         setEditMode(true);
         setCurrentProperty(property);
         setFormData({
             title: property.title,
             location: property.location,
+            map_embed_url: property.map_embed_url || '',
             type: property.type,
-            total_blocks: property.total_blocks || 0,
-            total_units: property.total_units || 0,
-            units_sold: property.units_sold || 0,
-            units_available: property.units_available || 0,
-            welcome_text: property.welcome_text || '',
-            about_text: property.about_text || ''
+            description: property.description || '',
+            total_blocks: property.total_blocks || 0,          // ← TAMBAH
+            total_units: property.total_units || 0,            // ← TAMBAH
+            units_sold: property.units_sold || 0,              // ← TAMBAH
+            units_available: property.units_available || 0,    // ← TAMBAH
+            welcome_text: property.welcome_text || 'Selamat datang di PT FACHRI PROPERTY GROUP',  // ← TAMBAH
+            about_text: property.about_text || ''              // ← TAMBAH
         });
         setPreviewMainImage(property.image || property.main_image);
         setShowModal(true);
@@ -254,6 +270,7 @@ const AdminDashboard = () => {
         }
     };
 
+    // GANTI FUNCTION openModal dengan yang lengkap:
     const openModal = () => {
         setShowModal(true);
         setEditMode(false);
@@ -261,13 +278,15 @@ const AdminDashboard = () => {
         setFormData({
             title: '',
             location: '',
+            map_embed_url: '',
             type: '',
-            total_blocks: 0,
-            total_units: 0,
-            units_sold: 0,
-            units_available: 0,
-            welcome_text: '',
-            about_text: ''
+            description: '',
+            total_blocks: 0,         // ← TAMBAH
+            total_units: 0,          // ← TAMBAH
+            units_sold: 0,           // ← TAMBAH
+            units_available: 0,      // ← TAMBAH
+            welcome_text: '',        // ← TAMBAH
+            about_text: ''           // ← TAMBAH
         });
         setMainImage(null);
         setGalleryImages([]);
@@ -276,6 +295,7 @@ const AdminDashboard = () => {
         setAwardImage(null);
     };
 
+    // GANTI FUNCTION closeModal dengan yang lengkap:
     const closeModal = () => {
         setShowModal(false);
         setEditMode(false);
@@ -283,13 +303,15 @@ const AdminDashboard = () => {
         setFormData({
             title: '',
             location: '',
+            map_embed_url: '',
             type: '',
-            total_blocks: 0,
-            total_units: 0,
-            units_sold: 0,
-            units_available: 0,
-            welcome_text: '',
-            about_text: ''
+            description: '',
+            total_blocks: 0,         // ← TAMBAH
+            total_units: 0,          // ← TAMBAH
+            units_sold: 0,           // ← TAMBAH
+            units_available: 0,      // ← TAMBAH
+            welcome_text: '',        // ← TAMBAH
+            about_text: ''           // ← TAMBAH
         });
         setMainImage(null);
         setGalleryImages([]);
@@ -651,14 +673,91 @@ const AdminDashboard = () => {
 
                                 {/* Gallery Images */}
                                 <div className="form-group">
-                                    <label>Gallery Images (Multiple)</label>
+                                    <label>Gallery Images (Multiple - No Limit)</label>
                                     <input
                                         type="file"
                                         accept="image/*"
                                         multiple
                                         onChange={handleGalleryImagesChange}
                                     />
-                                    <small>You can select multiple images</small>
+                                    <small style={{ color: '#666', fontSize: '13px', marginTop: '5px', display: 'block' }}>
+                                        ✅ You can select <strong>unlimited images</strong> (Ctrl/Cmd + Click to select multiple)
+                                    </small>
+                                    
+                                    {/* Preview Selected Files */}
+                                    {galleryImages.length > 0 && (
+                                        <div style={{ 
+                                            marginTop: '15px', 
+                                            padding: '10px', 
+                                            background: '#f5f5f5', 
+                                            borderRadius: '8px' 
+                                        }}>
+                                            <strong>📸 {galleryImages.length} images selected:</strong>
+                                            <ul style={{ 
+                                                marginTop: '8px', 
+                                                paddingLeft: '20px', 
+                                                fontSize: '13px',
+                                                maxHeight: '120px',
+                                                overflowY: 'auto'
+                                            }}>
+                                                {galleryImages.map((file, index) => (
+                                                    <li key={index}>{file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* ← GANTI BAGIAN MAP INPUT */}
+                                <div className="form-group">
+                                    <label>Google Maps Embed URL (Optional)</label>
+                                    <textarea
+                                        name="map_embed_url"
+                                        value={formData.map_embed_url}
+                                        onChange={handleInputChange}
+                                        placeholder="Paste Google Maps embed URL here..."
+                                        rows="3"
+                                        style={{ 
+                                            fontFamily: 'monospace', 
+                                            fontSize: '12px',
+                                            resize: 'vertical'
+                                        }}
+                                    />
+                                    <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+                                        Leave empty to use default location
+                                    </small>
+                                </div>
+
+                                {/* Info Box - Cara Dapat Embed URL */}
+                                <div style={{
+                                    background: '#e3f2fd',
+                                    border: '1px solid #2196F3',
+                                    borderRadius: '8px',
+                                    padding: '15px',
+                                    marginBottom: '20px'
+                                }}>
+                                    <strong>📍 Cara mendapatkan Google Maps Embed URL:</strong>
+                                    <ol style={{ margin: '10px 0 0 20px', fontSize: '13px', lineHeight: '1.8' }}>
+                                        <li>Buka <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style={{ color: '#2196F3', fontWeight: '600' }}>Google Maps</a></li>
+                                        <li>Cari lokasi properti</li>
+                                        <li>Klik tombol <strong>"Share"</strong> atau <strong>"Bagikan"</strong></li>
+                                        <li>Pilih tab <strong>"Embed a map"</strong></li>
+                                        <li>Klik <strong>"COPY HTML"</strong></li>
+                                        <li>Paste ke form di atas</li>
+                                    </ol>
+                                    <div style={{ 
+                                        marginTop: '10px', 
+                                        padding: '10px', 
+                                        background: '#fff', 
+                                        borderRadius: '5px',
+                                        fontSize: '11px',
+                                        fontFamily: 'monospace',
+                                        color: '#666',
+                                        border: '1px solid #ddd'
+                                    }}>
+                                        Contoh hasil copy:<br/>
+                                        <code>&lt;iframe src="https://www.google.com/maps/embed?pb=!1m18..."&gt;&lt;/iframe&gt;</code>
+                                    </div>
                                 </div>
 
                                 <div className="form-actions">
