@@ -169,20 +169,24 @@ const AdminDashboard = () => {
     const handleEdit = (property) => {
         setEditMode(true);
         setCurrentProperty(property);
+        
+        // SET SEMUA FIELD dengan nilai dari database (gunakan || '' untuk fallback)
         setFormData({
-            title: property.title,
-            location: property.location,
+            title: property.title || '',
+            location: property.location || '',
             map_embed_url: property.map_embed_url || '',
-            type: property.type,
+            type: property.type || '',
             description: property.description || '',
-            total_blocks: property.total_blocks || 0,          // ← TAMBAH
-            total_units: property.total_units || 0,            // ← TAMBAH
-            units_sold: property.units_sold || 0,              // ← TAMBAH
-            units_available: property.units_available || 0,    // ← TAMBAH
-            welcome_text: property.welcome_text || 'Selamat datang di PT FACHRI PROPERTY GROUP',  // ← TAMBAH
-            about_text: property.about_text || ''              // ← TAMBAH
+            total_blocks: property.total_blocks || 0,
+            total_units: property.total_units || 0,
+            units_sold: property.units_sold || 0,
+            units_available: property.units_available || 0,
+            welcome_text: property.welcome_text || '',
+            about_text: property.about_text || ''
         });
-        setPreviewMainImage(property.image || property.main_image);
+        
+        // SET preview image
+        setPreviewMainImage(property.main_image || property.image || null);
         setShowModal(true);
     };
 

@@ -3,84 +3,55 @@
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
 
 include_once '../config/database.php';
 
+$database = new Database();
+$db = $database->getConnection();
+
 try {
-    $database = new Database();
-    $db = $database->getConnection();
-    
-    if ($db === null) {
-        throw new Exception("Database connection failed");
-    }
-    
-    // Query untuk get semua properties
+    // Query untuk ambil SEMUA field dari database
     $query = "SELECT 
-                p.id,
-                p.title,
-                p.location,
-                p.type,
-                p.description,
-                p.main_image,
-                p.created_at,
-                p.updated_at
-              FROM properties p
-              ORDER BY p.created_at DESC";
+                id, title, location, map_embed_url, type, description,
+                total_blocks, total_units, units_sold, units_available,
+                welcome_text, about_text, main_image, created_at, updated_at
+              FROM properties 
+              ORDER BY id DESC";
     
     $stmt = $db->prepare($query);
     $stmt->execute();
-    
+
     $properties = [];
     
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // Get gallery images untuk setiap property
-        $gallery_query = "SELECT image_url FROM property_galleries WHERE property_id = :property_id ORDER BY created_at";
-        $gallery_stmt = $db->prepare($gallery_query);
-        $gallery_stmt->bindParam(':property_id', $row['id']);
-        $gallery_stmt->execute();
-        
-        $gallery_images = [];
-        while ($gallery_row = $gallery_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $gallery_images[] = $gallery_row['image_url'];
-        }
-        
-        $property = [
-            'id' => $row['id'],
+        $properties[] = [
+            'id' => (int)$row['id'],
             'title' => $row['title'],
             'location' => $row['location'],
+            'map_embed_url' => $row['map_embed_url'],
             'type' => $row['type'],
             'description' => $row['description'],
+            'total_blocks' => (int)$row['total_blocks'],
+            'total_units' => (int)$row['total_units'],
+            'units_sold' => (int)$row['units_sold'],
+            'units_available' => (int)$row['units_available'],
+            'welcome_text' => $row['welcome_text'],
+            'about_text' => $row['about_text'],
             'image' => $row['main_image'],
             'main_image' => $row['main_image'],
-            'gallery' => $gallery_images,
             'created_at' => $row['created_at'],
             'updated_at' => $row['updated_at']
         ];
-        
-        $properties[] = $property;
     }
-    
+
     http_response_code(200);
     echo json_encode($properties);
-    
+
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([
         "success" => false,
         "message" => "Database error: " . $e->getMessage()
-    ]);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        "success" => false,
-        "message" => $e->getMessage()
     ]);
 }
 ?>
