@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ContactUs.css';
-import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
+import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF, FaTiktok } from 'react-icons/fa';
 import contactBg from '../assets/images/Kantor.png';
 import heroBg from '../assets/images/homeempat.png';
 
@@ -96,6 +96,9 @@ const ContactUs = () => {
                         <a href="https://www.facebook.com/FachriiPropertyland/" target="_blank" rel="noopener noreferrer" className="social-icon">
                             <FaFacebookF />
                         </a>
+                        <a href="https://www.tiktok.com/FachriiPropertyland/" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <FaTiktok />
+                        </a>
                     </div>
                 </div>
 
@@ -168,14 +171,7 @@ const ContactUs = () => {
                     </div>
                 </div>
             </section>
-
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-bottom">
-                        <p>Copyright © 2025 Fachri Property Group</p>
-                    </div>
-                </div>
-            </footer>        </div>
+        </div>
     );
 };
 

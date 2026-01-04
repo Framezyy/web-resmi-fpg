@@ -6,13 +6,12 @@ import heroBg from '../assets/images/homedua.png';
 import visiImage from '../assets/images/Kantor.png';
 import ceoImage from '../assets/images/pahri.png';
 import leadershipBg from '../assets/images/leadershipBg.jpg';
-// Placeholder untuk gambar penghargaan - ganti dengan gambar asli
 import award1 from '../assets/images/penghargaansatu.jpeg';
 import award2 from '../assets/images/penghargaandua.jpeg';
 import award3 from '../assets/images/penghargaantiga.jpeg';
-// Placeholder untuk logo anak perusahaan - ganti dengan logo asli
 import logo1 from '../assets/images/anak2.png';
 import logo2 from '../assets/images/anak3.png';
+import logoHotampt from '../assets/images/logoitampt.png'; // ADD
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
@@ -253,7 +252,9 @@ const AboutUs = () => {
                     <div className="contact-content">
                         <div className="contact-info">
                             <div className="contact-logo-container">
-                                <div className="logo-box"></div>
+                                <div className="logo-box">
+                                    <img src={logoHotampt} alt="Fachri Property Group" />
+                                </div>
                                 <h3>FACHRI PROPERTY GROUP</h3>
                             </div>
                             <div className="address">
@@ -282,14 +283,6 @@ const AboutUs = () => {
                     </div>
                 </div>
             </section>
-
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-bottom">
-                        <p>Copyright © 2025 Fachri Property Group</p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };

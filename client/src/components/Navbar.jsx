@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
 import logoWhite from '../assets/images/logo-putih.png';
@@ -11,12 +11,10 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const isLandingPage = location.pathname === '/';
+    const [isContactActive, setIsContactActive] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
-        };
-
+        const handleScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -26,27 +24,73 @@ const Navbar = () => {
         setMobileMenuOpen(false);
     }, [location]);
 
+    // Aktif hanya saat TOP layar (setelah tinggi navbar) sudah masuk ke contact-section
+    useEffect(() => {
+        if (!isLandingPage) {
+            setIsContactActive(false);
+            return;
+        }
+
+        const contactEl = document.querySelector('#contact');
+        const navbarEl = document.querySelector('.navbar');
+
+        if (!contactEl) {
+            setIsContactActive(false);
+            return;
+        }
+
+        let ticking = false;
+
+        const compute = () => {
+            const navH = navbarEl ? navbarEl.getBoundingClientRect().height : 0;
+            const rect = contactEl.getBoundingClientRect();
+            const active = rect.top <= navH && rect.bottom > navH;
+            setIsContactActive(active);
+        };
+
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                compute();
+                ticking = false;
+            });
+        };
+
+        compute();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+        };
+    }, [isLandingPage]);
+
     const handleNavigation = (path) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setMobileMenuOpen(false);
-        setTimeout(() => {
-            navigate(path);
-        }, 300);
+        setTimeout(() => navigate(path), 300);
     };
 
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!mobileMenuOpen);
-    };
+    // Landing: saat contact aktif => pakai mode "scrolled" seperti page lain
+    const isForcedScrolled = isLandingPage && isContactActive;
+    const isScrolledMode = (!isLandingPage && scrolled) || isForcedScrolled;
+
+    const logoSrc = isScrolledMode ? logoColor : logoWhite;
 
     return (
-        <nav className={`navbar ${scrolled && !isLandingPage ? 'scrolled' : ''} ${isLandingPage ? 'navbar-transparent' : 'navbar-solid'} navbar-animate`}>
+        <header
+            className={[
+                'navbar',
+                isScrolledMode ? 'scrolled' : '',
+                isLandingPage ? 'navbar-transparent' : 'navbar-solid',
+                'navbar-animate'
+            ].join(' ')}
+        >
             <div className="navbar-container">
                 <Link to="/" className="nav-logo" onClick={() => setMobileMenuOpen(false)}>
-                    <img 
-                        src={(scrolled && !isLandingPage) ? logoColor : logoWhite} 
-                        alt="Fachri Property Group" 
-                        className="logo-image" 
-                    />
+                    <img src={logoSrc} alt="Fachri Property Group" className="logo-image" />
                 </Link>
 
                 {/* Hamburger Menu Button */}
@@ -115,7 +159,7 @@ const Navbar = () => {
                     <div className="navbar-overlay" onClick={() => setMobileMenuOpen(false)}></div>
                 )}
             </div>
-        </nav>
+        </header>
     );
 };
 

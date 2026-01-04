@@ -140,6 +140,18 @@
     color: #1a1a2e;
 }
 
+/* Pastikan teks menu (link + button) dan arrow jadi hitam saat scrolled */
+.navbar.scrolled .navbar-link,
+.navbar.scrolled .navbar-link-admin,
+.navbar.scrolled .dropdown-arrow{
+    color: #1a1a2e !important;
+}
+
+/* Untuk elemen button yang memakai class navbar-link */
+.navbar.scrolled button.navbar-link{
+    color: #1a1a2e !important;
+}
+
 .navbar-link:hover {
     color: #e74c3c;
     transform: translateY(-2px);
@@ -240,6 +252,32 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     z-index: 998;
+}
+
+/* Paksa navbar jadi hitam saat contact section terlihat */
+.navbar.navbar-contact-black{
+    background: rgba(255, 255, 255, 0.96) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+    padding: 15px 0; /* selaras dengan .navbar.scrolled */
+}
+
+/* Khusus desktop: menu/link jadi hitam */
+@media (min-width: 969px) {
+    .navbar.navbar-contact-black .navbar-link,
+    .navbar.navbar-contact-black .navbar-link-admin,
+    .navbar.navbar-contact-black .dropdown-arrow{
+        color: #111111 !important;
+    }
+
+    /* kalau ada button link (dropdown trigger) */
+    .navbar.navbar-contact-black button.navbar-link{
+        color: #111111 !important;
+    }
+
+    .navbar.navbar-contact-black .hamburger span{
+        background: #111111 !important;
+    }
 }
 
 /* Responsive Design */

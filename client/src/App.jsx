@@ -11,11 +11,13 @@ import SubsidiaryTwo from './components/SubsidiaryTwo';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import AdminForgotPassword from './components/AdminForgotPassword'; // ← Pastikan ada
+import Footer from './components/Footer'; // ADD
 import './styles/App.css';
 
 const App = () => {
     return (
         <Router>
+            <Navbar /> {/* Navbar ditampilkan di semua halaman */}
             <Routes>
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
@@ -23,14 +25,15 @@ const App = () => {
                 <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
                 
                 {/* Public Routes */}
-                <Route path="/" element={<><Navbar /><LandingPage /></>} />
-                <Route path="/home" element={<><Navbar /><Home /></>} />
-                <Route path="/about" element={<><Navbar /><AboutUs /></>} />
-                <Route path="/properties" element={<><Navbar /><Properties /></>} />
-                <Route path="/contact" element={<><Navbar /><ContactUs /></>} />
-                <Route path="/subsidiary/borneo-icon" element={<><Navbar /><SubsidiaryOne /></>} />
-                <Route path="/subsidiary/borneo-real-estate" element={<><Navbar /><SubsidiaryTwo /></>} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/contact" element={<ContactUs />} />
+                <Route path="/subsidiary/borneo-icon" element={<SubsidiaryOne />} />
+                <Route path="/subsidiary/borneo-real-estate" element={<SubsidiaryTwo />} />
             </Routes>
+            <Footer /> {/* ADD: tampil di semua page */}
         </Router>
     );
 };

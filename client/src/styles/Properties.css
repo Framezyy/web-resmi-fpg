@@ -65,9 +65,8 @@
 
 /* Filter Section */
 .properties-filter {
-    background: white;
+    background: #f8f9fa;
     padding: 40px 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     position: relative;
     z-index: 10;
 }
@@ -276,6 +275,215 @@
     color: #666;
 }
 
+/* ===== Rekapan Section (FULL 1 layar, center, cards besar, dropdown kanan atas) ===== */
+.properties-recap {
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.properties-recap .recap-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 110px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 110px; /* sebelumnya 44px -> tambah jarak bawah subtitle ke cards */
+}
+
+/* 2) title + info di tengah */
+.recap-center {
+    text-align: center;
+    max-width: 860px;
+}
+
+.recap-heading {
+    margin: 0 0 12px 0;
+    font-size: 36px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.recap-subheading {
+    margin: 0;
+    font-size: 16px;           /* membesar */
+    color: #555;
+    line-height: 1.6;
+}
+
+/* area kartu + dropdown */
+.recap-cards-area {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* dropdown lebih besar, posisi tetap */
+.recap-controls--inline {
+    position: absolute;
+    right: 0;
+    top: -66px;                /* sesuaikan karena komponen membesar */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 320px;          /* membesar */
+    align-items: flex-start;
+}
+
+.recap-controls-title {
+    font-size: 10px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #444;
+    text-transform: uppercase;
+}
+
+.recap-select--light {
+    height: 38px;              /* membesar */
+    width: 240px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    font-size: 13px;           /* membesar */
+    font-weight: 700;
+    color: #222;
+    outline: none;
+}
+
+.recap-select--light:focus {
+    border-color: #bdbdbd;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
+}
+
+/* 3) tiga card besar */
+.recap-cards {
+    display: flex;
+    gap: 28px;                 /* membesar */
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+}
+
+.recap-cards--big {
+    max-width: 1120px;         /* lebih lebar untuk 3 card besar */
+}
+
+.recap-stat-card {
+    background: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;       /* sedikit membesar */
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.10);
+}
+
+.recap-stat-card--big {
+    width: 370px;              /* membesar */
+    min-height: 210px;         /* membesar */
+    padding: 24px 26px;        /* membesar */
+    text-align: center;        /* angka (dan konten card) jadi center */
+}
+
+.recap-stat-label {
+    font-size: 12px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.recap-stat-value {
+    margin-top: 50px;          /* membesar */
+    font-size: 78px;           /* membesar */
+    font-weight: 900;
+    line-height: 1;
+    width: 100%;               /* pastikan center konsisten */
+}
+
+/* warna angka seperti figma */
+.recap-stat-value--red { color: #c4161c; }
+.recap-stat-value--dark { color: #222222; }
+.recap-stat-value--orange { color: #e58a00; }
+
+/* responsive: ikut membesar tapi tetap rapih */
+@media (max-width: 968px) {
+    .properties-recap .recap-container {
+        padding: 80px 20px;
+        gap: 26px;
+    }
+
+    .recap-controls--inline {
+        position: static;
+        width: 100%;
+        min-width: unset;
+        align-self: stretch;
+        margin-bottom: 14px;
+    }
+
+    .recap-heading { font-size: 30px; }
+    .recap-subheading { font-size: 15px; }
+
+    .recap-cards {
+        flex-direction: column;
+        gap: 18px;
+        max-width: 560px;
+    }
+
+    .recap-stat-card--big {
+        width: 100%;
+        min-height: 190px;
+    }
+
+    .recap-stat-value {
+        font-size: 70px;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .recap-shell {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .recap-right {
+        max-width: none;
+        margin-left: 0;
+    }
+
+    .recap-title {
+        font-size: 56px;
+    }
+
+    .recap-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .properties-recap {
+        min-height: auto;
+        padding: 64px 0;
+    }
+
+    .recap-title {
+        font-size: 40px;
+    }
+
+    .recap-value {
+        font-size: 38px;
+    }
+}
+
 /* Responsive */
 @media (max-width: 968px) {
     .properties-page .hero-overlay {
@@ -372,4 +580,72 @@
         padding: 8px 24px;
         font-size: 13px;
     }
+}
+
+/* ===== Partner Banner (center) ===== */
+.partner-banner {
+    background: #ffffff;
+    padding: 56px 0 70px;
+    margin-top: 70px; /* jarak dari list properti */
+    border-top: 1px solid #eeeeee;
+}
+
+.partner-banner .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.partner-banner h2 {
+    margin: 0 0 18px 0;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.partner-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.partner-logo img {
+    height: 46px;     /* ukuran logo, tetap proporsional */
+    width: auto;
+    display: block;
+    margin: 20px;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+    .partner-banner {
+        padding: 44px 0 56px;
+        margin-top: 50px;
+    }
+
+    .partner-logo img {
+        height: 40px;
+    }
+}
+
+.logo-box img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+/* Contact: hilangkan background kotak logo (jika ada) */
+.contact-section .logo-box {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.contact-section .logo-box img {
+    background: transparent;
 }

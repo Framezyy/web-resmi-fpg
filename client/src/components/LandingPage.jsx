@@ -5,6 +5,7 @@ import heroBgsatu from '../assets/images/homesatu.png';
 import heroBgdua from '../assets/images/homedua.png';
 import heroBgtiga from '../assets/images/hometiga.png';
 import heroBgempat from '../assets/images/homeempat.png';
+import logoHotampt from '../assets/images/logoitampt.png'; // ADD
 
 const LandingPage = () => {
     const navigate = useNavigate();
@@ -129,13 +130,15 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            <section className="contact-section">
+            <section id="contact" className="contact-section">
                 <div className="container">
                     <h2 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>GET IN TOUCH WITH US</h2>
                     <div className="contact-content">
                         <div className="contact-info animate-on-scroll" style={{ transitionDelay: '0.2s' }}>
                             <div className="contact-logo-container">
-                                <div className="logo-box"></div>
+                                <div className="logo-box">
+                                    <img src={logoHotampt} alt="Fachri Property Group" />
+                                </div>
                                 <h3>FACHRI PROPERTY GROUP</h3>
                             </div>
                             <div className="address">
@@ -164,14 +167,6 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-bottom">
-                        <p>Copyright © 2025 Fachri Property Group</p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };
