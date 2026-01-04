@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './ContactUs.css';
-import { FaPhone, FaFax, FaEnvelope, FaMapMarkerAlt, FaYoutube, FaInstagram, FaFacebookF, FaTiktok } from 'react-icons/fa';
+
+import {
+    FaPhone,
+    FaFax,
+    FaEnvelope,
+    FaMapMarkerAlt,
+    FaYoutube,
+    FaInstagram,
+    FaFacebookF,
+    FaTiktok, // ADD INI
+    FaCheckCircle
+} from 'react-icons/fa';
 import contactBg from '../assets/images/Kantor.png';
 import heroBg from '../assets/images/homeempat.png';
 
@@ -9,7 +20,10 @@ const ContactUs = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pesan, setPesan] = useState('');
-    const [success, setSuccess] = useState(false);
+    const [, setSuccess] = useState(false);
+    const [showToast, setShowToast] = useState(false); // ← TAMBAH INI
+
+    const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
     useEffect(() => {
         // Scroll to top when component mounts with smooth animation
@@ -18,25 +32,56 @@ const ContactUs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('/api/contact.php', {
+
+        const res = await fetch(`${API_URL}/contact-send.php`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ jenisPernyataan, name, email, pesan }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jenisPernyataan,
+                name,
+                email,
+                pesan
+            })
         });
 
-        if (response.ok) {
+        const json = await res.json();
+        if (json.success) {
             setSuccess(true);
+            setShowToast(true); // ← TAMPILKAN TOAST
+            
+            // RESET FORM - HAPUS DATA SETELAH SUKSES
             setJenisPernyataan('');
             setName('');
             setEmail('');
             setPesan('');
+            
+            // HILANGKAN TOAST SETELAH 4 DETIK
+            setTimeout(() => {
+                setShowToast(false);
+                setSuccess(false);
+            }, 4000);
+        } else {
+            setSuccess(false);
+            alert(json.message || 'Gagal mengirim pesan');
         }
     };
 
     return (
         <div className="contact-page">
+            {/* TOAST NOTIFICATION - TAMBAH INI */}
+            {showToast && (
+                <div className="toast-notification">
+                    <div className="toast-content">
+                        <FaCheckCircle className="toast-icon" />
+                        <div className="toast-text">
+                            <h4>Berhasil!</h4>
+                            <p>Pesan Anda telah dikirim ke admin</p>
+                        </div>
+                    </div>
+                    <div className="toast-progress"></div>
+                </div>
+            )}
+
             <section 
                 className="contact-hero"
                 style={{ 
@@ -104,7 +149,9 @@ const ContactUs = () => {
 
                 <div className="contact-form-section">
                     <h2>Hubungi Kami</h2>
+                    {/* HAPUS SUCCESS MESSAGE LAMA INI:
                     {success && <p className="success-message">Pesan Anda telah berhasil dikirim!</p>}
+                    */}
                     <form onSubmit={handleSubmit} className="contact-form">
                         <div className="form-group">
                             <label>Jenis Pertanyaan*</label>
