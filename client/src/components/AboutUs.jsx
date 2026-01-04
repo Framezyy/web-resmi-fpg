@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './AboutUs.css';
@@ -11,12 +11,14 @@ import award2 from '../assets/images/penghargaandua.jpeg';
 import award3 from '../assets/images/penghargaantiga.jpeg';
 import logo1 from '../assets/images/anak2.png';
 import logo2 from '../assets/images/anak3.png';
-import logoHotampt from '../assets/images/logoitampt.png'; // ADD
+import logoHotampt from '../assets/images/logoitampt.png'; // FIX: arahkan ke gambar yang kamu berikan
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const AboutUs = () => {
     const location = useLocation();
+    const tabsRef = useRef(null);
+
     const [activeTab, setActiveTab] = useState('vision');
     const [currentAward, setCurrentAward] = useState(0);
     const [awards, setAwards] = useState([]);
@@ -43,33 +45,29 @@ const AboutUs = () => {
         }
     };
 
-    // Baca URL parameter saat komponen dimuat
+    // Baca URL parameter saat komponen dimuat / berubah
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const tab = params.get('tab');
-        const section = params.get('section');
-        
-        if (tab && ['vision', 'mission', 'history'].includes(tab)) {
+        const scroll = params.get('scroll');
+
+        if (tab === 'vision' || tab === 'mission' || tab === 'history') {
             setActiveTab(tab);
-            
-            // Scroll ke section tabs dengan animasi smooth
+        }
+
+        // scroll hanya saat datang dari navbar (scroll=tabs)
+        if (scroll === 'tabs') {
             setTimeout(() => {
-                const tabsSection = document.querySelector('.about-tabs');
-                if (tabsSection) {
-                    tabsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        } else if (section) {
-            // Scroll ke section tertentu (leadership, awards, subsidiaries) dengan animasi smooth
-            setTimeout(() => {
-                const targetSection = document.querySelector(`.${section}-section, #${section}`);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-        } else {
-            // Jika tidak ada parameter, scroll to top dengan animasi smooth
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                const el = tabsRef.current;
+                if (!el) return;
+
+                const navbarEl = document.querySelector('.navbar');
+                const navH = navbarEl ? navbarEl.getBoundingClientRect().height : 0;
+
+                // berhenti tepat di bawah navbar
+                const y = el.getBoundingClientRect().top + window.scrollY - navH - -150;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }, 0);
         }
     }, [location]);
 
@@ -111,7 +109,7 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            <section className="about-tabs">
+            <section className="about-tabs" ref={tabsRef}>
                 <div className="container">
                     <div className="tabs-header">
                         <button 

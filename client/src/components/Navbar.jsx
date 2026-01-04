@@ -112,7 +112,7 @@ const Navbar = () => {
                         {showAboutSubmenu && (
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link to="/about?tab=history">
+                                    <Link to="/about?tab=history&scroll=tabs">
                                         <span className="dropdown-icon"></span>
                                         Sejarah Perusahaan
                                     </Link>

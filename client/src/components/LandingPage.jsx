@@ -81,7 +81,7 @@ const LandingPage = () => {
                     <button 
                         className="btn-outline animate-on-scroll" 
                         style={{ transitionDelay: '0.5s' }}
-                        onClick={() => handleNavigate('/about?tab=vision')}
+                        onClick={() => handleNavigate('/about?tab=vision&scroll=tabs')}
                     >
                         TEMUKAN LEBIH
                     </button>

@@ -156,7 +156,7 @@
 }
 
 .history-text p {
-    font-size: 11px;
+    font-size: 9.5px; /* sebelumnya 11px */
     line-height: 1.6;
     text-align: justify;
     margin: 0px;
@@ -541,6 +541,13 @@
     max-width: 250px;
     max-height: 150px;
     object-fit: contain;
+}
+
+/* FORCE: kecilkan font khusus tab "history" (lebih spesifik dari .vision-text p) */
+.about-tabs .tabs-content .vision-text.history-text,
+.about-tabs .tabs-content .vision-text.history-text p{
+    font-size: 13px !important;
+    line-height: 1.6 !important;
 }
 
 @media (max-width: 768px) {

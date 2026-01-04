@@ -2,6 +2,7 @@
 header("Content-Type: application/json");
 
 require_once 'config/database.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // Simple routing
 $request_uri = $_SERVER['REQUEST_URI'];
