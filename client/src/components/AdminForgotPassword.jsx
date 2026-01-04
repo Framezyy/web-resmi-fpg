@@ -1,99 +1,241 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/AdminForgotPassword.css';
+import logoColor from '../assets/images/logo.png';
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const AdminForgotPassword = () => {
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
+    
+    // Form states
     const [email, setEmail] = useState('');
-    const [userId, setUserId] = useState(null);
-    const [securityQuestion, setSecurityQuestion] = useState('');
-    const [securityAnswer, setSecurityAnswer] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [resetToken, setResetToken] = useState('');
+    
+    // UI states
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    
+    // Timer states
+    const [otpTimer, setOtpTimer] = useState(600);
+    const [resendTimer, setResendTimer] = useState(120);
+    const [canResend, setCanResend] = useState(false);
+    const [sessionTimer, setSessionTimer] = useState(1800); // ← UBAH: 30 menit = 1800 detik
 
-    // Step 1: Verify Email
-    const handleVerifyEmail = async (e) => {
+    // OTP Timer countdown
+    useEffect(() => {
+        if (currentStep === 2 && otpTimer > 0) {
+            const timer = setInterval(() => {
+                setOtpTimer(prev => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [currentStep, otpTimer]);
+
+    // Resend Timer countdown
+    useEffect(() => {
+        if (currentStep === 2 && resendTimer > 0) {
+            const timer = setInterval(() => {
+                setResendTimer(prev => {
+                    if (prev <= 1) {
+                        setCanResend(true);
+                        clearInterval(timer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [currentStep, resendTimer]);
+
+    // ← TAMBAH: Session Timer countdown
+    useEffect(() => {
+        if (currentStep === 3 && sessionTimer > 0) {
+            const timer = setInterval(() => {
+                setSessionTimer(prev => {
+                    if (prev <= 1) {
+                        setError('Session expired. Please start over.');
+                        clearInterval(timer);
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        }
+    }, [currentStep, sessionTimer]);
+
+    // Format time display
+    const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    // STEP 1: Send OTP
+    const handleSendOTP = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_URL}/admin-verify-email.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email })
-            });
+            const response = await axios.post(`${API_URL}/admin-send-otp.php`, { email });
 
-            const data = await response.json();
-
-            if (data.success) {
-                setUserId(data.user_id);
-                setSecurityQuestion(data.security_question);
+            if (response.data.success) {
                 setCurrentStep(2);
-                setSuccess('Email found! Please answer your security question.');
-                setTimeout(() => setSuccess(''), 3000);
-            } else {
-                setError(data.message || 'Email not found');
+                setOtpTimer(600);
+                setResendTimer(120);
+                setCanResend(false);
             }
         } catch (err) {
-            setError('Connection error. Please check your server.');
-            console.error('Error:', err);
+            setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Step 2: Verify Security Answer
-    const handleVerifyAnswer = async (e) => {
+    // Handle OTP input (auto-focus next box)
+    const handleOtpChange = (index, value) => {
+        value = value.trim();
+        
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value;
+        setOtp(newOtp);
+
+        if (value && index < 5) {
+            document.getElementById(`otp-${index + 1}`).focus();
+        }
+    };
+
+    // Handle OTP paste
+    const handleOtpPaste = (e) => {
+        e.preventDefault();
+        const pastedData = e.clipboardData.getData('text').trim();
+        
+        if (/^\d{6}$/.test(pastedData)) {
+            const newOtp = pastedData.split('');
+            setOtp(newOtp);
+            document.getElementById('otp-5').focus();
+        }
+    };
+
+    // Handle backspace on OTP
+    const handleOtpKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            document.getElementById(`otp-${index - 1}`).focus();
+        }
+    };
+
+    // STEP 2: Verify OTP
+    const handleVerifyOTP = async (e) => {
         e.preventDefault();
         setError('');
+
+        const otpString = otp.map(digit => digit.trim()).join('');
+        
+        if (otpString.length !== 6) {
+            setError('Please enter complete 6-digit OTP');
+            return;
+        }
+
+        if (otpTimer === 0) {
+            setError('OTP has expired. Please request a new one.');
+            return;
+        }
+
         setLoading(true);
 
+        console.log('Verifying OTP:', {
+            email,
+            otp: otpString,
+            timer: otpTimer
+        });
+
         try {
-            const response = await fetch(`${API_URL}/admin-verify-security.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    user_id: userId,
-                    security_answer: securityAnswer 
-                })
+            const response = await axios.post(`${API_URL}/admin-verify-otp.php`, {
+                email,
+                otp: otpString
             });
 
-            const data = await response.json();
+            console.log('Verify response:', response.data);
 
-            if (data.success) {
+            if (response.data.success) {
+                setResetToken(response.data.reset_token);
+                setSessionTimer(response.data.expires_in || 1800); // ← UBAH: Default 30 menit
+                console.log('Session expires at:', response.data.expires_at); // ← TAMBAH LOG
                 setCurrentStep(3);
-                setSuccess('Security answer correct! Set your new password.');
-                setTimeout(() => setSuccess(''), 3000);
-            } else {
-                setError(data.message || 'Incorrect security answer');
             }
         } catch (err) {
-            setError('Connection error. Please check your server.');
-            console.error('Error:', err);
+            console.error('Verify error:', err.response?.data);
+            setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Step 3: Reset Password
+    // Resend OTP
+    const handleResendOTP = async () => {
+        if (!canResend) return;
+
+        setError('');
+        setLoading(true);
+        setOtp(['', '', '', '', '', '']);
+
+        try {
+            const response = await axios.post(`${API_URL}/admin-send-otp.php`, { email });
+
+            if (response.data.success) {
+                setOtpTimer(600);
+                setResendTimer(120);
+                setCanResend(false);
+                alert('New OTP has been sent to your email');
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to resend OTP');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // STEP 3: Reset Password
     const handleResetPassword = async (e) => {
         e.preventDefault();
         setError('');
 
-        // Validation
-        if (!newPassword || !confirmPassword) {
-            setError('Please fill in all fields');
+        // Cek session masih valid
+        if (sessionTimer === 0) {
+            setError('Session expired. Please start over.');
+            setTimeout(() => {
+                setCurrentStep(1);
+                setEmail('');
+                setOtp(['', '', '', '', '', '']);
+                setNewPassword('');
+                setConfirmPassword('');
+                setResetToken('');
+            }, 2000);
+            return;
+        }
+
+        if (!resetToken) {
+            setError('Invalid or expired reset session. Please request a new OTP.');
             return;
         }
 
@@ -110,180 +252,284 @@ const AdminForgotPassword = () => {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_URL}/admin-reset-password.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    user_id: userId,
-                    new_password: newPassword 
-                })
+            const response = await axios.post(`${API_URL}/admin-reset-password.php`, {
+                reset_token: resetToken, // ✅ FIX: kirim session reset token dari verify OTP
+                new_password: newPassword,
+                confirm_password: confirmPassword
             });
 
-            const data = await response.json();
+            if (response.data.success) {
+                setSuccess(true);
+                setSuccessMessage(response.data.message);
 
-            if (data.success) {
-                setSuccess('✅ Password reset successfully! Redirecting to login...');
                 setTimeout(() => {
                     navigate('/admin/login');
-                }, 2000);
-            } else {
-                setError(data.message || 'Failed to reset password');
+                }, 3000);
             }
         } catch (err) {
-            setError('Connection error. Please check your server.');
-            console.error('Error:', err);
+            console.error('Reset error:', err.response?.data);
+            setError(err.response?.data?.message || 'Failed to reset password');
         } finally {
             setLoading(false);
         }
     };
+
+    // Password strength indicator
+    const getPasswordStrength = (password) => {
+        if (!password) return { strength: 0, label: '', color: '' };
+        
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+        const levels = [
+            { strength: 0, label: '', color: '' },
+            { strength: 1, label: 'Weak', color: '#dc3545' },
+            { strength: 2, label: 'Fair', color: '#ffc107' },
+            { strength: 3, label: 'Good', color: '#17a2b8' },
+            { strength: 4, label: 'Strong', color: '#28a745' }
+        ];
+
+        return levels[strength];
+    };
+
+    const passwordStrength = getPasswordStrength(newPassword);
 
     return (
         <div className="forgot-password-page">
             <div className="forgot-container">
                 <div className="forgot-card">
                     <div className="forgot-logo">
-                        <div style={{
-                            width: '60px',
-                            height: '60px',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            borderRadius: '10px',
-                            margin: '0 auto'
-                        }}></div>
+                        <img src={logoColor} alt="Fachri Property Group" />
                     </div>
-                    
+
                     <h2>Reset Password</h2>
-                    <p className="forgot-subtitle">Follow the steps to reset your admin password</p>
+                    <p className="forgot-subtitle">
+                        {currentStep === 1 && 'Enter your email to receive OTP'}
+                        {currentStep === 2 && 'Enter 6-digit OTP sent to your email'}
+                        {currentStep === 3 && 'Create your new password'}
+                    </p>
 
                     {/* Progress Steps */}
                     <div className="progress-steps">
                         <div className={`progress-step ${currentStep >= 1 ? 'active' : ''}`}>
                             <div className="step-number">1</div>
-                            <span className="step-label">Email</span>
+                            <span>Email</span>
                         </div>
-                        <div className={`progress-line ${currentStep >= 2 ? 'active' : ''}`}></div>
                         <div className={`progress-step ${currentStep >= 2 ? 'active' : ''}`}>
                             <div className="step-number">2</div>
-                            <span className="step-label">Security</span>
+                            <span>Verify OTP</span>
                         </div>
-                        <div className={`progress-line ${currentStep >= 3 ? 'active' : ''}`}></div>
                         <div className={`progress-step ${currentStep >= 3 ? 'active' : ''}`}>
                             <div className="step-number">3</div>
-                            <span className="step-label">New Password</span>
+                            <span>New Password</span>
                         </div>
                     </div>
 
-                    {/* Error Message */}
                     {error && (
                         <div className="error-message">
-                            ❌ {error}
+                            <span>⚠️</span> {error}
                         </div>
                     )}
-
-                    {/* Success Message */}
                     {success && (
                         <div className="success-message">
-                            {success}
+                            <span>✅</span> {successMessage}
                         </div>
                     )}
 
-                    {/* Step 1: Email Verification */}
+                    {/* STEP 1: Email Input */}
                     {currentStep === 1 && (
-                        <form onSubmit={handleVerifyEmail}>
+                        <form onSubmit={handleSendOTP}>
                             <div className="form-group">
-                                <label>📧 Email Address</label>
+                                <label>Email Address</label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@fachripropertygroup.com"
+                                    placeholder="admin@example.com"
                                     required
                                     disabled={loading}
                                 />
                             </div>
-                            <button type="submit" className="reset-btn" disabled={loading}>
-                                {loading ? '⏳ Verifying...' : '🔍 Verify Email'}
+
+                            <button type="submit" className="btn-submit" disabled={loading}>
+                                {loading ? 'Sending...' : 'Send OTP'}
                             </button>
+
+                            <div className="back-to-login">
+                                <button type="button" onClick={() => navigate('/admin/login')}>
+                                    ← Back to Login
+                                </button>
+                            </div>
                         </form>
                     )}
 
-                    {/* Step 2: Security Question */}
+                    {/* STEP 2: OTP Verification */}
                     {currentStep === 2 && (
-                        <form onSubmit={handleVerifyAnswer}>
-                            <div className="security-question-box">
-                                <p className="security-question">{securityQuestion}</p>
+                        <form onSubmit={handleVerifyOTP}>
+                            <div className="otp-info">
+                                <p>OTP sent to: <strong>{email}</strong></p>
+                                <button 
+                                    type="button" 
+                                    className="btn-change-email"
+                                    onClick={() => {
+                                        setCurrentStep(1);
+                                        setOtp(['', '', '', '', '', '']);
+                                    }}
+                                >
+                                    Change Email
+                                </button>
                             </div>
-                            <div className="form-group">
-                                <label>🔐 Security Answer</label>
-                                <input
-                                    type="text"
-                                    value={securityAnswer}
-                                    onChange={(e) => setSecurityAnswer(e.target.value)}
-                                    placeholder="Enter your answer"
-                                    required
-                                    disabled={loading}
-                                />
+
+                            <div className="otp-container">
+                                {otp.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        id={`otp-${index}`}
+                                        type="text"
+                                        maxLength="1"
+                                        value={digit}
+                                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                                        onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                        onPaste={index === 0 ? handleOtpPaste : undefined}
+                                        className="otp-input"
+                                        disabled={loading || otpTimer === 0}
+                                    />
+                                ))}
                             </div>
-                            <button type="submit" className="reset-btn" disabled={loading}>
-                                {loading ? '⏳ Verifying...' : '✅ Verify Answer'}
-                            </button>
+
+                            <div className="timer-info">
+                                {otpTimer > 0 ? (
+                                    <p className="expires-in">
+                                        Code expires in: <strong>{formatTime(otpTimer)}</strong>
+                                    </p>
+                                ) : (
+                                    <p className="expired">OTP has expired</p>
+                                )}
+                            </div>
+
                             <button 
-                                type="button" 
-                                className="back-btn" 
-                                onClick={() => setCurrentStep(1)}
-                                disabled={loading}
+                                type="submit" 
+                                className="btn-submit" 
+                                disabled={loading || otpTimer === 0}
                             >
-                                ← Back to Email
+                                {loading ? 'Verifying...' : 'Verify OTP'}
                             </button>
+
+                            <div className="resend-section">
+                                {canResend ? (
+                                    <button 
+                                        type="button" 
+                                        className="btn-resend"
+                                        onClick={handleResendOTP}
+                                        disabled={loading}
+                                    >
+                                        Resend OTP
+                                    </button>
+                                ) : (
+                                    <p className="resend-timer">
+                                        Resend available in: <strong>{formatTime(resendTimer)}</strong>
+                                    </p>
+                                )}
+                            </div>
                         </form>
                     )}
 
-                    {/* Step 3: New Password */}
+                    {/* STEP 3: New Password */}
                     {currentStep === 3 && (
                         <form onSubmit={handleResetPassword}>
+                            {/* ← TAMBAH: Session timer warning */}
+                            {sessionTimer > 0 && sessionTimer <= 300 && (
+                                <div className="session-warning">
+                                    ⏰ Session expires in: <strong>{formatTime(sessionTimer)}</strong>
+                                </div>
+                            )}
+
                             <div className="form-group">
-                                <label>🔑 New Password</label>
-                                <input
-                                    type="password"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    placeholder="Minimum 8 characters"
-                                    required
-                                    disabled={loading}
-                                    minLength="8"
-                                />
+                                <label>New Password</label>
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="Enter new password"
+                                        required
+                                        disabled={loading || sessionTimer === 0}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="toggle-password"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? '👁️' : '👁️‍🗨️'}
+                                    </button>
+                                </div>
+                                
+                                {newPassword && (
+                                    <div className="password-strength">
+                                        <div className="strength-bar">
+                                            <div 
+                                                className="strength-fill" 
+                                                style={{ 
+                                                    width: `${(passwordStrength.strength / 4) * 100}%`,
+                                                    backgroundColor: passwordStrength.color
+                                                }}
+                                            />
+                                        </div>
+                                        <span style={{ color: passwordStrength.color }}>
+                                            {passwordStrength.label}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
+
                             <div className="form-group">
-                                <label>🔑 Confirm Password</label>
-                                <input
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    placeholder="Re-enter password"
-                                    required
-                                    disabled={loading}
-                                    minLength="8"
-                                />
+                                <label>Confirm Password</label>
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Confirm new password"
+                                        required
+                                        disabled={loading || sessionTimer === 0}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="toggle-password"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    >
+                                        {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                                    </button>
+                                </div>
                             </div>
-                            <button type="submit" className="reset-btn" disabled={loading}>
-                                {loading ? '⏳ Resetting...' : '🔓 Reset Password'}
-                            </button>
+
+                            <div className="password-requirements">
+                                <p>Password must contain:</p>
+                                <ul>
+                                    <li className={newPassword.length >= 8 ? 'met' : ''}>
+                                        ✓ At least 8 characters
+                                    </li>
+                                    <li className={/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? 'met' : ''}>
+                                        ✓ Uppercase & lowercase letters
+                                    </li>
+                                    <li className={/\d/.test(newPassword) ? 'met' : ''}>
+                                        ✓ At least one number
+                                    </li>
+                                </ul>
+                            </div>
+
                             <button 
-                                type="button" 
-                                className="back-btn" 
-                                onClick={() => setCurrentStep(2)}
-                                disabled={loading}
+                                type="submit" 
+                                className="btn-submit" 
+                                disabled={loading || sessionTimer === 0}
                             >
-                                ← Back to Security
+                                {loading ? 'Resetting...' : 'Reset Password'}
                             </button>
                         </form>
                     )}
-
-                    {/* Footer */}
-                    <div className="forgot-footer">
-                        <a href="/admin/login">← Back to Login</a>
-                    </div>
                 </div>
             </div>
         </div>
