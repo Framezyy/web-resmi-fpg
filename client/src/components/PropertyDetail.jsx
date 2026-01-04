@@ -53,7 +53,7 @@ const PropertyDetail = ({ property, onClose }) => {
             `Tipe: ${data.type}\n\n` +
             `Mohon informasi lebih lanjut. Terima kasih.`
         );
-        window.open(`https://wa.me/6281234567890?text=${message}`, '_blank');
+        window.open(`https://wa.me/6282298990669?text=${message}`, '_blank');
     };
 
     if (loading) {
@@ -245,7 +245,7 @@ const PropertyDetail = ({ property, onClose }) => {
 
                             <div className="contact-detail">
                                 <h4>📞 Telepon</h4>
-                                <p>+62 812-3456-7890</p>
+                                <p>+62 822-9899-0669</p>
                             </div>
 
                             <div className="contact-detail">
