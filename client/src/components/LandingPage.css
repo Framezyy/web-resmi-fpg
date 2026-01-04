@@ -253,3 +253,39 @@
         font-size: 16px;
     }
 }
+
+/* ===== Scroll Animation (Enhanced - LandingPage only) ===== */
+@media (prefers-reduced-motion: reduce) {
+    .landing-page .animate-on-scroll,
+    .landing-page .animate-on-scroll.animate-in {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+}
+
+.landing-page .animate-on-scroll {
+    opacity: 0;
+    transform: translate3d(var(--anim-x, 0px), var(--anim-y, 28px), 0) scale(var(--anim-scale, 1));
+    filter: blur(var(--anim-blur, 0px));
+    transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform, filter;
+}
+
+.landing-page .animate-on-scroll.animate-in {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+}
+
+/* Variants via data-anim */
+.landing-page [data-anim="up"]    { --anim-x: 0px;  --anim-y: 28px;  }
+.landing-page [data-anim="down"]  { --anim-x: 0px;  --anim-y: -28px; }
+.landing-page [data-anim="left"]  { --anim-x: -36px;--anim-y: 0px;   }
+.landing-page [data-anim="right"] { --anim-x: 36px; --anim-y: 0px;   }
+.landing-page [data-anim="zoom"]  { --anim-x: 0px;  --anim-y: 16px;  --anim-scale: 0.96; }
+.landing-page [data-anim="blur"]  { --anim-x: 0px;  --anim-y: 18px;  --anim-blur: 6px;   }

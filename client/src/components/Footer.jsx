@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="footer-social">
                     <a
                         className="footer-social-link"
-                        href="https://facebook.com/"
+                        href="https://www.facebook.com/FachriiPropertyland/"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Facebook"
@@ -20,7 +20,7 @@ const Footer = () => {
 
                     <a
                         className="footer-social-link"
-                        href="https://instagram.com/"
+                        href="https://www.instagram.com/pt.fachri.property.land?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Instagram"
@@ -31,7 +31,7 @@ const Footer = () => {
 
                     <a
                         className="footer-social-link"
-                        href="https://tiktok.com/"
+                        href="https://www.tiktok.com/@fachri.propertigroup"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="TikTok"

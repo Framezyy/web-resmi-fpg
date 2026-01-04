@@ -73,11 +73,31 @@ const Navbar = () => {
         setTimeout(() => navigate(path), 300);
     };
 
+    // ADD: khusus saat sedang di Landing (/) atau About (/about), klik logo/beranda/tentang => scroll to top
+    const handleTopNavClick = (e, path) => {
+        const isLandingOrAbout = location.pathname === '/' || location.pathname === '/about';
+
+        // hanya berlaku untuk 2 page ini sesuai permintaan
+        if (isLandingOrAbout) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        setMobileMenuOpen(false);
+
+        // kalau route berbeda, lakukan navigate manual (biar scroll keburu jalan dan konsisten)
+        if (location.pathname !== path) {
+            e.preventDefault();
+            setTimeout(() => navigate(path), isLandingOrAbout ? 150 : 0);
+        }
+        // kalau route sama, biarkan (tidak navigate), hanya scroll top
+    };
+
     // Landing: saat contact aktif => pakai mode "scrolled" seperti page lain
     const isForcedScrolled = isLandingPage && isContactActive;
     const isScrolledMode = (!isLandingPage && scrolled) || isForcedScrolled;
 
     const logoSrc = isScrolledMode ? logoColor : logoWhite;
+    const fromNavbarState = location.pathname === '/about' ? null : { fromNavbar: true };
 
     return (
         <header
@@ -89,7 +109,11 @@ const Navbar = () => {
             ].join(' ')}
         >
             <div className="navbar-container">
-                <Link to="/" className="nav-logo" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                    to="/"
+                    className="nav-logo"
+                    onClick={(e) => handleTopNavClick(e, '/')}
+                >
                     <img src={logoSrc} alt="Fachri Property Group" className="logo-image" />
                 </Link>
 
@@ -98,39 +122,62 @@ const Navbar = () => {
 
                 <ul className={`navbar-menu ${mobileMenuOpen ? 'active' : ''}`}>
                     <li className="navbar-item">
-                        <Link to="/" className="navbar-link">BERANDA</Link>
+                        <Link
+                            to="/"
+                            className="navbar-link"
+                            onClick={(e) => handleTopNavClick(e, '/')}
+                        >
+                            BERANDA
+                        </Link>
                     </li>
-                    
-                    <li 
+
+                    <li
                         className="navbar-item navbar-dropdown"
                         onMouseEnter={() => setShowAboutSubmenu(true)}
                         onMouseLeave={() => setShowAboutSubmenu(false)}
                     >
-                        <Link to="/about" className="navbar-link">
+                        <Link
+                            to="/about"
+                            className="navbar-link"
+                            onClick={(e) => handleTopNavClick(e, '/about')}
+                        >
                             TENTANG <span className="dropdown-arrow">▼</span>
                         </Link>
+
                         {showAboutSubmenu && (
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link to="/about?tab=history&scroll=tabs&offset=160">
+                                    <Link
+                                        to="/about?tab=history&scroll=tabs&offset=160"
+                                        state={fromNavbarState}
+                                    >
                                         <span className="dropdown-icon"></span>
                                         Sejarah Perusahaan
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=leadership&offset=160">
+                                    <Link
+                                        to="/about?section=leadership&offset=160"
+                                        state={fromNavbarState}
+                                    >
                                         <span className="dropdown-icon"></span>
                                         Manajemen
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=awards&offset=250">
+                                    <Link
+                                        to="/about?section=awards&offset=250"
+                                        state={fromNavbarState}
+                                    >
                                         <span className="dropdown-icon"></span>
                                         Penghargaan
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=subsidiaries&offset=60">
+                                    <Link
+                                        to="/about?section=subsidiaries&offset=60"
+                                        state={fromNavbarState}
+                                    >
                                         <span className="dropdown-icon"></span>
                                         Anak Perusahaan
                                     </Link>
@@ -150,8 +197,6 @@ const Navbar = () => {
                             HUBUNGI KAMI
                         </button>
                     </li>
-
-                    {/* ADMIN LINK DIHAPUS - Akses langsung via URL saja */}
                 </ul>
 
                 {/* Overlay untuk mobile menu */}

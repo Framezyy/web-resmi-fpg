@@ -119,14 +119,6 @@ const SubsidiaryTwo = () => {
                     ></iframe>
                 </div>
             </section>
-
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-bottom">
-                        <p>Copyright © 2025 Borneo Real Estate - PT Fachri Property Group</p>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };

@@ -649,3 +649,328 @@
 .contact-section .logo-box img {
     background: transparent;
 }
+
+/* =========================
+   Properties Page Entrance Animations (scoped)
+   Tidak mengubah layout (transform + opacity saja)
+   ========================= */
+.properties-page [data-animate] {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+        opacity 650ms ease,
+        transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.properties-page [data-animate].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Variants */
+.properties-page [data-animate="fade-up"] {
+    transform: translate3d(0, 18px, 0);
+}
+
+.properties-page [data-animate="fade-right"] {
+    transform: translate3d(-18px, 0, 0);
+}
+
+.properties-page [data-animate="fade-left"] {
+    transform: translate3d(18px, 0, 0);
+}
+
+.properties-page [data-animate="zoom-in"] {
+    transform: scale(0.96);
+}
+
+.properties-page [data-animate="zoom-in"].is-visible {
+    transform: scale(1);
+}
+
+/* “Rise” = sedikit lebih premium untuk card angka */
+.properties-page [data-animate="rise"] {
+    transform: translate3d(0, 24px, 0) scale(0.985);
+}
+
+.properties-page [data-animate="rise"].is-visible {
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page [data-animate] {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* =========================================
+   Hover Effects (scoped - Properties page only)
+   Tidak mengubah layout: hanya transform/shadow
+   ========================================= */
+
+/* 1) Card Rekapan: lift + soft glow */
+.properties-page .recap-stat-card {
+    transition: transform 50ms ease, box-shadow 50ms ease, border-color 50ms ease;
+    will-change: transform, box-shadow;
+}
+
+.properties-page .recap-stat-card:hover {
+    transform: translate3d(0, -6px, 0);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.14);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* 2) Filter input/select: focus/hover feel lebih premium */
+.properties-page .filter-input,
+.properties-page .filter-select {
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.properties-page .filter-input:hover,
+.properties-page .filter-select:hover {
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+    transform: translate3d(0, -1px, 0);
+}
+
+/* 3) List item properti: lift + shadow + image micro-zoom */
+.properties-page .property-horizontal-item {
+    transition: transform 260ms ease, box-shadow 260ms ease;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.10); /* menyamai rasa card wrapper yg kamu punya */
+    will-change: transform, box-shadow;
+}
+
+.properties-page .property-horizontal-item:hover {
+    transform: translate3d(0, -6px, 0);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+}
+
+/* image zoom halus (tidak mengubah ukuran container) */
+.properties-page .property-horizontal-item .property-image-box img {
+    transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+
+.properties-page .property-horizontal-item:hover .property-image-box img {
+    transform: scale(1.06);
+}
+
+/* 4) Tombol detail: underline slide + sedikit lift */
+.properties-page .detail-link-btn {
+    position: relative;
+    transition: transform 220ms ease, background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.properties-page .detail-link-btn::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 8px;
+    height: 2px;
+    background: currentColor;
+    opacity: 0;
+    transform: scaleX(0.2);
+    transform-origin: center;
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.properties-page .detail-link-btn:hover {
+    transform: translate3d(0, -2px, 0);
+}
+
+.properties-page .detail-link-btn:hover::after {
+    opacity: 0.45;
+    transform: scaleX(1);
+}
+
+/* 5) Partner logo: pop-in + soft shadow */
+.properties-page .partner-logo img {
+    transition: transform 220ms ease, filter 220ms ease;
+    will-change: transform;
+}
+
+.properties-page .partner-logo img:hover {
+    transform: translate3d(0, -3px, 0) scale(1.04);
+    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.12));
+}
+
+/* 6) Contact section di Properties: hover halus pada kotak info & map (jika ada box-shadow dari CSS lain) */
+.properties-page .contact-section .contact-info,
+.properties-page .contact-section .contact-map {
+    transition: transform 240ms ease, box-shadow 240ms ease;
+    will-change: transform, box-shadow;
+}
+
+.properties-page .contact-section .contact-info:hover,
+.properties-page .contact-section .contact-map:hover {
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* OVERRIDE: hilangkan hover animasi pada Contact Info (Properties page) */
+.properties-page .contact-section .contact-info {
+    transition: none !important;
+    will-change: auto !important;
+}
+
+.properties-page .contact-section .contact-info:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+/* OVERRIDE: hilangkan hover animasi pada Contact Info (Properties page) */
+.properties-page .contact-section .contact-map {
+    transition: none !important;
+    will-change: auto !important;
+}
+
+.properties-page .contact-section .contact-map:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Accessibility: kurangi motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-stat-card,
+    .properties-page .filter-input,
+    .properties-page .filter-select,
+    .properties-page .property-horizontal-item,
+    .properties-page .property-horizontal-item .property-image-box img,
+    .properties-page .detail-link-btn,
+    .properties-page .partner-logo img,
+    .properties-page .contact-section .contact-info,
+    .properties-page .contact-section .contact-map {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* ================================
+   Recap Select: refine (no lift, only effects)
+   HANYA untuk recap-select, tidak mengubah yang lain
+   ================================ */
+
+/* Matikan hover "wrapper" (label pilih perusahaan) agar tidak ikut efek */
+.properties-page .recap-controls--inline,
+.properties-page .recap-controls--inline:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Select: hover halus tanpa timbul (tanpa translate) */
+.properties-page .recap-select,
+.properties-page .recap-select--light {
+    transition:
+        border-color 180ms ease,
+        background-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 120ms ease;
+    will-change: box-shadow, border-color, background-color, transform;
+}
+
+.properties-page .recap-select:hover,
+.properties-page .recap-select--light:hover {
+    border-color: rgba(0, 0, 0, 0.22);
+    background-color: rgba(0, 0, 0, 0.01);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06); /* tetap halus, bukan timbul */
+    transform: none; /* pastikan tidak ada efek angkat */
+}
+
+/* Animasi "press" saat dropdown ditekan */
+.properties-page .recap-select:active,
+.properties-page .recap-select--light:active {
+    transform: scale(0.985); /* press kecil, bukan timbul */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Animasi saat klik/open (biasanya select jadi focus) */
+@keyframes recapSelectPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 150, 180, 0.22); }
+    100% { box-shadow: 0 0 0 6px rgba(0, 150, 180, 0.00); }
+}
+
+.properties-page .recap-select:focus,
+.properties-page .recap-select:focus-visible,
+.properties-page .recap-select--light:focus,
+.properties-page .recap-select--light:focus-visible {
+    outline: none;
+    border-color: rgba(0, 150, 180, 0.45);
+    animation: recapSelectPulse 420ms ease-out 1;
+    box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.08),
+        0 0 0 3px rgba(0, 150, 180, 0.14);
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-select,
+    .properties-page .recap-select--light {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* ================================
+   Override: samakan hover recap-select & recap-stat-card
+   dengan hover filter-select/filter-input
+   ================================ */
+
+/* Pastikan wrapper/label "PILIH PERUSAHAAN" tidak ikut efek */
+.properties-page .recap-controls--inline,
+.properties-page .recap-controls--inline:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Samakan transition seperti filter input/select */
+.properties-page .recap-select,
+.properties-page .recap-select--light,
+.properties-page .recap-stat-card {
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease !important;
+    will-change: transform, box-shadow;
+}
+
+/* Samakan hover effect */
+.properties-page .recap-select:hover,
+.properties-page .recap-select--light:hover,
+.properties-page .recap-stat-card:hover {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06) !important;
+    transform: translate3d(0, -1px, 0) !important;
+}
+
+/* Samakan focus feel (optional tapi nyambung dengan filter) */
+.properties-page .recap-select:focus,
+.properties-page .recap-select--light:focus,
+.properties-page .recap-select:focus-visible,
+.properties-page .recap-select--light:focus-visible {
+    border-color: #333 !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06) !important;
+    outline: none !important;
+}
+
+/* Hover anim khusus angka di recap stat card (muncul saat cursor di card) */
+.properties-page .recap-stat-card .recap-stat-value {
+    display: inline-block; /* penting agar transform scale terasa */
+    transform: translateZ(0) scale(1);
+    transform-origin: center;
+    transition: transform 200ms ease;
+    will-change: transform;
+}
+
+.properties-page .recap-stat-card:hover .recap-stat-value {
+    transform: translateZ(0) scale(1.20) !important; /* sebelumnya 1.045 */
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-stat-card .recap-stat-value {
+        transition: none !important;
+        transform: none !important;
+    }
+}

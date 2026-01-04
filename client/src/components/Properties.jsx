@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import PropertyDetail from './PropertyDetail';
 import '../styles/Properties.css';
@@ -7,11 +7,13 @@ import btnLogo from '../assets/images/btnlogo.png';
 import btnsyariahLogo from '../assets/images/btnsyariahlogo.png';
 import mandiriLogo from '../assets/images/mandirilogo.png';
 import bniLogo from '../assets/images/bnilogo.png';
-import logoHotampt from '../assets/images/logoitampt.png'; // ADD
+import logoHotampt from '../assets/images/logoitampt.png';
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const Properties = () => {
+    const observerRef = useRef(null);
+
     const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,12 +23,12 @@ const Properties = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
     const [selectedRecapCompany, setSelectedRecapCompany] = useState('all');
-    const [recapData, setRecapData] = useState([]); // ← TAMBAH INI
+    const [recapData, setRecapData] = useState([]);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         fetchProperties();
-        fetchRecapData(); // ← TAMBAH INI
+        fetchRecapData();
     }, []);
 
     const fetchProperties = async () => {
@@ -49,7 +51,6 @@ const Properties = () => {
         }
     };
 
-    // ← TAMBAH FUNCTION INI
     const fetchRecapData = async () => {
         try {
             const response = await axios.get(`${API_URL}/recaps-list.php`);
@@ -68,7 +69,6 @@ const Properties = () => {
 
     const formatNumber = (n) => new Intl.NumberFormat('id-ID').format(Number(n || 0));
 
-    // ← UBAH recapCompanies jadi dynamic dari database
     const recapCompanies = useMemo(() => {
         const companies = [{ id: 'all', label: 'Semua' }];
         recapData.forEach(r => {
@@ -80,14 +80,12 @@ const Properties = () => {
         return companies;
     }, [recapData]);
 
-    // ← UBAH recap calculation pakai data dari database
     const recap = useMemo(() => {
         if (selectedRecapCompany !== 'all') {
             const found = recapData.find(r => r.company_id === selectedRecapCompany);
             return found || { total_komplek: 0, total_rumah: 0, total_terjual: 0 };
         }
 
-        // Agregasi "Semua"
         return recapData.reduce(
             (acc, cur) => {
                 acc.total_komplek += cur.total_komplek;
@@ -122,16 +120,72 @@ const Properties = () => {
         document.body.style.overflow = 'auto';
     };
 
-    const filteredProperties = properties.filter(property => {
-        const matchesSearch = property.title?.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesType = !selectedType || property.type === selectedType;
-        const matchesLocation = !selectedLocation || property.location?.toLowerCase().includes(selectedLocation.toLowerCase());
-        return matchesSearch && matchesType && matchesLocation;
-    });
+    const registerPropertiesAnimations = () => {
+        const root = document.querySelector('.properties-page');
+        if (!root) return;
+
+        const observer = observerRef.current;
+        if (!observer) return;
+
+        const targets = Array.from(root.querySelectorAll('[data-animate]:not(.is-visible)'));
+        if (targets.length === 0) return;
+
+        targets.forEach((el) => {
+            const delay = el.getAttribute('data-animate-delay');
+            if (delay) el.style.transitionDelay = `${Number(delay)}ms`;
+            observer.observe(el);
+        });
+    };
+
+    useEffect(() => {
+        if (loading || error) return;
+
+        if (observerRef.current) {
+            const id = window.requestAnimationFrame(() => registerPropertiesAnimations());
+            return () => window.cancelAnimationFrame(id);
+        }
+
+        observerRef.current = new IntersectionObserver(
+            (entries, obs) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                }
+            },
+            { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+        );
+
+        const id = window.requestAnimationFrame(() => registerPropertiesAnimations());
+
+        return () => {
+            window.cancelAnimationFrame(id);
+            if (observerRef.current) observerRef.current.disconnect();
+            observerRef.current = null;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loading, error]);
+
+    const filteredProperties = useMemo(() => {
+        return properties.filter(property => {
+            const matchesSearch = property.title?.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesType = !selectedType || property.type === selectedType;
+            const matchesLocation =
+                !selectedLocation || property.location?.toLowerCase().includes(selectedLocation.toLowerCase());
+            return matchesSearch && matchesType && matchesLocation;
+        });
+    }, [properties, searchTerm, selectedType, selectedLocation]);
+
+    useEffect(() => {
+        const id = window.requestAnimationFrame(() => registerPropertiesAnimations());
+        return () => window.cancelAnimationFrame(id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredProperties, selectedRecapCompany, recapData, loading, error]);
 
     if (loading) {
         return (
-            <div className="loading-container">
+            <div className="loading-container" data-animate="fade-up" data-animate-delay="60">
                 <div className="loading-spinner"></div>
                 <p>Loading properties...</p>
             </div>
@@ -140,7 +194,7 @@ const Properties = () => {
 
     if (error) {
         return (
-            <div className="error-container">
+            <div className="error-container" data-animate="fade-up" data-animate-delay="60">
                 <p>{error}</p>
                 <button onClick={fetchProperties}>Retry</button>
             </div>
@@ -159,24 +213,28 @@ const Properties = () => {
                     backgroundRepeat: 'no-repeat'
                 }}
             >
-                <div className="hero-overlay">
-                    <h1>PROPERTI KAMI</h1>
-                    <p>PT <span className="highlight">FACHRI</span> PROPERTY GROUP</p>
+                <div className="hero-overlay" data-animate="fade-up" data-animate-delay="80">
+                    <h1 data-animate="fade-up" data-animate-delay="120">PROPERTI KAMI</h1>
+                    <p data-animate="fade-up" data-animate-delay="170">
+                        PT <span className="highlight">FACHRI</span> PROPERTY GROUP
+                    </p>
                 </div>
             </section>
 
-            {/* ===== RECAP SECTION (FULL 1 layar + center + dropdown kanan atas kartu) ===== */}
+            {/* RECAP SECTION */}
             <section className="properties-recap">
                 <div className="container recap-container">
-                    <div className="recap-center">
-                        <h2 className="recap-heading">REKAPAN PERUMAHAN</h2>
-                        <p className="recap-subheading">
+                    <div className="recap-center" data-animate="fade-up" data-animate-delay="80">
+                        <h2 className="recap-heading" data-animate="fade-up" data-animate-delay="120">
+                            REKAPAN PERUMAHAN
+                        </h2>
+                        <p className="recap-subheading" data-animate="fade-up" data-animate-delay="170">
                             {recapSubtitleText}
                         </p>
                     </div>
 
-                    <div className="recap-cards-area">
-                        <div className="recap-controls recap-controls--inline">
+                    <div className="recap-cards-area" data-animate="fade-up" data-animate-delay="220">
+                        <div className="recap-controls recap-controls--inline" data-animate="fade-left" data-animate-delay="260">
                             <label className="recap-controls-title" htmlFor="recapCompany">
                                 PILIH PERUSAHAAN
                             </label>
@@ -194,21 +252,21 @@ const Properties = () => {
                         </div>
 
                         <div className="recap-cards recap-cards--big">
-                            <div className="recap-stat-card recap-stat-card--big">
+                            <div className="recap-stat-card recap-stat-card--big" data-animate="rise" data-animate-delay="220">
                                 <div className="recap-stat-label">TOTAL KOMPLEK</div>
                                 <div className="recap-stat-value recap-stat-value--red">
                                     {formatNumber(recap.total_komplek)}
                                 </div>
                             </div>
 
-                            <div className="recap-stat-card recap-stat-card--big">
+                            <div className="recap-stat-card recap-stat-card--big" data-animate="rise" data-animate-delay="280">
                                 <div className="recap-stat-label">TOTAL RUMAH</div>
                                 <div className="recap-stat-value recap-stat-value--dark">
                                     {formatNumber(recap.total_rumah)}
                                 </div>
                             </div>
 
-                            <div className="recap-stat-card recap-stat-card--big">
+                            <div className="recap-stat-card recap-stat-card--big" data-animate="rise" data-animate-delay="340">
                                 <div className="recap-stat-label">TOTAL RUMAH TERJUAL</div>
                                 <div className="recap-stat-value recap-stat-value--orange">
                                     {formatNumber(recap.total_terjual)}
@@ -222,19 +280,23 @@ const Properties = () => {
             {/* Filter Section */}
             <section className="properties-filter">
                 <div className="container">
-                    <div className="filter-grid">
+                    <div className="filter-grid" data-animate="fade-up" data-animate-delay="80">
                         <input
                             type="text"
                             placeholder="Cari Properti"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="filter-input"
+                            data-animate="fade-right"
+                            data-animate-delay="120"
                         />
 
                         <select
                             value={selectedType}
                             onChange={(e) => setSelectedType(e.target.value)}
                             className="filter-select"
+                            data-animate="fade-up"
+                            data-animate-delay="160"
                         >
                             <option value="">Semua Tipe</option>
                             {getUniqueTypes().map(type => (
@@ -248,6 +310,8 @@ const Properties = () => {
                             value={selectedLocation}
                             onChange={(e) => setSelectedLocation(e.target.value)}
                             className="filter-input"
+                            data-animate="fade-left"
+                            data-animate-delay="200"
                         />
                     </div>
                 </div>
@@ -258,9 +322,14 @@ const Properties = () => {
                 <div className="container">
                     {filteredProperties.length > 0 ? (
                         <div className="properties-horizontal-list">
-                            {filteredProperties.map(property => (
-                                <div key={property.id} className="property-horizontal-item">
-                                    <div className="property-image-box">
+                            {filteredProperties.map((property, idx) => (
+                                <div
+                                    key={property.id}
+                                    className="property-horizontal-item"
+                                    data-animate="fade-up"
+                                    data-animate-delay={Math.min(60 + idx * 60, 360)}
+                                >
+                                    <div className="property-image-box" data-animate="fade-right" data-animate-delay="80">
                                         <img
                                             src={property.image || property.main_image}
                                             alt={property.title}
@@ -270,7 +339,7 @@ const Properties = () => {
                                         />
                                     </div>
 
-                                    <div className="property-info-box">
+                                    <div className="property-info-box" data-animate="fade-left" data-animate-delay="140">
                                         <h2 className="property-title-main">{property.title}</h2>
                                         <p className="property-location-text">{property.location}</p>
                                         <button
@@ -284,17 +353,17 @@ const Properties = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="no-properties">
+                        <div className="no-properties" data-animate="fade-up" data-animate-delay="80">
                             <p>Tidak ada properti yang ditemukan</p>
                         </div>
                     )}
                 </div>
 
-                {/* Partner Banner (dipindah ke dalam section properties) */}
-                <div className="partner-banner">
+                {/* Partner Banner */}
+                <div className="partner-banner" data-animate="fade-up" data-animate-delay="80">
                     <div className="container">
-                        <h2>FACHRI PROPERTY GROUP MITRA</h2>
-                        <div className="partner-logo">
+                        <h2 data-animate="fade-up" data-animate-delay="120">FACHRI PROPERTY GROUP MITRA</h2>
+                        <div className="partner-logo" data-animate="zoom-in" data-animate-delay="180">
                             <img src={btnLogo} alt="Bank BTN" />
                             <img src={btnsyariahLogo} alt="Bank BTN Syarian" />
                             <img src={bniLogo} alt="Bank BNI" />
@@ -306,9 +375,9 @@ const Properties = () => {
 
             <section className="contact-section">
                 <div className="container">
-                    <h2>GET IN TOUCH WITH US</h2>
+                    <h2 data-animate="fade-up" data-animate-delay="80">GET IN TOUCH WITH US</h2>
                     <div className="contact-content">
-                        <div className="contact-info">
+                        <div className="contact-info" data-animate="fade-right" data-animate-delay="140">
                             <div className="contact-logo-container">
                                 <div className="logo-box">
                                     <img src={logoHotampt} alt="Fachri Property Group" />
@@ -327,7 +396,7 @@ const Properties = () => {
                                 <p>Email: fachripropertygroup@gmail.com</p>
                             </div>
                         </div>
-                        <div className="contact-map">
+                        <div className="contact-map" data-animate="fade-left" data-animate-delay="180">
                             <iframe
                                 title="Map Location"
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.816827422188!2d109.2972812!3d-0.0495655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e1d5939bcb36055%3A0xbbfe8d8aa6d9c520!2sPT.FACHRI%20PROPERTY%20LAND!5e0!3m2!1sid!2sid!4v1766506338420!5m2!1sid!2sid"
@@ -341,6 +410,7 @@ const Properties = () => {
                     </div>
                 </div>
             </section>
+
             {showModal && selectedProperty && (
                 <PropertyDetail property={selectedProperty} onClose={handleCloseModal} />
             )}
