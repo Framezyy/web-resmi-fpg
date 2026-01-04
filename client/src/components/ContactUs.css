@@ -241,3 +241,97 @@
         font-size: 24px;
     }
 }
+
+/* Toast Notification - UBAH POSISI KE TENGAH */
+.toast-notification {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    min-width: 400px;
+    z-index: 9999;
+    overflow: hidden;
+    animation: slideInDown 0.4s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translate(-50%, -100px);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.toast-icon {
+    font-size: 32px;
+    color: #10b981;
+    flex-shrink: 0;
+}
+
+.toast-text h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.toast-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.toast-progress {
+    height: 4px;
+    background: linear-gradient(to right, #10b981, #059669);
+    animation: progressBar 4s linear forwards;
+}
+
+@keyframes progressBar {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* Responsive Toast */
+@media (max-width: 768px) {
+    .toast-notification {
+        top: 20px;
+        min-width: auto;
+        width: 90%;
+        max-width: 350px;
+    }
+    
+    .toast-content {
+        padding: 16px;
+    }
+    
+    .toast-icon {
+        font-size: 28px;
+    }
+    
+    .toast-text h4 {
+        font-size: 15px;
+    }
+    
+    .toast-text p {
+        font-size: 13px;
+    }
+}
