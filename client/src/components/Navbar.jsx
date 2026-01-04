@@ -112,25 +112,25 @@ const Navbar = () => {
                         {showAboutSubmenu && (
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link to="/about?tab=history&scroll=tabs">
+                                    <Link to="/about?tab=history&scroll=tabs&offset=160">
                                         <span className="dropdown-icon"></span>
                                         Sejarah Perusahaan
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=leadership">
+                                    <Link to="/about?section=leadership&offset=160">
                                         <span className="dropdown-icon"></span>
                                         Manajemen
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=awards">
+                                    <Link to="/about?section=awards&offset=250">
                                         <span className="dropdown-icon"></span>
                                         Penghargaan
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link to="/about?section=subsidiaries">
+                                    <Link to="/about?section=subsidiaries&offset=60">
                                         <span className="dropdown-icon"></span>
                                         Anak Perusahaan
                                     </Link>

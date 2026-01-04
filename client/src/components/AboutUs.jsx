@@ -18,6 +18,9 @@ const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 const AboutUs = () => {
     const location = useLocation();
     const tabsRef = useRef(null);
+    const leadershipRef = useRef(null);
+    const awardsRef = useRef(null); // ADD
+    const subsidiariesRef = useRef(null); // ADD
 
     const [activeTab, setActiveTab] = useState('vision');
     const [currentAward, setCurrentAward] = useState(0);
@@ -50,24 +53,45 @@ const AboutUs = () => {
         const params = new URLSearchParams(location.search);
         const tab = params.get('tab');
         const scroll = params.get('scroll');
+        const section = params.get('section');
+
+        const offsetParam = Number(params.get('offset'));
+        const extraOffset = Number.isFinite(offsetParam) ? offsetParam : 0;
 
         if (tab === 'vision' || tab === 'mission' || tab === 'history') {
             setActiveTab(tab);
         }
 
-        // scroll hanya saat datang dari navbar (scroll=tabs)
+        const scrollToEl = (targetEl, offset = 0) => {
+            if (!targetEl) return;
+
+            const navbarEl = document.querySelector('.navbar');
+            const navH = navbarEl ? navbarEl.getBoundingClientRect().height : 0;
+
+            const y =
+                targetEl.getBoundingClientRect().top +
+                window.scrollY -
+                navH -
+                10 +
+                offset;
+
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        };
+
         if (scroll === 'tabs') {
-            setTimeout(() => {
-                const el = tabsRef.current;
-                if (!el) return;
+            setTimeout(() => scrollToEl(tabsRef.current, extraOffset), 0);
+        }
 
-                const navbarEl = document.querySelector('.navbar');
-                const navH = navbarEl ? navbarEl.getBoundingClientRect().height : 0;
+        if (section === 'leadership') {
+            setTimeout(() => scrollToEl(leadershipRef.current, extraOffset), 0);
+        }
 
-                // berhenti tepat di bawah navbar
-                const y = el.getBoundingClientRect().top + window.scrollY - navH - -150;
-                window.scrollTo({ top: y, behavior: 'smooth' });
-            }, 0);
+        if (section === 'awards') { // ADD
+            setTimeout(() => scrollToEl(awardsRef.current, extraOffset), 0);
+        }
+
+        if (section === 'subsidiaries') { // ADD
+            setTimeout(() => scrollToEl(subsidiariesRef.current, extraOffset), 0);
         }
     }, [location]);
 
@@ -170,7 +194,8 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            <section 
+            <section
+                ref={leadershipRef} // ADD
                 className="leadership-section"
                 style={{ 
                     backgroundImage: `url(${leadershipBg})`,
@@ -190,7 +215,7 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            <section className="awards-section">
+            <section className="awards-section" ref={awardsRef}>
                 <div className="container">
                     <h2>PENGHARGAAN</h2>
                     <p className="awards-subtitle">PT Fachri Property Group menerima pengakuan publik melalui berbagai penghargaan bergengsi</p>
@@ -230,7 +255,7 @@ const AboutUs = () => {
                 </div>
             </section>
 
-            <section className="subsidiaries-section">
+            <section className="subsidiaries-section" ref={subsidiariesRef}>
                 <div className="container">
                     <h2>ANAK PERUSAHAAN</h2>
                     <div className="subsidiaries-grid">

@@ -78,13 +78,13 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" style={{ transitionDelay: '0.1s' }}>VISI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" style={{ transitionDelay: '0.3s' }}>MEMBERI ARTI DAN TUJUAN</p>
-                    <button 
-                        className="btn-outline animate-on-scroll" 
-                        style={{ transitionDelay: '0.5s' }}
-                        onClick={() => handleNavigate('/about?tab=vision&scroll=tabs')}
-                    >
-                        TEMUKAN LEBIH
-                    </button>
+                    <button
+    className="btn-outline animate-on-scroll"
+    style={{ transitionDelay: '0.5s' }}
+    onClick={() => handleNavigate('/about?tab=vision&scroll=tabs&offset=160')}
+>
+    TEMUKAN LEBIH
+</button>
                 </div>
             </section>
 
