@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
 import Home from './components/Home';
@@ -14,10 +14,13 @@ import AdminForgotPassword from './components/AdminForgotPassword'; // ← Pasti
 import Footer from './components/Footer'; // ADD
 import './styles/App.css';
 
-const App = () => {
+function AppContent() {
+    const location = useLocation();
+    const hideNavbar = location.pathname.startsWith('/admin');
+
     return (
-        <Router>
-            <Navbar /> {/* Navbar ditampilkan di semua halaman */}
+        <>
+            {!hideNavbar && <Navbar />}
             <Routes>
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
@@ -34,8 +37,14 @@ const App = () => {
                 <Route path="/subsidiary/borneo-real-estate" element={<SubsidiaryTwo />} />
             </Routes>
             <Footer /> {/* ADD: tampil di semua page */}
-        </Router>
+        </>
     );
-};
+}
 
-export default App;
+export default function App() {
+    return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
+    );
+}
