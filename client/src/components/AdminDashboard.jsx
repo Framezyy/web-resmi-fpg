@@ -22,20 +22,32 @@ const AdminDashboard = () => {
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [previewMainImage, setPreviewMainImage] = useState(null);
-    const [activeSection, setActiveSection] = useState('properties'); // TAMBAH INI
-    const [awards, setAwards] = useState([]); // TAMBAH INI
-    const [awardFormData, setAwardFormData] = useState({ // TAMBAH INI
+    const [activeSection, setActiveSection] = useState('properties');
+    const [awards, setAwards] = useState([]);
+    const [awardFormData, setAwardFormData] = useState({
         title: '',
         year: '',
         display_order: 0
     });
-    const [awardImage, setAwardImage] = useState(null); // TAMBAH INI
+    const [awardImage, setAwardImage] = useState(null);
+    const [recaps, setRecaps] = useState([]); // ← TAMBAH INI
+    const [editingRecap, setEditingRecap] = useState(null); // ← TAMBAH INI
+    const [recapFormData, setRecapFormData] = useState({
+        company_id: '',
+        company_name: '',
+        display_order: 0, // ← TAMBAH INI
+        total_komplek: 0,
+        total_rumah: 0,
+        total_terjual: 0
+    }); // ← TAMBAH INI
+    const [isCreatingRecap, setIsCreatingRecap] = useState(false); // ← TAMBAH INI
     const navigate = useNavigate();
 
     useEffect(() => {
         checkAuth();
         fetchProperties();
-        fetchAwards(); // TAMBAH INI
+        fetchAwards();
+        fetchRecaps(); // ← TAMBAH INI
     }, []);
 
     const checkAuth = () => {
@@ -57,7 +69,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // TAMBAH FUNCTION INI
     const fetchAwards = async () => {
         try {
             const response = await axios.get(`${API_URL}/awards-list.php`);
@@ -66,6 +77,18 @@ const AdminDashboard = () => {
             }
         } catch (error) {
             console.error('Error fetching awards:', error);
+        }
+    };
+
+    // ← TAMBAH FUNCTION INI
+    const fetchRecaps = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/recaps-list.php`);
+            if (response.data.success) {
+                setRecaps(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching recaps:', error);
         }
     };
 
@@ -274,6 +297,89 @@ const AdminDashboard = () => {
         }
     };
 
+    // ← TAMBAH FUNCTION INI
+    const handleEditRecap = (recap) => {
+        setEditingRecap({ ...recap });
+        setIsCreatingRecap(false);
+        setShowModal(true);
+    };
+
+    // ← TAMBAH FUNCTION INI
+    const handleCreateRecap = () => {
+        setRecapFormData({
+            company_id: '',
+            company_name: '',
+            display_order: 0, // ← TAMBAH INI
+            total_komplek: 0,
+            total_rumah: 0,
+            total_terjual: 0
+        });
+        setIsCreatingRecap(true);
+        setShowModal(true);
+    };
+
+    // ← TAMBAH FUNCTION INI
+    const handleRecapFormChange = (e) => {
+        const { name, value } = e.target;
+        setRecapFormData(prev => ({
+            ...prev,
+            [name]: name === 'company_id' || name === 'company_name' ? value : (parseInt(value) || 0)
+        }));
+    };
+
+    // ← TAMBAH FUNCTION INI
+    const handleRecapInputChange = (e) => {
+        const { name, value } = e.target;
+        setEditingRecap(prev => ({
+            ...prev,
+            [name]: parseInt(value) || 0
+        }));
+    };
+
+    // ← TAMBAH FUNCTION INI
+    const handleRecapSubmit = async (e) => {
+        e.preventDefault();
+        
+        const token = localStorage.getItem('adminToken');
+        
+        // ← TAMBAH VALIDASI TOKEN
+        if (!token) {
+            alert('Session expired. Please login again.');
+            navigate('/admin/login');
+            return;
+        }
+        
+        const endpoint = isCreatingRecap ? 'recap-create.php' : 'recap-update.php';
+        const payload = isCreatingRecap ? recapFormData : editingRecap;
+        
+        // ← TAMBAH LOG UNTUK DEBUG
+        console.log('Sending payload:', payload);
+        console.log('To endpoint:', endpoint);
+        
+        try {
+            const response = await axios.post(
+                `${API_URL}/${endpoint}`,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                alert(isCreatingRecap ? 'Recap created successfully!' : 'Recap updated successfully!');
+                fetchRecaps();
+                closeModal();
+            }
+        } catch (error) {
+            console.error('Full error:', error.response || error); // ← TAMBAH LOG DETAIL
+            const errorMsg = error.response?.data?.message || error.message;
+            alert('Error: ' + errorMsg);
+        }
+    };
+
     // GANTI FUNCTION openModal dengan yang lengkap:
     const openModal = () => {
         setShowModal(true);
@@ -299,11 +405,21 @@ const AdminDashboard = () => {
         setAwardImage(null);
     };
 
-    // GANTI FUNCTION closeModal dengan yang lengkap:
+    // ← UPDATE closeModal
     const closeModal = () => {
         setShowModal(false);
         setEditMode(false);
         setCurrentProperty(null);
+        setEditingRecap(null);
+        setIsCreatingRecap(false);
+        setRecapFormData({
+            company_id: '',
+            company_name: '',
+            display_order: 0, // ← TAMBAH INI
+            total_komplek: 0,
+            total_rumah: 0,
+            total_terjual: 0
+        });
         setFormData({
             title: '',
             location: '',
@@ -346,18 +462,21 @@ const AdminDashboard = () => {
                     </div>
                 </div>
                 <div className="admin-actions">
-                    {/* TAMBAHKAN CONDITIONAL BUTTON INI */}
                     {activeSection === 'properties' ? (
                         <button className="btn-add" onClick={openModal}>
-                            <span>+</span> Add New Property
+                            <span>+</span> Tambah Properti
+                        </button>
+                    ) : activeSection === 'awards' ? (
+                        <button className="btn-add" onClick={openModal}>
+                            <span>+</span> Tambah Penghargaan
                         </button>
                     ) : (
-                        <button className="btn-add" onClick={openModal}>
-                            <span>+</span> Add New Award
+                        <button className="btn-add" onClick={handleCreateRecap}>
+                            <span>+</span> Tambah Rekapan
                         </button>
                     )}
                     <button className="btn-logout" onClick={handleLogout}>
-                        Logout
+                        Keluar
                     </button>
                 </div>
             </header>
@@ -368,13 +487,19 @@ const AdminDashboard = () => {
                     className={activeSection === 'properties' ? 'nav-btn active' : 'nav-btn'}
                     onClick={() => setActiveSection('properties')}
                 >
-                    Properties
+                    Properti
                 </button>
                 <button 
                     className={activeSection === 'awards' ? 'nav-btn active' : 'nav-btn'}
                     onClick={() => setActiveSection('awards')}
                 >
-                    Awards
+                    Penghargaan
+                </button>
+                <button 
+                    className={activeSection === 'recaps' ? 'nav-btn active' : 'nav-btn'}
+                    onClick={() => setActiveSection('recaps')}
+                >
+                    Rekapan
                 </button>
             </div>
 
@@ -384,7 +509,7 @@ const AdminDashboard = () => {
                     <div className="dashboard-stats">
                         <div className="stat-card">
                             <h3>{properties.length}</h3>
-                            <p>Total Properties</p>
+                            <p>Total Properti</p>
                         </div>
                         <div className="stat-card">
                             <h3>{properties.filter(p => p.type === 'Tipe 36').length}</h3>
@@ -405,16 +530,16 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="properties-table-container">
-                        <h2>All Properties</h2>
+                        <h2>Semua Properti</h2>
                         {properties.length > 0 ? (
                             <table className="properties-table">
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Title</th>
-                                        <th>Location</th>
-                                        <th>Type</th>
-                                        <th>Actions</th>
+                                        <th>Foto</th>
+                                        <th>Nama Perumahan</th>
+                                        <th>Lokasi</th>
+                                        <th>Tipe</th>
+                                        <th>Menu</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -465,12 +590,12 @@ const AdminDashboard = () => {
                     <div className="awards-stats">
                         <div className="stat-card">
                             <h3>{awards.length}</h3>
-                            <p>Total Awards</p>
+                            <p>Total Penghargaan</p>
                         </div>
                     </div>
 
                     <div className="awards-table-container">
-                        <h2>Awards Management</h2>
+                        <h2>Manajemen Penghargaan</h2>
                         {awards.length === 0 ? (
                             <div className="no-data">
                                 <p>No awards found. Add your first award!</p>
@@ -479,11 +604,11 @@ const AdminDashboard = () => {
                             <table className="properties-table">
                                 <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Title</th>
-                                        <th>Year</th>
-                                        <th>Order</th>
-                                        <th>Actions</th>
+                                        <th>Foto</th>
+                                        <th>Judul</th>
+                                        <th>Tahun</th>
+                                        <th>Urutan</th>
+                                        <th>Menu</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -521,7 +646,51 @@ const AdminDashboard = () => {
                 </>
             )}
 
-            {/* MODAL - UPDATE INI */}
+            {/* ← TAMBAH RECAPS SECTION */}
+            {activeSection === 'recaps' && (
+                <div className="awards-table-container">
+                    <h2>Manajemen Rekapan Perusahaan</h2>
+                    {recaps.length === 0 ? (
+                        <div className="no-data">
+                            <p>No recaps found. Click "Add New Recap" to create one.</p>
+                        </div>
+                    ) : (
+                        <table className="properties-table">
+                            <thead>
+                                <tr>
+                                    <th>Nomor</th> {/* ← TAMBAH KOLOM INI */}
+                                    <th>Perusahaan</th>
+                                    <th>Total Komplek</th>
+                                    <th>Total Rumah</th>
+                                    <th>Total Terjual</th>
+                                    <th>Menu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {recaps.map(recap => (
+                                    <tr key={recap.id}>
+                                        <td><strong>{recap.display_order}</strong></td> {/* ← TAMBAH INI */}
+                                        <td><strong>{recap.company_name}</strong></td>
+                                        <td>{recap.total_komplek}</td>
+                                        <td>{recap.total_rumah}</td>
+                                        <td>{recap.total_terjual}</td>
+                                        <td>
+                                            <button 
+                                                className="btn-edit"
+                                                onClick={() => handleEditRecap(recap)}
+                                            >
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            )}
+
+            {/* ← UPDATE MODAL */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -529,12 +698,16 @@ const AdminDashboard = () => {
                             <h2>
                                 {activeSection === 'properties' 
                                     ? (editMode ? 'Edit Property' : 'Add New Property')
-                                    : 'Add New Award'
+                                    : activeSection === 'awards'
+                                    ? 'Add New Award'
+                                    : isCreatingRecap
+                                    ? 'Add New Company Recap'
+                                    : 'Edit Company Recap'
                                 }
                             </h2>
                             <button className="close-btn" onClick={closeModal}>&times;</button>
                         </div>
-                        
+
                         {activeSection === 'properties' ? (
                             <form onSubmit={handleSubmit}>
                                 {/* Row 1: Title & Type */}
@@ -773,7 +946,7 @@ const AdminDashboard = () => {
                                     </button>
                                 </div>
                             </form>
-                        ) : (
+                        ) : activeSection === 'awards' ? (
                             <form onSubmit={handleAwardSubmit}>
                                 <div className="form-group">
                                     <label>Title *</label>
@@ -826,6 +999,97 @@ const AdminDashboard = () => {
                                     </button>
                                     <button type="submit" className="btn-submit">
                                         Create Award
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleRecapSubmit}>
+                                <div className="form-group">
+                                    <label>Company ID *</label>
+                                    <input
+                                        type="text"
+                                        name="company_id"
+                                        value={isCreatingRecap ? recapFormData.company_id : editingRecap?.company_id || ''}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : undefined}
+                                        placeholder="fpg"
+                                        disabled={!isCreatingRecap}
+                                        style={!isCreatingRecap ? { background: '#f5f5f5', cursor: 'not-allowed' } : {}}
+                                        required
+                                    />
+                                    <small>Contoh: fpg, fpl, bid, brp</small>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Company Name *</label>
+                                    <input
+                                        type="text"
+                                        name="company_name"
+                                        value={isCreatingRecap ? recapFormData.company_name : editingRecap?.company_name || ''}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : undefined}
+                                        placeholder="PT Fachri Property Group"
+                                        disabled={!isCreatingRecap}
+                                        style={!isCreatingRecap ? { background: '#f5f5f5', cursor: 'not-allowed' } : {}}
+                                        required
+                                    />
+                                </div>
+
+                                {/* ← TAMBAH INPUT DISPLAY ORDER */}
+                                <div className="form-group">
+                                    <label>Display Order *</label>
+                                    <input
+                                        type="number"
+                                        name="display_order"
+                                        value={isCreatingRecap ? recapFormData.display_order : editingRecap?.display_order || 0}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                                        placeholder="1"
+                                        min="0"
+                                        required
+                                    />
+                                    <small>Angka lebih kecil = muncul lebih dulu di dropdown</small>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Total Komplek</label>
+                                    <input
+                                        type="number"
+                                        name="total_komplek"
+                                        value={isCreatingRecap ? recapFormData.total_komplek : editingRecap?.total_komplek || 0}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Total Rumah</label>
+                                    <input
+                                        type="number"
+                                        name="total_rumah"
+                                        value={isCreatingRecap ? recapFormData.total_rumah : editingRecap?.total_rumah || 0}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Total Terjual</label>
+                                    <input
+                                        type="number"
+                                        name="total_terjual"
+                                        value={isCreatingRecap ? recapFormData.total_terjual : editingRecap?.total_terjual || 0}
+                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-actions">
+                                    <button type="button" className="btn-cancel" onClick={closeModal}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="btn-submit">
+                                        {isCreatingRecap ? 'Create' : 'Update'} Recap
                                     </button>
                                 </div>
                             </form>

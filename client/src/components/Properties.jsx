@@ -20,13 +20,13 @@ const Properties = () => {
     const [selectedLocation, setSelectedLocation] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [selectedProperty, setSelectedProperty] = useState(null);
-
-    // NEW: dropdown recap
     const [selectedRecapCompany, setSelectedRecapCompany] = useState('all');
+    const [recapData, setRecapData] = useState([]); // ← TAMBAH INI
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         fetchProperties();
+        fetchRecapData(); // ← TAMBAH INI
     }, []);
 
     const fetchProperties = async () => {
@@ -49,6 +49,18 @@ const Properties = () => {
         }
     };
 
+    // ← TAMBAH FUNCTION INI
+    const fetchRecapData = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/recaps-list.php`);
+            if (response.data.success) {
+                setRecapData(response.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching recap data:', error);
+        }
+    };
+
     const getUniqueTypes = () => {
         const types = properties.map(p => p.type).filter(Boolean);
         return [...new Set(types)].sort();
@@ -56,46 +68,36 @@ const Properties = () => {
 
     const formatNumber = (n) => new Intl.NumberFormat('id-ID').format(Number(n || 0));
 
-    // ===== DUMMY RECAP DATA (sementara) =====
-    const recapCompanies = useMemo(
-        () => ([
-            { id: 'all', label: 'Semua' },
-            { id: 'fpg', label: 'PT Fachri Property Group' },
-            { id: 'fpl', label: 'PT Fachri Properti Land' },
-            { id: 'bid', label: 'PT Borneo Icon Developer' },
-            { id: 'brp', label: 'PT Borneo Real Properti' },
-        ]),
-        []
-    );
+    // ← UBAH recapCompanies jadi dynamic dari database
+    const recapCompanies = useMemo(() => {
+        const companies = [{ id: 'all', label: 'Semua' }];
+        recapData.forEach(r => {
+            companies.push({
+                id: r.company_id,
+                label: r.company_name
+            });
+        });
+        return companies;
+    }, [recapData]);
 
-    const recapDummyByCompany = useMemo(
-        () => ({
-            fpg: { totalKomplek: 8, totalRumah: 420, totalTerjual: 265 },
-            fpl: { totalKomplek: 5, totalRumah: 310, totalTerjual: 140 },
-            bid: { totalKomplek: 3, totalRumah: 180, totalTerjual: 95 },
-            brp: { totalKomplek: 4, totalRumah: 260, totalTerjual: 155 },
-        }),
-        []
-    );
-
+    // ← UBAH recap calculation pakai data dari database
     const recap = useMemo(() => {
         if (selectedRecapCompany !== 'all') {
-            return recapDummyByCompany[selectedRecapCompany] || { totalKomplek: 0, totalRumah: 0, totalTerjual: 0 };
+            const found = recapData.find(r => r.company_id === selectedRecapCompany);
+            return found || { total_komplek: 0, total_rumah: 0, total_terjual: 0 };
         }
 
-        // agregasi "Semua"
-        const keys = Object.keys(recapDummyByCompany);
-        return keys.reduce(
-            (acc, k) => {
-                const cur = recapDummyByCompany[k];
-                acc.totalKomplek += Number(cur.totalKomplek || 0);
-                acc.totalRumah += Number(cur.totalRumah || 0);
-                acc.totalTerjual += Number(cur.totalTerjual || 0);
+        // Agregasi "Semua"
+        return recapData.reduce(
+            (acc, cur) => {
+                acc.total_komplek += cur.total_komplek;
+                acc.total_rumah += cur.total_rumah;
+                acc.total_terjual += cur.total_terjual;
                 return acc;
             },
-            { totalKomplek: 0, totalRumah: 0, totalTerjual: 0 }
+            { total_komplek: 0, total_rumah: 0, total_terjual: 0 }
         );
-    }, [selectedRecapCompany, recapDummyByCompany]);
+    }, [selectedRecapCompany, recapData]);
 
     const selectedCompanyLabel = useMemo(() => {
         return recapCompanies.find(c => c.id === selectedRecapCompany)?.label || 'Semua';
@@ -195,21 +197,21 @@ const Properties = () => {
                             <div className="recap-stat-card recap-stat-card--big">
                                 <div className="recap-stat-label">TOTAL KOMPLEK</div>
                                 <div className="recap-stat-value recap-stat-value--red">
-                                    {formatNumber(recap.totalKomplek)}
+                                    {formatNumber(recap.total_komplek)}
                                 </div>
                             </div>
 
                             <div className="recap-stat-card recap-stat-card--big">
                                 <div className="recap-stat-label">TOTAL RUMAH</div>
                                 <div className="recap-stat-value recap-stat-value--dark">
-                                    {formatNumber(recap.totalRumah)}
+                                    {formatNumber(recap.total_rumah)}
                                 </div>
                             </div>
 
                             <div className="recap-stat-card recap-stat-card--big">
                                 <div className="recap-stat-label">TOTAL RUMAH TERJUAL</div>
                                 <div className="recap-stat-value recap-stat-value--orange">
-                                    {formatNumber(recap.totalTerjual)}
+                                    {formatNumber(recap.total_terjual)}
                                 </div>
                             </div>
                         </div>
