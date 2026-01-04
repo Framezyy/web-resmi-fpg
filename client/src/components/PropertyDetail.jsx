@@ -250,7 +250,7 @@ const PropertyDetail = ({ property, onClose }) => {
 
                             <div className="contact-detail">
                                 <h4>✉️ Email</h4>
-                                <p>info@fachripropertygroup.com</p>
+                                <p>fachripropertygroup@gmail.com</p>
                             </div>
 
                             <button className="contact-whatsapp-btn" onClick={handleWhatsApp}>

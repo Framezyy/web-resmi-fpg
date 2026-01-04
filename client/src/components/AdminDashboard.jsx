@@ -22,6 +22,12 @@ const AdminDashboard = () => {
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [previewMainImage, setPreviewMainImage] = useState(null);
+
+    // === TAMBAH: untuk gallery yang SUDAH ADA + yang mau dihapus ===
+    const [existingGalleryImages, setExistingGalleryImages] = useState([]); // array of URL dari DB
+    const [deletedGalleryImages, setDeletedGalleryImages] = useState([]);   // array of URL yang ditandai hapus
+    // === END TAMBAH ===
+
     const [activeSection, setActiveSection] = useState('properties');
     const [awards, setAwards] = useState([]);
     const [awardFormData, setAwardFormData] = useState({
@@ -80,7 +86,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // ← TAMBAH FUNCTION INI
     const fetchRecaps = async () => {
         try {
             const response = await axios.get(`${API_URL}/recaps-list.php`);
@@ -117,6 +122,19 @@ const AdminDashboard = () => {
         setGalleryImages(Array.from(e.target.files));
     };
 
+    // === TAMBAH: klik hapus 1 foto existing gallery (ditandai untuk dihapus saat submit) ===
+    const handleRemoveExistingGalleryImage = (url) => {
+        if (!editMode) return;
+        if (!url) return;
+
+        const ok = window.confirm('Hapus foto galeri ini?');
+        if (!ok) return;
+
+        setExistingGalleryImages(prev => prev.filter(u => u !== url));
+        setDeletedGalleryImages(prev => (prev.includes(url) ? prev : [...prev, url]));
+    };
+    // === END TAMBAH ===
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -135,8 +153,13 @@ const AdminDashboard = () => {
             formDataToSend.append('galleryImages[]', image);
         });
 
+        // === TAMBAH: kirim daftar URL gallery yang ingin dihapus ===
+        if (editMode && deletedGalleryImages.length > 0) {
+            formDataToSend.append('deleted_gallery_images', JSON.stringify(deletedGalleryImages));
+        }
+        // === END TAMBAH ===
+
         try {
-            // ← TAMBAH: Show loading
             alert('Uploading... Please wait.');
 
             if (editMode && currentProperty) {
@@ -152,7 +175,6 @@ const AdminDashboard = () => {
                     }
                 );
                 
-                // ← TAMBAH: Show detailed message
                 if (response.data.gallery_uploaded !== undefined) {
                     alert(`Property updated! ${response.data.gallery_uploaded} gallery images uploaded.`);
                 } else {
@@ -170,7 +192,6 @@ const AdminDashboard = () => {
                     }
                 );
                 
-                // ← TAMBAH: Show detailed message
                 if (response.data.gallery_uploaded !== undefined) {
                     alert(`Property created! ${response.data.gallery_uploaded} gallery images uploaded.${response.data.failed_uploads.length > 0 ? '\n\nFailed uploads:\n' + response.data.failed_uploads.join('\n') : ''}`);
                 } else {
@@ -182,18 +203,20 @@ const AdminDashboard = () => {
             fetchProperties();
         } catch (error) {
             console.error('Error:', error);
-            // ← TAMBAH: Show detailed error
             const errorMsg = error.response?.data?.message || error.message || 'Failed to save property';
             alert('Error: ' + errorMsg + '\n\nTips:\n- Check file sizes (max 5MB per image)\n- Make sure all images are valid\n- Try uploading fewer images at once');
         }
     };
 
     // GANTI FUNCTION handleEdit dengan yang lengkap:
-    const handleEdit = (property) => {
+    const handleEdit = async (property) => {
         setEditMode(true);
         setCurrentProperty(property);
-        
-        // SET SEMUA FIELD dengan nilai dari database (gunakan || '' untuk fallback)
+
+        // reset state hapus gallery setiap buka edit
+        setExistingGalleryImages([]);
+        setDeletedGalleryImages([]);
+
         setFormData({
             title: property.title || '',
             location: property.location || '',
@@ -208,9 +231,19 @@ const AdminDashboard = () => {
             about_text: property.about_text || ''
         });
         
-        // SET preview image
         setPreviewMainImage(property.main_image || property.image || null);
         setShowModal(true);
+
+        // === TAMBAH: ambil detail supaya dapat gallery_images yang sudah ada ===
+        try {
+            const res = await axios.get(`${API_URL}/property-detail.php?id=${property.id}`);
+            const urls = Array.isArray(res.data?.gallery_images) ? res.data.gallery_images : [];
+            setExistingGalleryImages(urls);
+        } catch (err) {
+            console.error('Error fetching property detail:', err);
+            setExistingGalleryImages([]);
+        }
+        // === END TAMBAH ===
     };
 
     const handleDelete = async (id) => {
@@ -391,21 +424,26 @@ const AdminDashboard = () => {
             map_embed_url: '',
             type: '',
             description: '',
-            total_blocks: 0,         // ← TAMBAH
-            total_units: 0,          // ← TAMBAH
-            units_sold: 0,           // ← TAMBAH
-            units_available: 0,      // ← TAMBAH
-            welcome_text: '',        // ← TAMBAH
-            about_text: ''           // ← TAMBAH
+            total_blocks: 0,
+            total_units: 0,
+            units_sold: 0,
+            units_available: 0,
+            welcome_text: '',
+            about_text: ''
         });
         setMainImage(null);
         setGalleryImages([]);
         setPreviewMainImage(null);
+
+        // === TAMBAH: reset state gallery delete ===
+        setExistingGalleryImages([]);
+        setDeletedGalleryImages([]);
+        // === END TAMBAH ===
+
         setAwardFormData({ title: '', year: '', display_order: 0 });
         setAwardImage(null);
     };
 
-    // ← UPDATE closeModal
     const closeModal = () => {
         setShowModal(false);
         setEditMode(false);
@@ -415,7 +453,7 @@ const AdminDashboard = () => {
         setRecapFormData({
             company_id: '',
             company_name: '',
-            display_order: 0, // ← TAMBAH INI
+            display_order: 0,
             total_komplek: 0,
             total_rumah: 0,
             total_terjual: 0
@@ -426,16 +464,22 @@ const AdminDashboard = () => {
             map_embed_url: '',
             type: '',
             description: '',
-            total_blocks: 0,         // ← TAMBAH
-            total_units: 0,          // ← TAMBAH
-            units_sold: 0,           // ← TAMBAH
-            units_available: 0,      // ← TAMBAH
-            welcome_text: '',        // ← TAMBAH
-            about_text: ''           // ← TAMBAH
+            total_blocks: 0,
+            total_units: 0,
+            units_sold: 0,
+            units_available: 0,
+            welcome_text: '',
+            about_text: ''
         });
         setMainImage(null);
         setGalleryImages([]);
         setPreviewMainImage(null);
+
+        // === TAMBAH: reset state gallery delete ===
+        setExistingGalleryImages([]);
+        setDeletedGalleryImages([]);
+        // === END TAMBAH ===
+
         setAwardFormData({ title: '', year: '', display_order: 0 });
         setAwardImage(null);
     };
@@ -860,7 +904,59 @@ const AdminDashboard = () => {
                                     <small style={{ color: '#666', fontSize: '13px', marginTop: '5px', display: 'block' }}>
                                         ✅ You can select <strong>unlimited images</strong> (Ctrl/Cmd + Click to select multiple)
                                     </small>
-                                    
+
+                                    {/* === TAMBAH: tampilkan gallery yang SUDAH ADA + tombol hapus === */}
+                                    {editMode && existingGalleryImages.length > 0 && (
+                                        <div style={{ marginTop: '12px' }}>
+                                            <strong style={{ fontSize: '13px' }}>Gallery saat ini:</strong>
+                                            <div style={{
+                                                display: 'grid',
+                                                gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+                                                gap: '10px',
+                                                marginTop: '10px'
+                                            }}>
+                                                {existingGalleryImages.map((url, idx) => (
+                                                    <div key={`${url}-${idx}`} style={{
+                                                        border: '1px solid #ddd',
+                                                        borderRadius: '8px',
+                                                        padding: '6px',
+                                                        background: '#fff'
+                                                    }}>
+                                                        <img
+                                                            src={url}
+                                                            alt={`gallery-${idx}`}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '70px',
+                                                                objectFit: 'cover',
+                                                                borderRadius: '6px',
+                                                                display: 'block'
+                                                            }}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveExistingGalleryImage(url)}
+                                                            style={{
+                                                                width: '100%',
+                                                                marginTop: '6px',
+                                                                padding: '6px 8px',
+                                                                fontSize: '12px',
+                                                                borderRadius: '6px',
+                                                                border: '1px solid #e53935',
+                                                                background: '#fff',
+                                                                color: '#e53935',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            Hapus
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {/* === END TAMBAH === */}
+
                                     {/* Preview Selected Files */}
                                     {galleryImages.length > 0 && (
                                         <div style={{ 

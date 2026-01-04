@@ -20,6 +20,7 @@ $db = $database->getConnection();
 
 $uploadDir = "../uploads/properties/";
 
+
 // Get data - TAMBAH field yang kurang
 $id = $_POST['id'] ?? '';
 $title = $_POST['title'] ?? '';
@@ -33,6 +34,21 @@ $units_sold = $_POST['units_sold'] ?? 0;              // ← TAMBAH
 $units_available = $_POST['units_available'] ?? 0;    // ← TAMBAH
 $welcome_text = $_POST['welcome_text'] ?? '';         // ← TAMBAH
 $about_text = $_POST['about_text'] ?? '';             // ← TAMBAH
+
+// === TAMBAH: daftar URL gallery yang ingin dihapus (kirim dari UI edit) ===
+// Support 2 format:
+// 1) deleted_gallery_images: string JSON '["url1","url2"]'
+// 2) deleted_gallery_images[]: array POST biasa
+$deleted_gallery_images = [];
+if (isset($_POST['deleted_gallery_images'])) {
+    if (is_array($_POST['deleted_gallery_images'])) {
+        $deleted_gallery_images = $_POST['deleted_gallery_images'];
+    } else {
+        $decoded = json_decode($_POST['deleted_gallery_images'], true);
+        if (is_array($decoded)) $deleted_gallery_images = $decoded;
+    }
+}
+// === END TAMBAH ===
 
 // Extract src from iframe
 if ($map_embed_url && strpos($map_embed_url, '<iframe') !== false) {
@@ -89,6 +105,34 @@ try {
     }
 
     if ($stmt->execute()) {
+
+        // === TAMBAH: hapus gallery yang diminta ===
+        if (!empty($deleted_gallery_images) && is_array($deleted_gallery_images)) {
+            $galleryDir = $uploadDir . 'gallery/';
+
+            // Delete record + file satu per satu berdasarkan URL
+            $delQuery = "DELETE FROM property_galleries 
+                         WHERE property_id = :property_id AND image_url = :image_url";
+            $delStmt = $db->prepare($delQuery);
+
+            foreach ($deleted_gallery_images as $url) {
+                if (!is_string($url) || trim($url) === '') continue;
+
+                // hapus file (kalau ada)
+                $filename = basename(parse_url($url, PHP_URL_PATH));
+                $filepath = $galleryDir . $filename;
+                if ($filename && file_exists($filepath)) {
+                    @unlink($filepath);
+                }
+
+                // hapus row DB
+                $delStmt->bindParam(':property_id', $id);
+                $delStmt->bindParam(':image_url', $url);
+                $delStmt->execute();
+            }
+        }
+        // === END TAMBAH ===
+
         // Handle gallery images if uploaded
         if (isset($_FILES['galleryImages'])) {
             $galleryDir = $uploadDir . 'gallery/';
