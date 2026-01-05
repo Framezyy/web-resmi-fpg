@@ -6,7 +6,7 @@ import heroBg from '../assets/images/homedua.png';
 import visiImage from '../assets/images/Kantor.png';
 import sejarahImage from '../assets/images/kantor2.png';
 import ceoImage from '../assets/images/pahri.png';
-import leadershipBg from '../assets/images/leadershipBg.jpg';
+import leadershipBg from '../assets/images/download.png';
 import award1 from '../assets/images/penghargaansatu.jpeg';
 import award2 from '../assets/images/penghargaandua.jpeg';
 import award3 from '../assets/images/penghargaantiga.jpeg';

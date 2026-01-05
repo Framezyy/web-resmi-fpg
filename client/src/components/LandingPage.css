@@ -254,6 +254,127 @@
     }
 }
 
+/* =========================
+   Responsive (Tablet/HP)
+   NOTE: Desktop tidak berubah karena semua di @media
+========================= */
+
+/* Tablet (<=1024px) */
+@media (max-width: 1024px) {
+    .hero-section {
+        /* lebih aman di mobile browser (address bar) */
+        height: 100svh;
+        min-height: 540px;
+        max-height: none;
+    }
+
+    .landing-page .hero-overlay {
+        padding: 0 24px !important; /* supaya teks tidak mepet pinggir */
+    }
+
+    .hero-section h1 {
+        font-size: 40px;
+        letter-spacing: 1.6px;
+        margin-bottom: 16px;
+    }
+
+    .hero-subtitle {
+        font-size: 17px;
+        margin-bottom: 28px;
+        line-height: 1.6;
+    }
+
+    .btn-outline {
+        padding: 12px 34px;
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 52px 20px;
+    }
+
+    .contact-content {
+        gap: 36px;
+    }
+
+    .contact-section h2 {
+        font-size: 28px;
+        margin-bottom: 36px;
+    }
+
+    .contact-map iframe {
+        height: 340px;
+    }
+}
+
+/* Mobile (<=768px) */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 100svh;
+        min-height: 520px;
+        max-height: none;
+    }
+
+    .landing-page .hero-overlay {
+        padding: 0 18px !important;
+    }
+
+    .hero-section h1 {
+        font-size: 30px; /* sebelumnya 32, sedikit dirapikan agar aman */
+        letter-spacing: 1.2px;
+        margin-bottom: 14px;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+        margin-bottom: 22px;
+    }
+
+    .btn-outline {
+        padding: 12px 28px;
+        font-size: 12px;
+    }
+
+    .container {
+        padding: 44px 16px;
+    }
+
+    .contact-logo-container {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .logo-box {
+        width: 46px;
+        height: 46px;
+    }
+
+    .contact-section h2 {
+        font-size: 24px;
+        margin-bottom: 28px;
+    }
+
+    .contact-map iframe {
+        height: 280px;
+    }
+}
+
+/* Small mobile (<=480px) */
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 26px;
+        letter-spacing: 1px;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+    }
+
+    .contact-map iframe {
+        height: 240px;
+    }
+}
+
 /* ===== Scroll Animation (Enhanced - LandingPage only) ===== */
 @media (prefers-reduced-motion: reduce) {
     .landing-page .animate-on-scroll,
@@ -289,3 +410,12 @@
 .landing-page [data-anim="right"] { --anim-x: 36px; --anim-y: 0px;   }
 .landing-page [data-anim="zoom"]  { --anim-x: 0px;  --anim-y: 16px;  --anim-scale: 0.96; }
 .landing-page [data-anim="blur"]  { --anim-x: 0px;  --anim-y: 18px;  --anim-blur: 6px;   }
+
+@media (max-width: 1024px) {
+  /* fallback kalau observer tidak jalan di device toolbar */
+  .landing-page .animate-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

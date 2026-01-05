@@ -148,6 +148,135 @@
     color: #e74c3c;
 }
 
+/* ===== Mobile/Tablet Nav (<=1024px) ===== */
+.navbar-burger {
+    display: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.navbar-burger .burger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    transform-origin: center;
+}
+
+.navbar-burger.is-active .burger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.navbar-burger.is-active .burger-line:nth-child(2) {
+    opacity: 0;
+}
+.navbar-burger.is-active .burger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* overlay (dibuat di JSX) */
+.navbar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 999;
+}
+
+@media (max-width: 1024px) {
+    /* tombol hamburger */
+    .navbar-burger {
+        display: inline-flex;
+        width: 44px;
+        height: 44px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 6px;              /* jarak antar garis */
+        position: relative;
+        z-index: 1002;
+        border-radius: 12px;
+        color: #ffffff;        /* default di hero/transparent */
+    }
+
+    .navbar:not(.scrolled) .navbar-burger {
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(6px);
+    }
+
+    .navbar.scrolled .navbar-burger {
+        color: #333;
+        background: transparent;
+    }
+
+    /* saat menu terbuka, X lebih jelas */
+    .navbar-burger.is-active {
+        color: #333;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(6px);
+    }
+
+    /* drawer menu */
+    .navbar-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100dvh;
+        width: min(320px, 86vw);
+        background: #ffffff;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 92px 18px 18px;
+        box-shadow: -12px 0 24px rgba(0,0,0,0.14);
+        z-index: 1001;
+
+        transform: translateX(110%) !important;
+        pointer-events: none;
+        transition: transform 0.25s ease;
+    }
+
+    .navbar-menu.active {
+        transform: translateX(0) !important;
+        pointer-events: auto;
+    }
+
+    .navbar-menu .navbar-link {
+        color: #333;
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px 12px;
+        border-radius: 10px;
+    }
+
+    .navbar-menu .navbar-link:hover {
+        background: rgba(0,0,0,0.05);
+        color: #e74c3c;
+    }
+
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        margin-top: 0;
+        padding: 0 0 0 10px;
+        min-width: 0;
+        background: transparent;
+    }
+
+    .navbar-dropdown::after {
+        display: none;
+    }
+
+    .dropdown-menu li a {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+}
+
 @media (max-width: 768px) {
     .logo-image {
         height: 40px;
