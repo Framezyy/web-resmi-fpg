@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 import heroBgsatu from '../assets/images/image.png';
-import heroBgdua from '../assets/images/homedua.png';
-import heroBgtiga from '../assets/images/hometiga.png';
-import heroBgempat from '../assets/images/homeempat.png';
+import heroBgdua from '../assets/images/homesatu.png';
+import heroBgtiga from '../assets/images/homedua.png';
+import heroBgempat from '../assets/images/hometiga.png';
 import logoHotampt from '../assets/images/logoitampt.png'; // ADD
 
 const LandingPage = () => {
