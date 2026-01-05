@@ -272,7 +272,7 @@ const AboutUs = () => {
                                 </div>
                                 <div className="vision-text" data-animate="fade-left" data-animate-delay="120">
                                     <h2>Misi Fachri Group</h2>
-                                    <p>Mengembangkan semua sumber daya yang dimilikiuntuk menerapkan tata kelola organisasi yangberorientasi pada peningkatan mutu dan menyediakanlayanan yang berkualitas</p>
+                                    <p>Mengembangkan semua sumber daya yang dimiliki untuk menerapkan tata kelola organisasi yang berorientasi pada peningkatan mutu dan menyediakan layanan yang berkualitas</p>
                                 </div>
                             </div>
                         )}
