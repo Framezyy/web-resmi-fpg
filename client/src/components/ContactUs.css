@@ -259,15 +259,65 @@ html, body {
     }
 }
 
+/* Tablet (<=1024px) */
+@media (max-width: 1024px) {
+  .contact-hero {
+    height: 100svh;
+    min-height: 540px;
+    max-height: none;
+  }
+
+  .contact-page .hero-overlay {
+    left: 50% !important;
+    bottom: auto !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    text-align: center !important;
+    width: min(92vw, 900px) !important;
+    max-width: none !important;
+    padding: 0 16px !important;
+  }
+
+  .contact-page .hero-overlay h1 {
+    font-size: 40px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .contact-page .hero-overlay p {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+}
+
+/* Handphone (<=768px) */
 @media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .contact-info-section h2,
-    .contact-form-section h2 {
-        font-size: 24px;
-    }
+  .contact-hero {
+    min-height: 520px;
+  }
+
+  .contact-page .hero-overlay {
+    width: min(92vw, 680px) !important;
+    padding: 0 14px !important;
+  }
+
+  .contact-page .hero-overlay h1 {
+    font-size: 30px !important;
+    line-height: 1.18 !important;
+    letter-spacing: 1px !important;
+  }
+
+  .contact-page .hero-overlay p {
+    font-size: 14px !important;
+  }
+}
+
+/* Small mobile (<=480px) */
+@media (max-width: 480px) {
+  .contact-page .hero-overlay h1 {
+    font-size: 26px !important;
+  }
 }
 
 /* Toast Notification - UBAH POSISI KE TENGAH */
