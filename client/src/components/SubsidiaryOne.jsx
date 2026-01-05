@@ -33,7 +33,7 @@ const SubsidiaryOne = () => {
                     <div className="logo-container animate-on-scroll">
                         <img src={logo1} alt="Borneo Icon Development" className="subsidiary-logo" />
                     </div>
-                    <h1 className="animate-on-scroll">BORNEO ICON DEVELOPMENT</h1>
+                    <h1 className="animate-on-scroll">BORNEO ICON DEVELOPER</h1>
                     <p className="hero-subtitle animate-on-scroll">ANAK PERUSAHAAN PT FACHRI PROPERTY GROUP</p>
                 </div>
             </section>
@@ -64,13 +64,13 @@ const SubsidiaryOne = () => {
                                 className={`tab ${activeTab === 'vision' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('vision')}
                             >
-                                Vision
+                                Visi
                             </button>
                             <button 
                                 className={`tab ${activeTab === 'mission' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('mission')}
                             >
-                                Mision
+                                Misi
                             </button>
                         </div>
                         <div className="tabs-content">

@@ -33,7 +33,7 @@ const SubsidiaryTwo = () => {
                     <div className="logo-container animate-on-scroll">
                         <img src={logo2} alt="Borneo Real Estate" className="subsidiary-logo" />
                     </div>
-                    <h1 className="animate-on-scroll">BORNEO REAL PROPERTY</h1>
+                    <h1 className="animate-on-scroll">BORNEO REAL PROPERTI</h1>
                     <p className="hero-subtitle animate-on-scroll">ANAK PERUSAHAAN PT FACHRI PROPERTY GROUP</p>
                 </div>
             </section>
@@ -46,10 +46,10 @@ const SubsidiaryTwo = () => {
                     <div className="subsidiary-description-text">
                         <h2>Deskripsi Perusahaan</h2>
                         <p>
-                            PT Borneo Real Estate adalah perusahaan yang berfokus pada manajemen dan investasi properti. 
+                            PT Borneo Real Properti adalah perusahaan yang berfokus pada manajemen dan investasi properti. 
                             Kami menyediakan layanan komprehensif dalam pengelolaan aset properti, konsultasi investasi, 
                             dan solusi real estat untuk memaksimalkan nilai properti Anda. Dengan tim profesional berpengalaman, 
-                            Borneo Real Estate telah dipercaya mengelola berbagai portofolio properti komersial dan residensial 
+                            Borneo Real Properti telah dipercaya mengelola berbagai portofolio properti komersial dan residensial 
                             dengan standar kualitas tertinggi.
                         </p>
                     </div>
@@ -65,13 +65,13 @@ const SubsidiaryTwo = () => {
                                 className={`tab ${activeTab === 'vision' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('vision')}
                             >
-                                Vision
+                                Visi
                             </button>
                             <button 
                                 className={`tab ${activeTab === 'mission' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('mission')}
                             >
-                                Mision
+                                Misi
                             </button>
                         </div>
                         <div className="tabs-content">
