@@ -60,7 +60,7 @@ const Navbar = () => {
         compute();
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', onScroll);
-
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d506994.2489237951!2d107.643158!3d-6.903449!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6398252477f%3A0x146a1f93d3e815b2!2sBandung%2C%20Kota%20Bandung%2C%20Jawa%20Barat%2C%20Indonesia!5e0!3m2!1sid!2sus!4v1767587239970!5m2!1sid!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         return () => {
             window.removeEventListener('scroll', onScroll);
             window.removeEventListener('resize', onScroll);
@@ -129,13 +129,7 @@ const Navbar = () => {
 
                 <ul className={`navbar-menu ${mobileMenuOpen ? 'active' : ''}`}>
                     <li className="navbar-item">
-                        <Link
-                            to="/"
-                            className="navbar-link"
-                            onClick={(e) => handleTopNavClick(e, '/')}
-                        >
-                            BERANDA
-                        </Link>
+                   
                     </li>
 
                     <li
