@@ -30,6 +30,20 @@ const AboutUs = () => {
     const [awards, setAwards] = useState([]);
     const [loadingAwards, setLoadingAwards] = useState(true);
 
+    // === FIX: kalau masuk ke /about tanpa target section/tab, selalu mulai dari atas ===
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const hasTarget =
+            params.has('tab') ||
+            params.has('scroll') ||
+            params.has('section');
+
+        if (!hasTarget) {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+    }, [location.pathname, location.search]);
+    // === END FIX ===
+
     // Fetch awards from backend
     useEffect(() => {
         fetchAwards();
