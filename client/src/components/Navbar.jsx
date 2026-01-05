@@ -73,12 +73,19 @@ const Navbar = () => {
         setTimeout(() => navigate(path), 300);
     };
 
-    // ADD: khusus saat sedang di Landing (/) atau About (/about), klik logo/beranda/tentang => scroll to top
+    // ADD: klik logo/beranda/tentang => (kondisional) scroll to top
+    // NOTE: permintaan khusus: saat klik "TENTANG" dari page Properti & Contact, juga pakai animasi.
     const handleTopNavClick = (e, path) => {
         const isLandingOrAbout = location.pathname === '/' || location.pathname === '/about';
+        const isPropertiesOrContact = location.pathname === '/properties' || location.pathname === '/contact';
 
-        // hanya berlaku untuk 2 page ini sesuai permintaan
-        if (isLandingOrAbout) {
+        // Default: animasi hanya untuk Landing/About.
+        // Khusus "Tentang": tambahkan juga untuk Properti & Contact.
+        const shouldAnimateScrollTop =
+            (path === '/about' && (isLandingOrAbout || isPropertiesOrContact)) ||
+            (path !== '/about' && isLandingOrAbout);
+
+        if (shouldAnimateScrollTop) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -87,7 +94,7 @@ const Navbar = () => {
         // kalau route berbeda, lakukan navigate manual (biar scroll keburu jalan dan konsisten)
         if (location.pathname !== path) {
             e.preventDefault();
-            setTimeout(() => navigate(path), isLandingOrAbout ? 150 : 0);
+            setTimeout(() => navigate(path), shouldAnimateScrollTop ? 150 : 0);
         }
         // kalau route sama, biarkan (tidak navigate), hanya scroll top
     };
