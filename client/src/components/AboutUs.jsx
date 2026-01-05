@@ -137,23 +137,48 @@ const AboutUs = () => {
             setActiveTab(tab);
         }
 
-        const scrollToEl = (targetEl, offset = 0) => {
+        const fromNavbar = Boolean(location.state && location.state.fromNavbar);
+
+        // ADD: offset khusus Tablet/HP untuk section tertentu saat datang dari navbar
+        const isTabletOrMobile = () =>
+            typeof window !== 'undefined' &&
+            window.matchMedia &&
+            window.matchMedia('(max-width: 1024px)').matches;
+
+        const getNavbarClickOffset = (sectionKey) => {
+            // default: tidak mengubah perilaku desktop / non-navbar
+            if (!fromNavbar) return 0;
+            if (!isTabletOrMobile()) return 0;
+
+            // Tuning offset hanya untuk 2 menu ini (tablet/HP)
+            // (+) => scroll sedikit lebih turun (memberi ruang agar judul/isi tidak “nempel”)
+            switch (sectionKey) {
+                case 'awards':
+                    return -220;
+                case 'subsidiaries':
+                    return 100;
+                default:
+                    return 0;
+            }
+        };
+
+        const scrollToEl = (targetEl, offset = 0, sectionKey = '') => {
             if (!targetEl) return;
 
             const navbarEl = document.querySelector('.navbar');
             const navH = navbarEl ? navbarEl.getBoundingClientRect().height : 0;
+
+            const tunedOffset = offset + getNavbarClickOffset(sectionKey);
 
             const y =
                 targetEl.getBoundingClientRect().top +
                 window.scrollY -
                 navH -
                 10 +
-                offset;
+                tunedOffset;
 
             window.scrollTo({ top: y, behavior: 'smooth' });
         };
-
-        const fromNavbar = Boolean(location.state && location.state.fromNavbar);
 
         // FIX: kalau datang dari page lain via dropdown navbar, reset scroll dulu (tanpa anim) lalu koreksi scroll setelah layout settle
         const preScrollIfNeeded = () => {
@@ -161,21 +186,20 @@ const AboutUs = () => {
             window.scrollTo({ top: 0, behavior: 'auto' });
         };
 
-        const scrollTabs = () => scrollToEl(tabsRef.current, extraOffset);
-        const scrollLeadership = () => scrollToEl(leadershipRef.current, extraOffset);
-        const scrollAwards = () => scrollToEl(awardsRef.current, extraOffset);
-        const scrollSubs = () => scrollToEl(subsidiariesRef.current, extraOffset);
+        const scrollTabs = () => scrollToEl(tabsRef.current, extraOffset, 'tabs');
+        const scrollLeadership = () => scrollToEl(leadershipRef.current, extraOffset, 'leadership');
+
+        // CHANGE: awards + subsidiaries pakai sectionKey untuk offset khusus tablet/HP
+        const scrollAwards = () => scrollToEl(awardsRef.current, extraOffset, 'awards');
+        const scrollSubs = () => scrollToEl(subsidiariesRef.current, extraOffset, 'subsidiaries');
 
         const runScroll = (fn) => {
-            // 1) pre-scroll hanya untuk kasus dari page lain
             preScrollIfNeeded();
 
-            // 2) scroll cepat setelah DOM paint
             const r1 = window.requestAnimationFrame(() => {
                 fn();
             });
 
-            // 3) koreksi setelah layout/hero image settle (tanpa mengubah behaviour saat sudah di /about)
             const t2 = fromNavbar ? window.setTimeout(fn, 250) : null;
 
             return () => {
@@ -184,7 +208,6 @@ const AboutUs = () => {
             };
         };
 
-        // Jalankan sesuai param (tetap seperti sebelumnya, hanya tambah koreksi jika fromNavbar)
         if (scroll === 'tabs') return runScroll(scrollTabs);
         if (section === 'leadership') return runScroll(scrollLeadership);
         if (section === 'awards') return runScroll(scrollAwards);

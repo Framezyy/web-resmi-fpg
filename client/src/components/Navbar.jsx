@@ -137,6 +137,10 @@ const Navbar = () => {
 
     const logoSrc = isScrolledMode ? logoColor : logoWhite;
     const fromNavbarState = location.pathname === '/about' ? null : { fromNavbar: true };
+    const isOnAboutPage = location.pathname === '/about';
+
+    // Kirim state untuk semua klik submenu, termasuk saat sudah di /about
+    const aboutMenuState = { fromNavbar: true, samePage: isOnAboutPage };
 
     // ✅ mobile/tablet: dropdown "TENTANG" selalu tampil saat drawer menu terbuka
     const shouldShowAboutMenu = showAboutSubmenu || (isMobileViewport() && mobileMenuOpen);
@@ -195,8 +199,8 @@ const Navbar = () => {
                             <ul className="dropdown-menu">
                                 <li>
                                     <Link
-                                        to="/about?tab=history&scroll=tabs&offset=160"
-                                        state={fromNavbarState}
+                                        to="/about?tab=history&scroll=tabs&offset=60"
+                                        state={aboutMenuState}
                                         onClick={closeMobileMenu}
                                     >
                                         <span className="dropdown-icon"></span>
@@ -205,8 +209,8 @@ const Navbar = () => {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/about?section=leadership&offset=160"
-                                        state={fromNavbarState}
+                                        to="/about?section=leadership&offset=120"
+                                        state={aboutMenuState}
                                         onClick={closeMobileMenu}
                                     >
                                         <span className="dropdown-icon"></span>
@@ -215,8 +219,8 @@ const Navbar = () => {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/about?section=awards&offset=250"
-                                        state={fromNavbarState}
+                                        to="/about?section=awards&offset=120"
+                                        state={aboutMenuState}
                                         onClick={closeMobileMenu}
                                     >
                                         <span className="dropdown-icon"></span>
@@ -226,7 +230,7 @@ const Navbar = () => {
                                 <li>
                                     <Link
                                         to="/about?section=subsidiaries&offset=60"
-                                        state={fromNavbarState}
+                                        state={aboutMenuState}
                                         onClick={closeMobileMenu}
                                     >
                                         <span className="dropdown-icon"></span>
