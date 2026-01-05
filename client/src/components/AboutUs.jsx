@@ -4,6 +4,7 @@ import axios from 'axios';
 import './AboutUs.css';
 import heroBg from '../assets/images/homedua.png';
 import visiImage from '../assets/images/Kantor.png';
+import sejarahImage from '../assets/images/kantor2.png';
 import ceoImage from '../assets/images/pahri.png';
 import leadershipBg from '../assets/images/leadershipBg.jpg';
 import award1 from '../assets/images/penghargaansatu.jpeg';
@@ -264,7 +265,7 @@ const AboutUs = () => {
                         {activeTab === 'history' && (
                             <div className="tab-panel vision-content">
                                 <div className="vision-image" data-animate="fade-right" data-animate-delay="60">
-                                    <img src={visiImage} alt="Visi Fachri Group" />
+                                    <img src={sejarahImage} alt="Visi Fachri Group" />
                                 </div>
                                 <div className="vision-text history-text" data-animate="fade-left" data-animate-delay="120">
                                     <h2>Sejarah Fachri Group</h2>
