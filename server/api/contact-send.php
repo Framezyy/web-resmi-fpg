@@ -48,9 +48,9 @@ try {
   // === KONFIG SMTP (ISI SESUAI EMAIL ADMIN) ===
   $SMTP_HOST = 'smtp.gmail.com';
   $SMTP_PORT = 587;
-  $SMTP_USER = 'framezyy2023@gmail.com';      // ganti
-  $SMTP_PASS = 'gbtxgpmszrjurwjw';     // ganti (mis. Gmail: App Password)
-  $TO_EMAIL  = 'framezyy2023@gmail.com';       // email admin penerima
+  $SMTP_USER = 'fachripropertiborneo@gmail.com';      // ganti
+  $SMTP_PASS = 'qgohzrnhnyujpozs';     // ganti (mis. Gmail: App Password)
+  $TO_EMAIL  = 'fachripropertiborneo@gmail.com';       // email admin penerima
   // ===========================================
 
   $mail = new PHPMailer(true);

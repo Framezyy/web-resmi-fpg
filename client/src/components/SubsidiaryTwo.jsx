@@ -80,8 +80,7 @@ const SubsidiaryTwo = () => {
                                     <div className="vision-content">
                                         <div className="vision-text">
                                             <p>
-                                                Menjadi mitra terpercaya dalam manajemen dan investasi properti dengan memberikan 
-                                                solusi terbaik untuk setiap kebutuhan klien.
+                                                Menjadi pengembang Properti terbesar dan terbaik di Kalimantan Barat dengan terus berinovasi untuk kepuasan konsumen.
                                             </p>
                                         </div>
                                         <div className="vision-shape"></div>
@@ -94,8 +93,7 @@ const SubsidiaryTwo = () => {
                                         <div className="mission-shape"></div>
                                         <div className="mission-text">
                                             <p>
-                                                Memberikan layanan manajemen properti profesional dan solusi investasi yang 
-                                                menguntungkan dengan fokus pada kepuasan klien.
+                                              Mengembangkan semua sumber daya yang dimiliki untuk menerapkan tata kelola organisasi yang berorientasi peningkatan mutu dan penyediaan layanan yang berkualitas.
                                             </p>
                                         </div>
                                     </div>
