@@ -1,0 +1,360 @@
+.news-detail-page {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Section 1: Foto (samakan ukuran dengan .news-hero di News.css) */
+.news-detail-hero {
+    width: 100%;
+    background: #0b0b10;
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-detail-hero-image {
+    width: 100%;
+    height: 100%;
+    max-height: none; /* override max-height lama */
+    display: block;
+    object-fit: cover;
+
+    /* pastikan mengisi container hero */
+    position: absolute;
+    inset: 0;
+}
+
+/* Section 2: Body */
+.news-detail-body {
+    width: 100%;
+}
+
+/* Judul berita di tengah + atur jarak ke summary */
+.news-detail-title {
+    text-align: center;
+    margin: 6px auto 18px auto; /* jarak bawah (ke summary) diperbesar */
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.25;
+}
+
+.news-detail-body .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.news-detail-back {
+    display: inline-block;
+    text-decoration: none;
+    color: #1a1a2e;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.news-detail-top {
+    margin-bottom: 22px;
+}
+
+.news-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 18px; /* sebelumnya 12px -> tambah jarak ke judul */
+}
+
+.news-detail-chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(26, 26, 46, 0.07);
+    color: #1a1a2e;
+}
+
+.news-detail-meta-sep {
+    opacity: 0.6;
+}
+
+.news-detail-title {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.25;
+}
+
+.news-detail-summary {
+    margin: 10px auto 60px auto; /* bawah diperbesar agar ada jarak ke content */
+    color: #555;
+    line-height: 1.7;
+    max-width: 900px;
+    text-align: center;
+}
+
+.news-detail-content {
+    margin-top: 0; /* sebelumnya 22px, sekarang jaraknya dikontrol dari summary */
+    color: #333;
+    line-height: 1.9;
+}
+
+.news-detail-content p {
+    margin: 0 0 14px 0;
+}
+
+/* Desktop: section 2 minimal full 1 layar */
+@media (min-width: 1025px) {
+    .news-detail-body {
+        min-height: 100vh;
+        display: flex;          /* agar container bisa "mengisi" tinggi section */
+        align-items: flex-start; /* tidak memaksa konten center vertikal */
+    }
+
+    .news-detail-body .container {
+        width: 100%;
+    }
+}
+
+/* Section 3: Contact (scoped ke detail page saja) */
+.news-detail-page .contact-section {
+    background: #f9f9f9;
+}
+
+.news-detail-page .contact-section h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 50px;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.news-detail-page .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.news-detail-page .contact-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.news-detail-page .logo-box {
+    width: 50px;
+    height: 50px;
+    background: #333;
+    border-radius: 5px;
+}
+
+.news-detail-page .logo-box img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.news-detail-page .contact-info h3 {
+    font-size: 16px;
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.news-detail-page .address,
+.news-detail-page .contact-details {
+    margin-bottom: 30px;
+}
+
+.news-detail-page .address h4,
+.news-detail-page .contact-details h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.news-detail-page .address p,
+.news-detail-page .contact-details p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.news-detail-page .contact-map iframe {
+    border-radius: 8px;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .news-detail-hero {
+        height: 52svh;
+        min-height: 380px;
+        max-height: none;
+    }
+
+    .news-detail-hero-image {
+        max-height: 420px;
+    }
+
+    .news-detail-page .contact-content {
+        gap: 36px;
+    }
+
+    .news-detail-page .contact-map iframe {
+        height: 340px;
+    }
+}
+
+@media (max-width: 768px) {
+    .news-detail-title {
+        font-size: 26px;
+    }
+
+    .news-detail-page .contact-content {
+        grid-template-columns: 1fr;
+    }
+
+    .news-detail-page .contact-map iframe {
+        height: 280px;
+    }
+}
+
+/* =========================
+   NEW Section: Berita Terbaru (scoped)
+========================= */
+.news-detail-latest .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 70px 20px; /* jarak dari section 2 & sebelum contact */
+}
+
+.news-detail-latest-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #1a1a2e;
+    margin: 0 0 28px 0;
+}
+
+.news-detail-latest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.news-detail-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.news-detail-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.news-detail-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.news-detail-card-cover {
+    height: 160px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25), rgba(231, 76, 60, 0.25));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.news-detail-card-body {
+    padding: 16px 16px 18px 16px;
+}
+
+.news-detail-card-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #e74c3c;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.news-detail-card-title {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.35;
+}
+
+.news-detail-card-summary {
+    margin: 0 0 14px 0;
+    color: #555;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.news-detail-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #777;
+    font-size: 12px;
+    gap: 10px;
+}
+
+@media (max-width: 1024px) {
+    .news-detail-latest-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .news-detail-latest-title {
+        font-size: 24px;
+    }
+
+    .news-detail-latest-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   Section Divider (pembatas antar section)
+   Scoped hanya untuk NewsDetail
+========================= */
+
+/* Pembatas antara Section 2 dan Section "Temukan Lebih" */
+.news-detail-body + .news-detail-latest {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Pembatas antara Section "Temukan Lebih" dan Contact */
+.news-detail-latest + .contact-section {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Biar garisnya tidak terlalu "nempel" ke konten */
+.news-detail-latest .container {
+    padding-top: 40px; /* sebelumnya top padding 0 */
+}

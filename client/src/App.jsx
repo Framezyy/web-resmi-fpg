@@ -6,6 +6,8 @@ import Home from './components/Home';
 import AboutUs from './components/AboutUs';
 import Properties from './components/Properties';
 import ContactUs from './components/ContactUs';
+import News from './components/News';
+import NewsDetail from './components/NewsDetail';
 import SubsidiaryOne from './components/SubsidiaryOne';
 import SubsidiaryTwo from './components/SubsidiaryTwo';
 import AdminLogin from './components/AdminLogin';
@@ -31,6 +33,8 @@ function AppContent() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/about" element={<AboutUs />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/news/:id" element={<NewsDetail />} />
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/subsidiary/borneo-icon" element={<SubsidiaryOne />} />

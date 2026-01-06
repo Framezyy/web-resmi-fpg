@@ -251,6 +251,12 @@ const Navbar = () => {
                     </li>
 
                     <li className="navbar-item">
+                        <button onClick={() => handleNavigation('/news')} className="navbar-link">
+                            BERITA
+                        </button>
+                    </li>
+
+                    <li className="navbar-item">
                         <button onClick={() => handleNavigation('/contact')} className="navbar-link">
                             HUBUNGI KAMI
                         </button>

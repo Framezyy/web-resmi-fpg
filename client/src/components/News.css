@@ -1,0 +1,395 @@
+.news-page {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* =========================
+   HERO (samakan dengan Properties)
+========================= */
+
+/* Hero Section */
+.news-hero {
+    height: 100vh;
+    min-height: 600px;
+    max-height: 900px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0;
+}
+
+.news-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+/* Overlay: kiri bawah (desktop) */
+.news-page .hero-overlay {
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    z-index: 2;
+    text-align: left;
+    color: white;
+    max-width: 700px;
+    width: auto;
+    padding: 0;
+}
+
+.news-page .hero-overlay h1 {
+    font-size: 64px;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+    color: white;
+    line-height: 1.1;
+    letter-spacing: 2px;
+    /* samakan dengan Properties: tidak ada text-transform */
+}
+
+.news-page .hero-overlay p {
+    font-size: 28px;
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 400; /* sebelumnya 300 -> samakan rasa bold seperti Properties */
+    color: white;
+}
+
+/* highlight aman (kalau mau konsisten) */
+.news-page .highlight {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+/* =========================
+   Responsive: Properties Hero text center (ikuti Properties)
+========================= */
+
+@media (max-width: 1024px) {
+  .news-page .hero-overlay {
+    left: 50% !important;
+    bottom: auto !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    text-align: center !important;
+    max-width: min(92vw, 900px) !important;
+    padding: 0 16px !important;
+  }
+
+  .news-page .hero-overlay h1 {
+    font-size: 40px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .news-page .hero-overlay p {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-page .hero-overlay {
+    max-width: min(92vw, 680px) !important;
+    padding: 0 14px !important;
+  }
+
+  .news-page .hero-overlay h1 {
+    font-size: 30px !important;
+    line-height: 1.18 !important;
+    letter-spacing: 1px !important;
+  }
+
+  .news-page .hero-overlay p {
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-page .hero-overlay h1 {
+    font-size: 26px !important;
+  }
+}
+
+/* Paksa 1 baris untuk judul hero saat tablet/HP (samakan dengan Properties) */
+@media (max-width: 1024px) {
+  .news-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 1px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 0.8px !important;
+    font-size: 28px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 0.6px !important;
+    font-size: 24px !important;
+  }
+}
+
+/* =========================
+   Sisanya biarkan seperti sebelumnya
+========================= */
+
+/* Content wrapper */
+.news-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.news-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* Search */
+.news-search {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 35px;
+}
+
+.news-search-input {
+    width: 100%;
+    max-width: 720px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    outline: none;
+    font-size: 14px;
+}
+
+.news-search-input:focus {
+    border-color: rgba(231, 76, 60, 0.6);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+}
+
+.news-search-meta {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+/* Cards grid */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.news-card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+}
+
+.news-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.news-card-cover {
+    height: 160px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25), rgba(231, 76, 60, 0.25));
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.news-card-body {
+    padding: 18px 18px 16px 18px;
+}
+
+.news-card-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(26, 26, 46, 0.07);
+    color: #1a1a2e;
+    margin-bottom: 10px;
+}
+
+.news-card-title {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1.35;
+}
+
+.news-card-summary {
+    margin: 0 0 12px 0;
+    color: #555;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.news-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    color: #777;
+    font-size: 12px;
+}
+
+.news-empty {
+    text-align: center;
+    color: #666;
+    padding: 30px 0 10px 0;
+}
+
+/* Contact section (scoped) */
+.news-page .contact-section {
+    background: #f9f9f9;
+}
+
+.news-page .contact-section h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 50px;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.news-page .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.news-page .contact-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.news-page .logo-box {
+    width: 50px;
+    height: 50px;
+    background: #333;
+    border-radius: 5px;
+}
+
+.news-page .logo-box img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.news-page .contact-info h3 {
+    font-size: 16px;
+    margin: 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.news-page .address,
+.news-page .contact-details {
+    margin-bottom: 30px;
+}
+
+.news-page .address h4,
+.news-page .contact-details h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.news-page .address p,
+.news-page .contact-details p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.news-page .contact-map iframe {
+    border-radius: 8px;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .news-hero {
+        height: 52svh;
+        min-height: 380px;
+        max-height: none;
+    }
+
+    .news-hero h1 {
+        font-size: 36px;
+        letter-spacing: 1.6px;
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .news-page .contact-content {
+        gap: 36px;
+    }
+
+    .news-page .contact-map iframe {
+        height: 340px;
+    }
+}
+
+@media (max-width: 768px) {
+    .news-hero h1 {
+        font-size: 30px;
+        letter-spacing: 1.2px;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-page .contact-content {
+        grid-template-columns: 1fr;
+    }
+
+    .news-page .contact-map iframe {
+        height: 280px;
+    }
+}
