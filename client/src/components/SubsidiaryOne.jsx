@@ -79,8 +79,7 @@ const SubsidiaryOne = () => {
                                     <div className="vision-content">
                                         <div className="vision-text">
                                             <p>
-                                                Menjadi perusahaan pengembang properti terpercaya dan terdepan dalam menciptakan kawasan 
-                                                hunian dan komersial yang berkualitas, inovatif, serta berkelanjutan di Indonesia.
+                                                menjadi slah satu pengembang (developer) property terbaik dikalimantan barat dan terpercaya mampu bersaing di tingkat nasional sesuai kelas nya.
                                             </p>
                                         </div>
                                         <div className="vision-shape"></div>
