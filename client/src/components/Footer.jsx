@@ -20,7 +20,7 @@ const Footer = () => {
 
                     <a
                         className="footer-social-link"
-                        href="https://www.instagram.com/pt.fachri.property.group"
+                        href="https://www.instagram.com/perumahan.murahptk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Instagram"
