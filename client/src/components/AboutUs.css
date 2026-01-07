@@ -551,6 +551,11 @@
     line-height: 1.6 !important;
 }
 
+/* Justify deskripsi pada Visi & Misi */
+.about-tabs .tabs-content .vision-text p{
+  text-align: justify !important;
+}
+
 /* =========================
    About Page Entrance Animations (scoped)
    ========================= */
