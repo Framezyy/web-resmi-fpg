@@ -159,7 +159,7 @@ const LandingPage = () => {
 
                             <div className="address animate-on-scroll" data-anim="up" style={{ transitionDelay: '0.3s' }}>
                                 <h4>Alamat Perusahaan</h4>
-                                <p>Jl. Ampera No.02, Sungai Jawi, Kec. Pontianak Kota,</p>
+                                <p>Jl. Ampera No.22, Sungai Jawi, Kec. Pontianak Kota,</p>
                                 <p>Kota Pontianak, Kalimantan Barat 78114</p>
                             </div>
 

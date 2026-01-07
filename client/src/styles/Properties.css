@@ -1340,3 +1340,10 @@
     padding-top: 12px;
   }
 }
+
+.properties-page .logo-box {
+    width: 80px;
+    height: 80px;
+    background: transparent;
+    border-radius: 5px;
+}

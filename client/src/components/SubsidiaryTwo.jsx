@@ -93,7 +93,8 @@ const SubsidiaryTwo = () => {
                                         <div className="mission-shape"></div>
                                         <div className="mission-text">
                                             <p>
-                                              Mengembangkan semua sumber daya yang dimiliki untuk menerapkan tata kelola organisasi yang berorientasi peningkatan mutu dan penyediaan layanan yang berkualitas.
+                                            Mengembangkan semua sumber daya yang dimiliki untuk menerapkan tata kelola organisasi yang berorientasi peningkatan mutu dan penyediaan layanan yang berkualitas.
+Menciptakan produk bermutu tinggi untuk memaksimalkan kepuasan masyarakat dengan memberi nilai tambah investasi yang layak melalui layanan prima dan kepuasan dari konsumen.
                                             </p>
                                         </div>
                                     </div>

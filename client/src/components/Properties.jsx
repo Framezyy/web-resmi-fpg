@@ -386,7 +386,7 @@ const Properties = () => {
                             </div>
                             <div className="address">
                                 <h4>Alamat Perusahaan</h4>
-                                <p>Jl. Ampera No.02, Sungai Jawi, Kec. Pontianak Kota,</p>
+                                <p>Jl. Ampera No.22, Sungai Jawi, Kec. Pontianak Kota,</p>
                                 <p>Kota Pontianak, Kalimantan Barat 78114</p>
                             </div>
                             <div className="contact-details">

@@ -235,7 +235,7 @@
 }
 
 .vision-text p {
-    text-align: left;
+    text-align: justify;
     margin: 0;
     font-size: 16px;
     line-height: 1.8;
@@ -265,7 +265,7 @@
 }
 
 .mission-text p {
-    text-align: left;
+    text-align: justify;
     margin: 0;
     font-size: 16px;
     line-height: 1.8;

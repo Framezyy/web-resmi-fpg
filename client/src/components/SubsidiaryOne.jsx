@@ -92,8 +92,10 @@ const SubsidiaryOne = () => {
                                         <div className="mission-shape"></div>
                                         <div className="mission-text">
                                             <p>
-                                                Mengembangkan proyek properti yang mengedepankan kualitas desain, konstruksi, dan 
-                                                fungsi guna memenuhi kebutuhan masyarakat modern.
+                                                Memberikan pelayanan terbaik dengan produk yang berkualitas lingkungan yang nyaman, aman dan sehat.
+Menbangun management perusahaan yang professional serta menjaga kesinambungan pertumbuhan perusahaan yang  saling menguntungkan.
+Menjalin kerja samayang baik dengan mitra perusahaan
+Menciptakan lingkunga kerja yang professional dan menigkatkan produktivitas perusahaan.
                                             </p>
                                         </div>
                                     </div>
