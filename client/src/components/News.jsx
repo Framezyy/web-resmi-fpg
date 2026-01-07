@@ -73,16 +73,14 @@ const News = () => {
                     <input
                         className="news-search-input"
                         type="text"
-                        placeholder="Cari berita atau aktivitas (contoh: progress, pelatihan, kunjungan…)"
+                        placeholder="Temukan Berita Atau Aktivitas"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         aria-label="Cari berita atau aktivitas"
                     />
                 </div>
 
-                <div className="news-search-meta">
-                    Menampilkan {filtered.length} dari {items.length} data
-                </div>
+                
 
                 {filtered.length === 0 ? (
                     <div className="news-empty">Tidak ada berita/aktivitas yang cocok.</div>

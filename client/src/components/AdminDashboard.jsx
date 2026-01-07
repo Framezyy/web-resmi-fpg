@@ -24,9 +24,10 @@ const AdminDashboard = () => {
     const [previewMainImage, setPreviewMainImage] = useState(null);
 
     // === TAMBAH: untuk gallery yang SUDAH ADA + yang mau dihapus ===
-    const [existingGalleryImages, setExistingGalleryImages] = useState([]); // array of URL dari DB
-    const [deletedGalleryImages, setDeletedGalleryImages] = useState([]);   // array of URL yang ditandai hapus
+    const [existingGalleryImages, setExistingGalleryImages] = useState([]); // url dari DB
+    const [deletedGalleryImages, setDeletedGalleryImages] = useState([]);   // url yang ditandai hapus
     // === END TAMBAH ===
+    
 
     const [activeSection, setActiveSection] = useState('properties');
     const [awards, setAwards] = useState([]);
@@ -47,6 +48,25 @@ const AdminDashboard = () => {
         total_terjual: 0
     }); // ← TAMBAH INI
     const [isCreatingRecap, setIsCreatingRecap] = useState(false); // ← TAMBAH INI
+
+    // =========================
+    // NEWS (Berita Acara) - state
+    // =========================
+    const [newsItems, setNewsItems] = useState([]);
+    const [newsLoading, setNewsLoading] = useState(false);
+    const [newsEditMode, setNewsEditMode] = useState(false);
+    const [currentNews, setCurrentNews] = useState(null);
+
+    const [newsFormData, setNewsFormData] = useState({
+        title: '',
+        category: '',
+        summary: '',
+        location: '',
+        publishedAt: '',
+        contentText: '' // textarea -> akan diubah ke array content[]
+    });
+    const [newsCoverImage, setNewsCoverImage] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -97,6 +117,143 @@ const AdminDashboard = () => {
         }
     };
 
+    // =========================
+    // NEWS (Berita Acara) - API
+    // =========================
+    const fetchNews = async () => {
+        try {
+            setNewsLoading(true);
+            const res = await axios.get(`${API_URL}/news-list.php`);
+            setNewsItems(Array.isArray(res.data) ? res.data : []);
+        } catch (e) {
+            console.error('Error fetching news:', e);
+            setNewsItems([]);
+        } finally {
+            setNewsLoading(false);
+        }
+    };
+
+    const handleNewsInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewsFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleNewsCoverChange = (e) => {
+        const file = e.target.files?.[0] || null;
+        setNewsCoverImage(file);
+    };
+
+    const openNewsModal = () => {
+        setActiveSection('news');
+        setShowModal(true);
+
+        setNewsEditMode(false);
+        setCurrentNews(null);
+
+        setNewsFormData({
+            title: '',
+            category: '',
+            summary: '',
+            location: '',
+            publishedAt: '',
+            contentText: ''
+        });
+        setNewsCoverImage(null);
+    };
+
+    const handleEditNews = (item) => {
+        setActiveSection('news');
+        setShowModal(true);
+
+        setNewsEditMode(true);
+        setCurrentNews(item);
+
+        const contentArr = Array.isArray(item?.content) ? item.content : [];
+        setNewsFormData({
+            title: item?.title || '',
+            category: item?.category || '',
+            summary: item?.summary || '',
+            location: item?.location || '',
+            publishedAt: item?.publishedAt || '',
+            contentText: contentArr.filter(Boolean).join('\n\n')
+        });
+        setNewsCoverImage(null);
+    };
+
+    const handleDeleteNews = async (id) => {
+        const ok = window.confirm('Hapus berita ini?');
+        if (!ok) return;
+
+        try {
+            const token = localStorage.getItem('adminToken');
+            await axios.delete(`${API_URL}/news-delete.php?id=${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            await fetchNews();
+        } catch (e) {
+            console.error('Error deleting news:', e);
+            alert(e.response?.data?.message || 'Gagal menghapus berita');
+        }
+    };
+
+    const handleNewsSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const token = localStorage.getItem('adminToken');
+
+            const contentArr = (newsFormData.contentText || '')
+                .split(/\n+/)
+                .map((s) => s.trim())
+                .filter(Boolean);
+
+            const fd = new FormData();
+            fd.append('title', newsFormData.title || '');
+            fd.append('category', newsFormData.category || '');
+            fd.append('summary', newsFormData.summary || '');
+            fd.append('location', newsFormData.location || '');
+            fd.append('publishedAt', newsFormData.publishedAt || '');
+            fd.append('content', JSON.stringify(contentArr));
+
+            if (newsCoverImage) {
+                fd.append('coverImage', newsCoverImage);
+            }
+
+            if (newsEditMode && currentNews?.id) {
+                fd.append('id', currentNews.id);
+                await axios.post(`${API_URL}/news-update.php`, fd, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            } else {
+                await axios.post(`${API_URL}/news-create.php`, fd, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            }
+
+            setShowModal(false);
+            setNewsEditMode(false);
+            setCurrentNews(null);
+            setNewsCoverImage(null);
+            await fetchNews();
+        } catch (e) {
+            console.error('Error saving news:', e);
+            alert(e.response?.data?.message || 'Gagal menyimpan berita');
+        }
+    };
+
+    useEffect(() => {
+        // (opsional tapi perlu) saat pindah tab ke "news" -> load datanya
+        if (activeSection === 'news') {
+            fetchNews();
+        }
+    }, [activeSection]);
+
     const handleLogout = () => {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUser');
@@ -134,6 +291,14 @@ const AdminDashboard = () => {
         setDeletedGalleryImages(prev => (prev.includes(url) ? prev : [...prev, url]));
     };
     // === END TAMBAH ===
+
+    // Tambah helper: toggle hapus / batal hapus
+  const toggleDeleteGalleryImage = (url) => {
+    setDeletedGalleryImages((prev) => {
+      if (prev.includes(url)) return prev.filter((x) => x !== url);
+      return [...prev, url];
+    });
+  };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -497,33 +662,39 @@ const AdminDashboard = () => {
         <div className="admin-dashboard">
             {/* UPDATE HEADER INI */}
             <header className="admin-header">
-                <div className="admin-header-left">
-                    <div className="admin-logo">
-                        <img src={logoColor} alt="Fachri Property Group" />
-                        <div className="admin-header-content">
-                            <h1>Admin Dashboard</h1>
-                        </div>
-                    </div>
-                </div>
-                <div className="admin-actions">
-                    {activeSection === 'properties' ? (
-                        <button className="btn-add" onClick={openModal}>
-                            <span>+</span> Tambah Properti
-                        </button>
-                    ) : activeSection === 'awards' ? (
-                        <button className="btn-add" onClick={openModal}>
-                            <span>+</span> Tambah Penghargaan
-                        </button>
-                    ) : (
-                        <button className="btn-add" onClick={handleCreateRecap}>
-                            <span>+</span> Tambah Rekapan
-                        </button>
-                    )}
-                    <button className="btn-logout" onClick={handleLogout}>
-                        Keluar
-                    </button>
-                </div>
-            </header>
+    <div className="admin-header-left">
+        <div className="admin-logo">
+            <img src={logoColor} alt="Fachri Property Group" />
+            <div className="admin-header-content">
+                <h1>Admin Dashboard</h1>
+            </div>
+        </div>
+    </div>
+
+    <div className="admin-actions">
+        {activeSection === 'properties' ? (
+            <button className="btn-add" onClick={openModal}>
+                <span>+</span> Tambah Properti
+            </button>
+        ) : activeSection === 'awards' ? (
+            <button className="btn-add" onClick={openModal}>
+                <span>+</span> Tambah Penghargaan
+            </button>
+        ) : activeSection === 'news' ? (
+            <button className="btn-add" onClick={openNewsModal} type="button">
+                <span>+</span> Tambah Berita 
+            </button>
+        ) : (
+            <button className="btn-add" onClick={handleCreateRecap}>
+                <span>+</span> Tambah Rekapan
+            </button>
+        )}
+
+        <button className="btn-logout" onClick={handleLogout}>
+            Keluar
+        </button>
+    </div>
+</header>
 
             {/* TAMBAH NAVIGATION TABS */}
             <div className="admin-navigation">
@@ -545,6 +716,13 @@ const AdminDashboard = () => {
                 >
                     Rekapan
                 </button>
+                <button
+                    className={`nav-btn ${activeSection === 'news' ? 'active' : ''}`}
+                    onClick={() => setActiveSection('news')}
+                    type="button"
+                >
+                    Berita Acara
+                </button>
             </div>
 
             {/* PROPERTIES SECTION */}
@@ -562,6 +740,10 @@ const AdminDashboard = () => {
                         <div className="stat-card">
                             <h3>{properties.filter(p => p.type === 'Tipe 40').length}</h3>
                             <p>Tipe 40</p>
+                        </div>
+                        <div className="stat-card">
+                            <h3>{properties.filter(p => p.type === 'Tipe 45').length}</h3>
+                            <p>Tipe 45</p>
                         </div>
                         <div className="stat-card">
                             <h3>{properties.filter(p => p.type === 'Tipe 50').length}</h3>
@@ -631,12 +813,7 @@ const AdminDashboard = () => {
             {/* AWARDS SECTION */}
             {activeSection === 'awards' && (
                 <>
-                    <div className="awards-stats">
-                        <div className="stat-card">
-                            <h3>{awards.length}</h3>
-                            <p>Total Penghargaan</p>
-                        </div>
-                    </div>
+                    
 
                     <div className="awards-table-container">
                         <h2>Manajemen Penghargaan</h2>
@@ -734,465 +911,403 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {/* ← UPDATE MODAL */}
+            {/* === SECTION CONTENT: NEWS === */}
+            {activeSection === 'news' ? (
+                <div className="properties-table-container">
+                    <h2>Berita Acara</h2>
+
+                    {newsLoading ? (
+                        <div className="no-data">
+                            <p>Loading...</p>
+                        </div>
+                    ) : newsItems.length === 0 ? (
+                        <div className="no-data">
+                            <p>Belum ada berita.</p>
+                        </div>
+                    ) : (
+                        <table className="properties-table">
+                            <thead>
+                                <tr>
+                                    <th>Cover</th>
+                                    <th>Judul</th>
+                                    <th>Kategori</th>
+                                    <th>Tanggal</th>
+                                    <th>Lokasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {newsItems.map((n) => (
+                                    <tr key={n.id}>
+                                        <td>
+                                            {n.coverImage ? (
+                                                <img className="table-image" src={n.coverImage} alt={n.title} />
+                                            ) : (
+                                                <span>-</span>
+                                            )}
+                                        </td>
+                                        <td>{n.title}</td>
+                                        <td>{n.category || '-'}</td>
+                                        <td>{n.publishedAt || '-'}</td>
+                                        <td>{n.location || '-'}</td>
+                                        <td>
+                                            <div className="action-buttons">
+                                                <button className="btn-edit" type="button" onClick={() => handleEditNews(n)}>
+                                                    Edit
+                                                </button>
+                                                <button className="btn-delete" type="button" onClick={() => handleDeleteNews(n.id)}>
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            ) : null}
+
+            {/* === MODAL === */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <h2>
-                                {activeSection === 'properties' 
-                                    ? (editMode ? 'Edit Property' : 'Add New Property')
+                                {activeSection === 'news'
+                                    ? (newsEditMode ? 'Edit Berita' : 'Tambah Berita')
                                     : activeSection === 'awards'
-                                    ? 'Add New Award'
-                                    : isCreatingRecap
-                                    ? 'Add New Company Recap'
-                                    : 'Edit Company Recap'
-                                }
+                                    ? 'Tambah Penghargaan'
+                                    : activeSection === 'recaps'
+                                    ? (isCreatingRecap ? 'Tambah Rekapan' : 'Edit Rekapan')
+                                    : (editMode ? 'Edit Properti' : 'Tambah Properti')}
                             </h2>
-                            <button className="close-btn" onClick={closeModal}>&times;</button>
+                            <button className="close-btn" type="button" onClick={closeModal}>
+                                &times;
+                            </button>
                         </div>
 
-                        {activeSection === 'properties' ? (
-                            <form onSubmit={handleSubmit}>
-                                {/* Row 1: Title & Type */}
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Title *</label>
-                                        <input
-                                            type="text"
-                                            name="title"
-                                            value={formData.title}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter property title"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Type *</label>
-                                        <select
-                                            name="type"
-                                            value={formData.type}
-                                            onChange={handleInputChange}
-                                            required
-                                        >
-                                            <option value="">Select Type</option>
-                                            <option value="Tipe 36">Tipe 36</option>
-                                            <option value="Tipe 40">Tipe 40</option>
-                                            <option value="Tipe 50">Tipe 50</option>
-                                            <option value="Tipe 60">Tipe 60</option>
-                                            
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {/* Location */}
-                                <div className="form-group">
-                                    <label>Location *</label>
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        value={formData.location}
-                                        onChange={handleInputChange}
-                                        placeholder="Enter location"
-                                        required
-                                    />
-                                </div>
-
-                                {/* Row 2: Total Blok & Total Unit */}
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Total Blok</label>
-                                        <input
-                                            type="number"
-                                            name="total_blocks"
-                                            value={formData.total_blocks}
-                                            onChange={handleInputChange}
-                                            placeholder="5"
-                                            min="0"
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Total Unit</label>
-                                        <input
-                                            type="number"
-                                            name="total_units"
-                                            value={formData.total_units}
-                                            onChange={handleInputChange}
-                                            placeholder="120"
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Row 3: Unit Terjual & Unit Tersedia */}
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Unit Terjual</label>
-                                        <input
-                                            type="number"
-                                            name="units_sold"
-                                            value={formData.units_sold}
-                                            onChange={handleInputChange}
-                                            placeholder="85"
-                                            min="0"
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Unit Tersedia</label>
-                                        <input
-                                            type="number"
-                                            name="units_available"
-                                            value={formData.units_available}
-                                            onChange={handleInputChange}
-                                            placeholder="35"
-                                            min="0"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Welcome Text */}
-                                <div className="form-group">
-                                    <label>Welcome Text</label>
-                                    <input
-                                        type="text"
-                                        name="welcome_text"
-                                        value={formData.welcome_text}
-                                        onChange={handleInputChange}
-                                        placeholder="Selamat datang di PT FACHRI PROPERTY GROUP"
-                                    />
-                                </div>
-
-                                {/* About Text */}
-                                <div className="form-group">
-                                    <label>About Text</label>
-                                    <textarea
-                                        name="about_text"
-                                        value={formData.about_text}
-                                        onChange={handleInputChange}
-                                        placeholder="Borneo Real Properti Adalah Perusahaan..."
-                                        rows="4"
-                                    />
-                                </div>
-
-                                {/* Main Image */}
-                                <div className="form-group">
-                                    <label>Main Image {editMode && '(Leave empty to keep current)'}</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleMainImageChange}
-                                    />
-                                    {previewMainImage && (
-                                        <div className="image-preview">
-                                            <img src={previewMainImage} alt="Preview" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Gallery Images */}
-                                <div className="form-group">
-                                    <label>Gallery Images (Multiple - No Limit)</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleGalleryImagesChange}
-                                    />
-                                    <small style={{ color: '#666', fontSize: '13px', marginTop: '5px', display: 'block' }}>
-                                        ✅ You can select <strong>unlimited images</strong> (Ctrl/Cmd + Click to select multiple)
-                                    </small>
-
-                                    {/* === TAMBAH: tampilkan gallery yang SUDAH ADA + tombol hapus === */}
-                                    {editMode && existingGalleryImages.length > 0 && (
-                                        <div style={{ marginTop: '12px' }}>
-                                            <strong style={{ fontSize: '13px' }}>Gallery saat ini:</strong>
-                                            <div style={{
-                                                display: 'grid',
-                                                gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
-                                                gap: '10px',
-                                                marginTop: '10px'
-                                            }}>
-                                                {existingGalleryImages.map((url, idx) => (
-                                                    <div key={`${url}-${idx}`} style={{
-                                                        border: '1px solid #ddd',
-                                                        borderRadius: '8px',
-                                                        padding: '6px',
-                                                        background: '#fff'
-                                                    }}>
-                                                        <img
-                                                            src={url}
-                                                            alt={`gallery-${idx}`}
-                                                            style={{
-                                                                width: '100%',
-                                                                height: '70px',
-                                                                objectFit: 'cover',
-                                                                borderRadius: '6px',
-                                                                display: 'block'
-                                                            }}
-                                                        />
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveExistingGalleryImage(url)}
-                                                            style={{
-                                                                width: '100%',
-                                                                marginTop: '6px',
-                                                                padding: '6px 8px',
-                                                                fontSize: '12px',
-                                                                borderRadius: '6px',
-                                                                border: '1px solid #e53935',
-                                                                background: '#fff',
-                                                                color: '#e53935',
-                                                                cursor: 'pointer'
-                                                            }}
-                                                        >
-                                                            Hapus
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                    {/* === END TAMBAH === */}
-
-                                    {/* Preview Selected Files */}
-                                    {galleryImages.length > 0 && (
-                                        <div style={{ 
-                                            marginTop: '15px', 
-                                            padding: '10px', 
-                                            background: '#f5f5f5', 
-                                            borderRadius: '8px' 
-                                        }}>
-                                            <strong>📸 {galleryImages.length} images selected:</strong>
-                                            <ul style={{ 
-                                                marginTop: '8px', 
-                                                paddingLeft: '20px', 
-                                                fontSize: '13px',
-                                                maxHeight: '120px',
-                                                overflowY: 'auto'
-                                            }}>
-                                                {galleryImages.map((file, index) => (
-                                                    <li key={index}>{file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* ← GANTI BAGIAN MAP INPUT */}
-                                <div className="form-group">
-                                    <label>Google Maps Embed URL (Optional)</label>
-                                    <textarea
-                                        name="map_embed_url"
-                                        value={formData.map_embed_url}
-                                        onChange={handleInputChange}
-                                        placeholder="Paste Google Maps embed URL here..."
-                                        rows="3"
-                                        style={{ 
-                                            fontFamily: 'monospace', 
-                                            fontSize: '12px',
-                                            resize: 'vertical'
-                                        }}
-                                    />
-                                    <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
-                                        Leave empty to use default location
-                                    </small>
-                                </div>
-
-                                {/* Info Box - Cara Dapat Embed URL */}
-                                <div style={{
-                                    background: '#e3f2fd',
-                                    border: '1px solid #2196F3',
-                                    borderRadius: '8px',
-                                    padding: '15px',
-                                    marginBottom: '20px'
-                                }}>
-                                    <strong>📍 Cara mendapatkan Google Maps Embed URL:</strong>
-                                    <ol style={{ margin: '10px 0 0 20px', fontSize: '13px', lineHeight: '1.8' }}>
-                                        <li>Buka <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style={{ color: '#2196F3', fontWeight: '600' }}>Google Maps</a></li>
-                                        <li>Cari lokasi properti</li>
-                                        <li>Klik tombol <strong>"Share"</strong> atau <strong>"Bagikan"</strong></li>
-                                        <li>Pilih tab <strong>"Embed a map"</strong></li>
-                                        <li>Klik <strong>"COPY HTML"</strong></li>
-                                        <li>Paste ke form di atas</li>
-                                    </ol>
-                                    <div style={{ 
-                                        marginTop: '10px', 
-                                        padding: '10px', 
-                                        background: '#fff', 
-                                        borderRadius: '5px',
-                                        fontSize: '11px',
-                                        fontFamily: 'monospace',
-                                        color: '#666',
-                                        border: '1px solid #ddd'
-                                    }}>
-                                        Contoh hasil copy:<br/>
-                                        <code>&lt;iframe src="https://www.google.com/maps/embed?pb=!1m18..."&gt;&lt;/iframe&gt;</code>
-                                    </div>
-                                </div>
-
-                                <div className="form-actions">
-                                    <button type="button" className="btn-cancel" onClick={closeModal}>
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="btn-submit">
-                                        {editMode ? 'Update' : 'Create'} Property
-                                    </button>
-                                </div>
-                            </form>
-                        ) : activeSection === 'awards' ? (
-                            <form onSubmit={handleAwardSubmit}>
-                                <div className="form-group">
-                                    <label>Title *</label>
-                                    <input
-                                        type="text"
-                                        name="title"
-                                        value={awardFormData.title}
-                                        onChange={handleAwardInputChange}
-                                        placeholder="Enter award title"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Year</label>
-                                    <input
-                                        type="text"
-                                        name="year"
-                                        value={awardFormData.year}
-                                        onChange={handleAwardInputChange}
-                                        placeholder="2024"
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Display Order</label>
-                                    <input
-                                        type="number"
-                                        name="display_order"
-                                        value={awardFormData.display_order}
-                                        onChange={handleAwardInputChange}
-                                        placeholder="0"
-                                    />
-                                    <small>Lower number = displayed first</small>
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Award Image *</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleAwardImageChange}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-actions">
-                                    <button type="button" className="btn-cancel" onClick={closeModal}>
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="btn-submit">
-                                        Create Award
-                                    </button>
-                                </div>
-                            </form>
-                        ) : (
-                            <form onSubmit={handleRecapSubmit}>
-                                <div className="form-group">
-                                    <label>Company ID *</label>
-                                    <input
-                                        type="text"
-                                        name="company_id"
-                                        value={isCreatingRecap ? recapFormData.company_id : editingRecap?.company_id || ''}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : undefined}
-                                        placeholder="fpg"
-                                        disabled={!isCreatingRecap}
-                                        style={!isCreatingRecap ? { background: '#f5f5f5', cursor: 'not-allowed' } : {}}
-                                        required
-                                    />
-                                    <small>Contoh: fpg, fpl, bid, brp</small>
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Company Name *</label>
-                                    <input
-                                        type="text"
-                                        name="company_name"
-                                        value={isCreatingRecap ? recapFormData.company_name : editingRecap?.company_name || ''}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : undefined}
-                                        placeholder="PT Fachri Property Group"
-                                        disabled={!isCreatingRecap}
-                                        style={!isCreatingRecap ? { background: '#f5f5f5', cursor: 'not-allowed' } : {}}
-                                        required
-                                    />
-                                </div>
-
-                                {/* ← TAMBAH INPUT DISPLAY ORDER */}
-                                <div className="form-group">
-                                    <label>Display Order *</label>
-                                    <input
-                                        type="number"
-                                        name="display_order"
-                                        value={isCreatingRecap ? recapFormData.display_order : editingRecap?.display_order || 0}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
-                                        placeholder="1"
-                                        min="0"
-                                        required
-                                    />
-                                    <small>Angka lebih kecil = muncul lebih dulu di dropdown</small>
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Total Komplek</label>
-                                    <input
-                                        type="number"
-                                        name="total_komplek"
-                                        value={isCreatingRecap ? recapFormData.total_komplek : editingRecap?.total_komplek || 0}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
-                                        min="0"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Total Rumah</label>
-                                    <input
-                                        type="number"
-                                        name="total_rumah"
-                                        value={isCreatingRecap ? recapFormData.total_rumah : editingRecap?.total_rumah || 0}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
-                                        min="0"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Total Terjual</label>
-                                    <input
-                                        type="number"
-                                        name="total_terjual"
-                                        value={isCreatingRecap ? recapFormData.total_terjual : editingRecap?.total_terjual || 0}
-                                        onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
-                                        min="0"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-actions">
-                                    <button type="button" className="btn-cancel" onClick={closeModal}>
-                                        Cancel
-                                    </button>
-                                    <button type="submit" className="btn-submit">
-                                        {isCreatingRecap ? 'Create' : 'Update'} Recap
-                                    </button>
-                                </div>
-                            </form>
-                        )}
+            {/* FORM NEWS */}
+            {activeSection === 'news' ? (
+                <form onSubmit={handleNewsSubmit}>
+                    <div className="form-group">
+                        <label>Judul</label>
+                        <input
+                            name="title"
+                            value={newsFormData.title}
+                            onChange={handleNewsInputChange}
+                            required
+                        />
                     </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Kategori</label>
+                            <input
+                                name="category"
+                                value={newsFormData.category}
+                                onChange={handleNewsInputChange}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Tanggal</label>
+                            <input
+                                type="date"
+                                name="publishedAt"
+                                value={newsFormData.publishedAt}
+                                onChange={handleNewsInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Lokasi</label>
+                        <input
+                            name="location"
+                            value={newsFormData.location}
+                            onChange={handleNewsInputChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Summary</label>
+                        <textarea
+                            name="summary"
+                            value={newsFormData.summary}
+                            onChange={handleNewsInputChange}
+                            rows={4}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Cover Image</label>
+                        <input type="file" accept="image/*" onChange={handleNewsCoverChange} />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Konten (pisahkan paragraf dengan enter)</label>
+                        <textarea
+                            name="contentText"
+                            value={newsFormData.contentText}
+                            onChange={handleNewsInputChange}
+                            rows={10}
+                        />
+                    </div>
+
+                    <div className="form-actions">
+                        <button className="btn-cancel" type="button" onClick={closeModal}>
+                            Batal
+                        </button>
+                        <button className="btn-submit" type="submit">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            ) : null}
+
+            {/* FORM PROPERTI */}
+            {activeSection === 'properties' ? (
+                <form onSubmit={handleSubmit}>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Nama Perumahan</label>
+                            <input name="title" value={formData.title} onChange={handleInputChange} required />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Lokasi</label>
+                            <input name="location" value={formData.location} onChange={handleInputChange} required />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Tipe</label>
+                            <select name="type" value={formData.type} onChange={handleInputChange} required>
+                                <option value="">Pilih tipe</option>
+                                <option value="Tipe 36">Tipe 36</option>
+                                <option value="Tipe 40">Tipe 40</option>
+                                <option value="Tipe 45">Tipe 45</option>
+                                <option value="Tipe 50">Tipe 50</option>
+                                <option value="Tipe 60">Tipe 60</option>
+                            </select>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Map Embed URL / Iframe</label>
+                            <input name="map_embed_url" value={formData.map_embed_url} onChange={handleInputChange} />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Deskripsi</label>
+                        <textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} />
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Total Blok</label>
+                            <input type="number" name="total_blocks" value={formData.total_blocks} onChange={handleInputChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Total Unit</label>
+                            <input type="number" name="total_units" value={formData.total_units} onChange={handleInputChange} />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Unit Terjual</label>
+                            <input type="number" name="units_sold" value={formData.units_sold} onChange={handleInputChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Unit Tersedia</label>
+                            <input type="number" name="units_available" value={formData.units_available} onChange={handleInputChange} />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Welcome Text</label>
+                        <textarea name="welcome_text" value={formData.welcome_text} onChange={handleInputChange} rows={3} />
+                    </div>
+
+                    <div className="form-group">
+                        <label>About Text</label>
+                        <textarea name="about_text" value={formData.about_text} onChange={handleInputChange} rows={3} />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Foto Utama</label>
+                        <input type="file" accept="image/*" onChange={handleMainImageChange} />
+                        {previewMainImage ? (
+                            <div className="image-preview">
+                                <img src={previewMainImage} alt="Preview" />
+                            </div>
+                        ) : null}
+                    </div>
+
+                    {/* === GALLERY SAAT INI (HANYA MUNCUL SAAT EDIT) === */}
+      {editMode && existingGalleryImages.length > 0 ? (
+        <div className="form-group">
+          <label>Gallery Saat Ini</label>
+
+          <div className="existing-gallery">
+            {existingGalleryImages.map((url) => {
+              const marked = deletedGalleryImages.includes(url);
+              return (
+                <div
+                  key={url}
+                  className={`existing-gallery-item ${marked ? 'marked-delete' : ''}`}
+                >
+                  <img src={url} alt="Gallery" />
+                  <button
+                    type="button"
+                    className="btn-remove-gallery"
+                    onClick={() => toggleDeleteGalleryImage(url)}
+                  >
+                    {marked ? 'Batal' : 'Hapus'}
+                  </button>
                 </div>
-            )}
+              );
+            })}
+          </div>
+
+          <small>
+            Klik <b>Hapus</b> untuk menandai gambar akan dihapus saat Simpan.
+          </small>
+        </div>
+      ) : null}
+
+                    <div className="form-group">
+                        <label>Gallery Images</label>
+                        <input type="file" accept="image/*" multiple onChange={handleGalleryImagesChange} />
+                    </div>
+
+                    <div className="form-actions">
+                        <button className="btn-cancel" type="button" onClick={closeModal}>
+                            Batal
+                        </button>
+                        <button className="btn-submit" type="submit">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            ) : null}
+
+            {/* FORM PENGHARGAAN */}
+            {activeSection === 'awards' ? (
+                <form onSubmit={handleAwardSubmit}>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Judul</label>
+                            <input name="title" value={awardFormData.title} onChange={handleAwardInputChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Tahun</label>
+                            <input name="year" value={awardFormData.year} onChange={handleAwardInputChange} />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Urutan</label>
+                        <input
+                            type="number"
+                            name="display_order"
+                            value={awardFormData.display_order}
+                            onChange={handleAwardInputChange}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Gambar</label>
+                        <input type="file" accept="image/*" onChange={handleAwardImageChange} required />
+                    </div>
+
+                    <div className="form-actions">
+                        <button className="btn-cancel" type="button" onClick={closeModal}>
+                            Batal
+                        </button>
+                        <button className="btn-submit" type="submit">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            ) : null}
+
+            {/* FORM REKAPAN */}
+            {activeSection === 'recaps' ? (
+                <form onSubmit={handleRecapSubmit}>
+                    {isCreatingRecap ? (
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Company ID</label>
+                                <input name="company_id" value={recapFormData.company_id} onChange={handleRecapFormChange} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Company Name</label>
+                                <input name="company_name" value={recapFormData.company_name} onChange={handleRecapFormChange} required />
+                            </div>
+                        </div>
+                    ) : null}
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Nomor (display_order)</label>
+                            <input
+                                type="number"
+                                name="display_order"
+                                value={isCreatingRecap ? recapFormData.display_order : (editingRecap?.display_order ?? 0)}
+                                onChange={isCreatingRecap ? handleRecapFormChange : (e) => setEditingRecap(prev => ({ ...prev, display_order: parseInt(e.target.value) || 0 }))}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Total Komplek</label>
+                            <input
+                                type="number"
+                                name="total_komplek"
+                                value={isCreatingRecap ? recapFormData.total_komplek : (editingRecap?.total_komplek ?? 0)}
+                                onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Total Rumah</label>
+                            <input
+                                type="number"
+                                name="total_rumah"
+                                value={isCreatingRecap ? recapFormData.total_rumah : (editingRecap?.total_rumah ?? 0)}
+                                onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Total Terjual</label>
+                            <input
+                                type="number"
+                                name="total_terjual"
+                                value={isCreatingRecap ? recapFormData.total_terjual : (editingRecap?.total_terjual ?? 0)}
+                                onChange={isCreatingRecap ? handleRecapFormChange : handleRecapInputChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-actions">
+                        <button className="btn-cancel" type="button" onClick={closeModal}>
+                            Batal
+                        </button>
+                        <button className="btn-submit" type="submit">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            ) : null}
+        </div>
+    </div>
+)}
+
+            {/* ...existing code... */}
         </div>
     );
 };

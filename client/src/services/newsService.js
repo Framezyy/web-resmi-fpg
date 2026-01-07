@@ -2,6 +2,8 @@ import heroBg2 from '../assets/images/beritasatu.png';
 import heroBg3 from '../assets/images/homesatu.png';
 import heroBg4 from '../assets/images/homesatu.png';
 
+const API_URL = 'http://localhost/web-resmi-fpg/server/api';
+
 const DUMMY_NEWS = [
   {
     id: '1',
@@ -48,13 +50,25 @@ const DUMMY_NEWS = [
 ];
 
 export const getNewsList = async () => {
-  // Nanti backend bisa ganti ke fetch API:
-  // const res = await fetch(`${API_URL}/news`);
-  // return await res.json();
-  return Promise.resolve(DUMMY_NEWS);
+  try {
+    const res = await fetch(`${API_URL}/news-list.php`, { method: 'GET' });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 };
 
 export const getNewsById = async (id) => {
-  const found = DUMMY_NEWS.find((n) => String(n.id) === String(id));
-  return Promise.resolve(found || null);
+  try {
+    const res = await fetch(`${API_URL}/news-detail.php?id=${encodeURIComponent(id)}`, {
+      method: 'GET'
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data || null;
+  } catch {
+    return null;
+  }
 };

@@ -96,18 +96,18 @@
     transform: translateY(-2px);
 }
 
-/* Dashboard Stats - 5 Cards Layout */
+/* Dashboard Stats - 6 Cards Layout (supaya tidak ada yang turun sendiri) */
 .dashboard-stats {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    margin: 0 40px 30px 40px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin: 0 40px 24px 40px;
 }
 
 .stat-card {
+    padding: 18px 14px;
+    border-radius: 14px;
     background: white;
-    padding: 30px 25px;
-    border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     text-align: center;
     transition: all 0.3s;
@@ -121,8 +121,8 @@
 }
 
 .stat-card h3 {
-    margin: 0 0 10px 0;
-    font-size: 42px;
+    font-size: 32px;
+    margin: 0 0 8px 0;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -133,7 +133,7 @@
 .stat-card p {
     margin: 0;
     color: #666;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -507,6 +507,49 @@
     padding: 60px 20px;
     color: #999;
     font-size: 16px;
+}
+
+/* Existing Gallery Styles */
+.existing-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.existing-gallery-item {
+  position: relative;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.existing-gallery-item img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+
+.btn-remove-gallery {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #ef4444;
+  color: #fff;
+  font-size: 12px;
+}
+
+.existing-gallery-item.marked-delete {
+  opacity: 0.45;
+}
+
+.existing-gallery-item.marked-delete .btn-remove-gallery {
+  background: #6b7280;
 }
 
 /* Responsive */
