@@ -10,9 +10,9 @@ $database = new Database();
 $db = $database->getConnection();
 
 try {
-    // Query untuk ambil SEMUA field dari database
+    // Query untuk ambil SEMUA field dari database (TAMBAH company)
     $query = "SELECT 
-                id, title, location, map_embed_url, type, description,
+                id, title, location, map_embed_url, type, company, description,
                 total_blocks, total_units, units_sold, units_available,
                 welcome_text, about_text, main_image, created_at, updated_at
               FROM properties 
@@ -30,6 +30,7 @@ try {
             'location' => $row['location'],
             'map_embed_url' => $row['map_embed_url'],
             'type' => $row['type'],
+            'company' => $row['company'], // ← TAMBAH INI
             'description' => $row['description'],
             'total_blocks' => (int)$row['total_blocks'],
             'total_units' => (int)$row['total_units'],

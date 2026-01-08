@@ -42,7 +42,7 @@ const Footer = () => {
 
                     <a
                         className="footer-social-link"
-                        href="https://youtube.com/"
+                        href="https://youtube.com/@fachripropertigroup?si=Z8vYZ_Mr6MVJIA7s"
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="YouTube"

@@ -17,18 +17,19 @@ $database = new Database();
 $db = $database->getConnection();
 
 try {
-    // Get form data - TAMBAH field yang kurang
+    // Get form data - TAMBAH field company
     $title = $_POST['title'] ?? '';
     $location = $_POST['location'] ?? '';
     $map_embed_url = $_POST['map_embed_url'] ?? null;
     $type = $_POST['type'] ?? '';
+    $company = $_POST['company'] ?? 'FPG'; // ← TAMBAH INI (default FPG)
     $description = $_POST['description'] ?? '';
-    $total_blocks = $_POST['total_blocks'] ?? 0;        // ← TAMBAH
-    $total_units = $_POST['total_units'] ?? 0;          // ← TAMBAH
-    $units_sold = $_POST['units_sold'] ?? 0;            // ← TAMBAH
-    $units_available = $_POST['units_available'] ?? 0;  // ← TAMBAH
-    $welcome_text = $_POST['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP';  // ← TAMBAH
-    $about_text = $_POST['about_text'] ?? '';           // ← TAMBAH
+    $total_blocks = $_POST['total_blocks'] ?? 0;
+    $total_units = $_POST['total_units'] ?? 0;
+    $units_sold = $_POST['units_sold'] ?? 0;
+    $units_available = $_POST['units_available'] ?? 0;
+    $welcome_text = $_POST['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP';
+    $about_text = $_POST['about_text'] ?? '';
 
     // Extract src from iframe
     if ($map_embed_url && strpos($map_embed_url, '<iframe') !== false) {
@@ -58,13 +59,13 @@ try {
         }
     }
 
-    // Insert property - TAMBAH semua field
+    // Insert property - TAMBAH company
     $query = "INSERT INTO properties (
-                title, location, map_embed_url, type, description, 
+                title, location, map_embed_url, type, company, description, 
                 total_blocks, total_units, units_sold, units_available,
                 welcome_text, about_text, main_image, created_at
               ) VALUES (
-                :title, :location, :map_embed_url, :type, :description,
+                :title, :location, :map_embed_url, :type, :company, :description,
                 :total_blocks, :total_units, :units_sold, :units_available,
                 :welcome_text, :about_text, :main_image, NOW()
               )";
@@ -74,13 +75,14 @@ try {
     $stmt->bindParam(':location', $location);
     $stmt->bindParam(':map_embed_url', $map_embed_url);
     $stmt->bindParam(':type', $type);
+    $stmt->bindParam(':company', $company); // ← TAMBAH INI
     $stmt->bindParam(':description', $description);
-    $stmt->bindParam(':total_blocks', $total_blocks, PDO::PARAM_INT);      // ← TAMBAH
-    $stmt->bindParam(':total_units', $total_units, PDO::PARAM_INT);        // ← TAMBAH
-    $stmt->bindParam(':units_sold', $units_sold, PDO::PARAM_INT);          // ← TAMBAH
-    $stmt->bindParam(':units_available', $units_available, PDO::PARAM_INT);// ← TAMBAH
-    $stmt->bindParam(':welcome_text', $welcome_text);                      // ← TAMBAH
-    $stmt->bindParam(':about_text', $about_text);                          // ← TAMBAH
+    $stmt->bindParam(':total_blocks', $total_blocks, PDO::PARAM_INT);
+    $stmt->bindParam(':total_units', $total_units, PDO::PARAM_INT);
+    $stmt->bindParam(':units_sold', $units_sold, PDO::PARAM_INT);
+    $stmt->bindParam(':units_available', $units_available, PDO::PARAM_INT);
+    $stmt->bindParam(':welcome_text', $welcome_text);
+    $stmt->bindParam(':about_text', $about_text);
     $stmt->bindParam(':main_image', $main_image);
 
     if ($stmt->execute()) {

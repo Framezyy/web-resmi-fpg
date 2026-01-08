@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './PropertyDetail.css';
-import logoImg from '../assets/images/logo-warna.png';
+import logoFPG from '../assets/images/logo-fpg.png'; // ← UBAH: import logo FPG
+import logoFPL from '../assets/images/logo-fpl.png'; // ← TAMBAH: import logo FPL
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
@@ -72,15 +73,18 @@ const PropertyDetail = ({ property, onClose }) => {
     const galleryImages = data.gallery_images || [];
     const mainImage = data.main_image || data.image;
 
+    // ← TAMBAH: tentukan logo berdasarkan company
+    const currentLogo = data.company === 'FPL' ? logoFPL : logoFPG;
+    const companyName = data.company === 'FPL' 
+        ? 'PT Fachri Property Land' 
+        : 'PT Fachri Property Group';
+
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content figma-design" onClick={(e) => e.stopPropagation()}>
-                {/* Close Button */}
                 <button className="modal-close" onClick={onClose}>×</button>
                 
-                {/* Modal Body dengan Scroll */}
                 <div className="modal-body">
-                    {/* Hero Image Section */}
                     <div className="hero-image-section">
                         <img 
                             src={mainImage} 
@@ -92,14 +96,13 @@ const PropertyDetail = ({ property, onClose }) => {
                         />
                     </div>
 
-                    {/* Company Header */}
+                    {/* ← UBAH: pakai currentLogo */}
                     <div className="company-header">
-                        <img src={logoImg} alt="PT Fachri Property Group" className="company-logo-img" />
+                        <img src={currentLogo} alt={companyName} className="company-logo-img" />
                         <h1 className="company-title">{data.title}</h1>
                         <p className="welcome-text">{data.welcome_text}</p>
                     </div>
 
-                    {/* About Section */}
                     <div className="about-section">
                         <p className="about-text">{data.about_text}</p>
                     </div>
@@ -232,11 +235,12 @@ const PropertyDetail = ({ property, onClose }) => {
                             ></iframe>
                         </div>
 
+                        {/* ← UBAH: pakai currentLogo dan companyName */}
                         <div className="contact-info-card">
                             <div className="contact-logo">
-                                <img src={logoImg} alt="Logo" />
+                                <img src={currentLogo} alt="Logo" />
                             </div>
-                            <h3 className="contact-company-name">PT Fachri Property Group</h3>
+                            <h3 className="contact-company-name">{companyName}</h3>
                             
                             <div className="contact-detail">
                                 <h4>📍 Alamat</h4>
@@ -259,9 +263,9 @@ const PropertyDetail = ({ property, onClose }) => {
                         </div>
                     </div>
 
-                    {/* Footer */}
+                    {/* ← UBAH: footer pakai companyName */}
                     <div className="detail-footer">
-                        <p>© 2024 PT Fachri Property Group. All Rights Reserved.</p>
+                        <p>© 2024 {companyName}. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

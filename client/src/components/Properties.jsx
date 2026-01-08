@@ -25,6 +25,8 @@ const Properties = () => {
     const [selectedRecapCompany, setSelectedRecapCompany] = useState('all');
     const [recapData, setRecapData] = useState([]);
 
+    const [selectedCompany, setSelectedCompany] = useState(''); // ← UBAH: default '' (semua)
+
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         fetchProperties();
@@ -173,9 +175,17 @@ const Properties = () => {
             const matchesType = !selectedType || property.type === selectedType;
             const matchesLocation =
                 !selectedLocation || property.location?.toLowerCase().includes(selectedLocation.toLowerCase());
-            return matchesSearch && matchesType && matchesLocation;
+
+            // ← UBAH: filter company (jika '' = semua, tidak filter)
+            let matchesCompany = true;
+            if (selectedCompany) {
+                const companyHaystack = `${property.company || ''} ${property.company_id || ''} ${property.company_name || ''} ${property.title || ''}`.toUpperCase();
+                matchesCompany = companyHaystack.includes(selectedCompany.toUpperCase());
+            }
+
+            return matchesSearch && matchesType && matchesLocation && matchesCompany;
         });
-    }, [properties, searchTerm, selectedType, selectedLocation]);
+    }, [properties, searchTerm, selectedType, selectedLocation, selectedCompany]);
 
     useEffect(() => {
         const id = window.requestAnimationFrame(() => registerPropertiesAnimations());
@@ -302,6 +312,19 @@ const Properties = () => {
                             {getUniqueTypes().map(type => (
                                 <option key={type} value={type}>{type}</option>
                             ))}
+                        </select>
+
+                        {/* ← TAMBAH DROPDOWN PERUSAHAAN DI SINI */}
+                        <select
+                            value={selectedCompany}
+                            onChange={(e) => setSelectedCompany(e.target.value)}
+                            className="filter-select"
+                            data-animate="fade-up"
+                            data-animate-delay="180"
+                        >
+                            <option value="">Semua</option>
+                            <option value="FPL">Fachri Property Land</option>
+                            <option value="FPG">Fachri Property Group</option>
                         </select>
 
                         <input
