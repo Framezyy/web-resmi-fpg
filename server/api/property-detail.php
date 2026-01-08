@@ -50,7 +50,7 @@ try {
         }
     }
     
-    // Return SEMUA data - TAMBAH field yang kurang
+    // Return SEMUA data - TAMBAH company
     $response = [
         'success' => true,
         'id' => (int)$property['id'],
@@ -58,16 +58,17 @@ try {
         'location' => $property['location'],
         'map_embed_url' => $property['map_embed_url'] ?? null,
         'type' => $property['type'],
+        'company' => $property['company'] ?? 'FPG', // ← TAMBAH INI
         'description' => $property['description'] ?? '',
         'main_image' => $property['main_image'] ?? null,
         'image' => $property['main_image'] ?? null,
         'gallery_images' => $galleries,
-        'total_blocks' => (int)($property['total_blocks'] ?? 0),        // ← TAMBAH
-        'total_units' => (int)($property['total_units'] ?? 0),          // ← TAMBAH
-        'units_sold' => (int)($property['units_sold'] ?? 0),            // ← TAMBAH
-        'units_available' => (int)($property['units_available'] ?? 0),  // ← TAMBAH
-        'welcome_text' => $property['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP',  // ← TAMBAH
-        'about_text' => $property['about_text'] ?? '',                  // ← TAMBAH
+        'total_blocks' => (int)($property['total_blocks'] ?? 0),
+        'total_units' => (int)($property['total_units'] ?? 0),
+        'units_sold' => (int)($property['units_sold'] ?? 0),
+        'units_available' => (int)($property['units_available'] ?? 0),
+        'welcome_text' => $property['welcome_text'] ?? 'Selamat datang di PT FACHRI PROPERTY GROUP',
+        'about_text' => $property['about_text'] ?? '',
         'created_at' => $property['created_at'],
         'updated_at' => $property['updated_at'] ?? null
     ];

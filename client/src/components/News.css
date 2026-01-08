@@ -352,8 +352,8 @@
 
 @media (max-width: 1024px) {
     .news-hero {
-        height: 52svh;
-        min-height: 380px;
+        height: 100svh;      /* sebelumnya 52svh */
+        min-height: 100svh;  /* sebelumnya 380px */
         max-height: none;
     }
 
@@ -392,4 +392,49 @@
     .news-page .contact-map iframe {
         height: 280px;
     }
+}
+
+/* =========================
+   News Page Entrance Animations (scoped)
+========================= */
+.news-page [data-animate] {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 650ms ease,
+    transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.news-page [data-animate].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.news-page [data-animate="fade-up"] {
+  transform: translate3d(0, 18px, 0);
+}
+
+.news-page [data-animate="fade-right"] {
+  transform: translate3d(-18px, 0, 0);
+}
+
+.news-page [data-animate="fade-left"] {
+  transform: translate3d(18px, 0, 0);
+}
+
+.news-page [data-animate="zoom-in"] {
+  transform: scale(0.96);
+}
+
+.news-page [data-animate="zoom-in"].is-visible {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-page [data-animate] {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }

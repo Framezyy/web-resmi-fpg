@@ -12,7 +12,7 @@ import {
     FaTiktok,
     FaCheckCircle
 } from 'react-icons/fa';
-import contactBg from '../assets/images/Kantor.png';
+import contactBg from '../assets/images/bg-1.jpeg';
 import heroBg from '../assets/images/bg-4.jpeg';
 
 const ContactUs = () => {
@@ -297,7 +297,7 @@ const ContactUs = () => {
                     </div>
 
                     <div className="social-media" data-animate="zoom-in" data-animate-delay="360">
-                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <a href="https://youtube.com/@fachripropertigroup?si=Z8vYZ_Mr6MVJIA7s" target="_blank" rel="noopener noreferrer" className="social-icon">
                             <FaYoutube />
                         </a>
                         <a

@@ -27,13 +27,14 @@ $title = $_POST['title'] ?? '';
 $location = $_POST['location'] ?? '';
 $map_embed_url = $_POST['map_embed_url'] ?? null;
 $type = $_POST['type'] ?? '';
+$company = $_POST['company'] ?? 'FPG'; // ← TAMBAH INI
 $description = $_POST['description'] ?? '';
-$total_blocks = $_POST['total_blocks'] ?? 0;          // ← TAMBAH
-$total_units = $_POST['total_units'] ?? 0;            // ← TAMBAH
-$units_sold = $_POST['units_sold'] ?? 0;              // ← TAMBAH
-$units_available = $_POST['units_available'] ?? 0;    // ← TAMBAH
-$welcome_text = $_POST['welcome_text'] ?? '';         // ← TAMBAH
-$about_text = $_POST['about_text'] ?? '';             // ← TAMBAH
+$total_blocks = $_POST['total_blocks'] ?? 0;
+$total_units = $_POST['total_units'] ?? 0;
+$units_sold = $_POST['units_sold'] ?? 0;
+$units_available = $_POST['units_available'] ?? 0;
+$welcome_text = $_POST['welcome_text'] ?? '';
+$about_text = $_POST['about_text'] ?? '';
 
 // === TAMBAH: daftar URL gallery yang ingin dihapus (kirim dari UI edit) ===
 // Support 2 format:
@@ -70,12 +71,13 @@ try {
         }
     }
 
-    // Update query - TAMBAH semua field
+    // Update query - TAMBAH company
     $query = "UPDATE properties SET 
               title = :title,
               location = :location,
               map_embed_url = :map_embed_url,
               type = :type,
+              company = :company,
               description = :description,
               total_blocks = :total_blocks,
               total_units = :total_units,
@@ -92,13 +94,14 @@ try {
     $stmt->bindParam(':location', $location);
     $stmt->bindParam(':map_embed_url', $map_embed_url);
     $stmt->bindParam(':type', $type);
+    $stmt->bindParam(':company', $company); // ← TAMBAH INI
     $stmt->bindParam(':description', $description);
-    $stmt->bindParam(':total_blocks', $total_blocks, PDO::PARAM_INT);      // ← TAMBAH
-    $stmt->bindParam(':total_units', $total_units, PDO::PARAM_INT);        // ← TAMBAH
-    $stmt->bindParam(':units_sold', $units_sold, PDO::PARAM_INT);          // ← TAMBAH
-    $stmt->bindParam(':units_available', $units_available, PDO::PARAM_INT);// ← TAMBAH
-    $stmt->bindParam(':welcome_text', $welcome_text);                      // ← TAMBAH
-    $stmt->bindParam(':about_text', $about_text);                          // ← TAMBAH
+    $stmt->bindParam(':total_blocks', $total_blocks, PDO::PARAM_INT);
+    $stmt->bindParam(':total_units', $total_units, PDO::PARAM_INT);
+    $stmt->bindParam(':units_sold', $units_sold, PDO::PARAM_INT);
+    $stmt->bindParam(':units_available', $units_available, PDO::PARAM_INT);
+    $stmt->bindParam(':welcome_text', $welcome_text);
+    $stmt->bindParam(':about_text', $about_text);
 
     if ($mainImage) {
         $stmt->bindParam(':main_image', $mainImage);

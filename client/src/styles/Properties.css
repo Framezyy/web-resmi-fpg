@@ -79,11 +79,19 @@
 
 .filter-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* textfield kiri-kanan (sejajar) */
     gap: 20px;
     max-width: 900px;
     margin: 0 auto;
 }
+
+/* Baris 1: 2 textfield (Cari Properti | Cari Lokasi) */
+.filter-grid > :nth-child(1) { grid-column: 1; grid-row: 1; }
+.filter-grid > :nth-child(4) { grid-column: 2; grid-row: 1; }
+
+/* Baris 2: 2 dropdown (Tipe | FPG/FPL) */
+.filter-grid > :nth-child(2) { grid-column: 3; grid-row: 1; }
+.filter-grid > :nth-child(3) { grid-column: 4; grid-row: 1; }
 
 .filter-input,
 .filter-select {
@@ -1346,4 +1354,16 @@
     height: 80px;
     background: transparent;
     border-radius: 5px;
+}
+
+/* Properties Contact: hilangkan background hitam logo-box + perbesar logo */
+.properties-page .contact-section .contact-logo-container .logo-box {
+  background: transparent !important;
+  width: 80px;
+  height: 80px;
+}
+
+.properties-page .contact-section .contact-logo-container .logo-box img {
+  width: 100%;
+  height: 100%;
 }

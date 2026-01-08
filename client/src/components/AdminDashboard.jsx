@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AdminDashboard.css';
-import logoColor from '../assets/images/logo-warna.png'; // ← TAMBAH INI
+import logoFPG from '../assets/images/logo-fpl.png'; // ← GANTI: nama variabel jadi logoFPG
+import logoFPL from '../assets/images/logo-fpg.png'; // ← GANTI: nama variabel jadi logoFPL
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
@@ -15,9 +16,16 @@ const AdminDashboard = () => {
     const [formData, setFormData] = useState({
         title: '',
         location: '',
-        map_embed_url: '',  // ← GANTI dari latitude/longitude
+        map_embed_url: '',
         type: '',
-        description: ''
+        company: 'FPG', // ← KEMBALIKAN INI
+        description: '',
+        total_blocks: 0,
+        total_units: 0,
+        units_sold: 0,
+        units_available: 0,
+        welcome_text: '',
+        about_text: ''
     });
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -378,7 +386,6 @@ const AdminDashboard = () => {
         setEditMode(true);
         setCurrentProperty(property);
 
-        // reset state hapus gallery setiap buka edit
         setExistingGalleryImages([]);
         setDeletedGalleryImages([]);
 
@@ -387,6 +394,7 @@ const AdminDashboard = () => {
             location: property.location || '',
             map_embed_url: property.map_embed_url || '',
             type: property.type || '',
+            company: property.company || 'FPG', // ← KEMBALIKAN INI
             description: property.description || '',
             total_blocks: property.total_blocks || 0,
             total_units: property.total_units || 0,
@@ -399,16 +407,18 @@ const AdminDashboard = () => {
         setPreviewMainImage(property.main_image || property.image || null);
         setShowModal(true);
 
-        // === TAMBAH: ambil detail supaya dapat gallery_images yang sudah ada ===
         try {
-            const res = await axios.get(`${API_URL}/property-detail.php?id=${property.id}`);
-            const urls = Array.isArray(res.data?.gallery_images) ? res.data.gallery_images : [];
-            setExistingGalleryImages(urls);
+            const token = localStorage.getItem('adminToken');
+            const response = await axios.get(`${API_URL}/property-detail.php?id=${property.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (response.data.success && Array.isArray(response.data.gallery_images)) {
+                setExistingGalleryImages(response.data.gallery_images);
+            }
         } catch (err) {
-            console.error('Error fetching property detail:', err);
-            setExistingGalleryImages([]);
+            console.warn('Gagal load gallery:', err);
         }
-        // === END TAMBAH ===
     };
 
     const handleDelete = async (id) => {
@@ -588,6 +598,7 @@ const AdminDashboard = () => {
             location: '',
             map_embed_url: '',
             type: '',
+            company: 'FPG', // ← KEMBALIKAN INI (default saat create)
             description: '',
             total_blocks: 0,
             total_units: 0,
@@ -600,10 +611,8 @@ const AdminDashboard = () => {
         setGalleryImages([]);
         setPreviewMainImage(null);
 
-        // === TAMBAH: reset state gallery delete ===
         setExistingGalleryImages([]);
         setDeletedGalleryImages([]);
-        // === END TAMBAH ===
 
         setAwardFormData({ title: '', year: '', display_order: 0 });
         setAwardImage(null);
@@ -628,6 +637,7 @@ const AdminDashboard = () => {
             location: '',
             map_embed_url: '',
             type: '',
+            company: 'FPG', // ← KEMBALIKAN INI (default saat create)
             description: '',
             total_blocks: 0,
             total_units: 0,
@@ -660,41 +670,41 @@ const AdminDashboard = () => {
 
     return (
         <div className="admin-dashboard">
-            {/* UPDATE HEADER INI */}
+            {/* Header - pakai logoFPG sebagai default */}
             <header className="admin-header">
-    <div className="admin-header-left">
-        <div className="admin-logo">
-            <img src={logoColor} alt="Fachri Property Group" />
-            <div className="admin-header-content">
-                <h1>Admin Dashboard</h1>
-            </div>
-        </div>
-    </div>
+                <div className="admin-header-left">
+                    <div className="admin-logo">
+                        <img src={logoFPG} alt="Fachri Property Group" />
+                        <div className="admin-header-content">
+                            <h1>Admin Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
 
-    <div className="admin-actions">
-        {activeSection === 'properties' ? (
-            <button className="btn-add" onClick={openModal}>
-                <span>+</span> Tambah Properti
-            </button>
-        ) : activeSection === 'awards' ? (
-            <button className="btn-add" onClick={openModal}>
-                <span>+</span> Tambah Penghargaan
-            </button>
-        ) : activeSection === 'news' ? (
-            <button className="btn-add" onClick={openNewsModal} type="button">
-                <span>+</span> Tambah Berita 
-            </button>
-        ) : (
-            <button className="btn-add" onClick={handleCreateRecap}>
-                <span>+</span> Tambah Rekapan
-            </button>
-        )}
+                <div className="admin-actions">
+                    {activeSection === 'properties' ? (
+                        <button className="btn-add" onClick={openModal}>
+                            <span>+</span> Tambah Properti
+                        </button>
+                    ) : activeSection === 'awards' ? (
+                        <button className="btn-add" onClick={openModal}>
+                            <span>+</span> Tambah Penghargaan
+                        </button>
+                    ) : activeSection === 'news' ? (
+                        <button className="btn-add" onClick={openNewsModal} type="button">
+                            <span>+</span> Tambah Berita 
+                        </button>
+                    ) : (
+                        <button className="btn-add" onClick={handleCreateRecap}>
+                            <span>+</span> Tambah Rekapan
+                        </button>
+                    )}
 
-        <button className="btn-logout" onClick={handleLogout}>
-            Keluar
-        </button>
-    </div>
-</header>
+                    <button className="btn-logout" onClick={handleLogout}>
+                        Keluar
+                    </button>
+                </div>
+            </header>
 
             {/* TAMBAH NAVIGATION TABS */}
             <div className="admin-navigation">
@@ -1094,10 +1104,19 @@ const AdminDashboard = () => {
                             </select>
                         </div>
 
+                        {/* ← KEMBALIKAN DROPDOWN PERUSAHAAN DI SINI */}
                         <div className="form-group">
-                            <label>Map Embed URL / Iframe</label>
-                            <input name="map_embed_url" value={formData.map_embed_url} onChange={handleInputChange} />
+                            <label>Perusahaan</label>
+                            <select name="company" value={formData.company} onChange={handleInputChange} required>
+                                <option value="FPG">Fachri Property Group</option>
+                                <option value="FPL">Fachri Property Land</option>
+                            </select>
                         </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Map Embed URL / Iframe</label>
+                        <input name="map_embed_url" value={formData.map_embed_url} onChange={handleInputChange} />
                     </div>
 
                     <div className="form-group">
