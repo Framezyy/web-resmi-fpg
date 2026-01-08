@@ -13,7 +13,7 @@ import {
     FaCheckCircle
 } from 'react-icons/fa';
 import contactBg from '../assets/images/Kantor.png';
-import heroBg from '../assets/images/homeempat.png';
+import heroBg from '../assets/images/bg-4.jpeg';
 
 const ContactUs = () => {
     const [jenisPernyataan, setJenisPernyataan] = useState('');

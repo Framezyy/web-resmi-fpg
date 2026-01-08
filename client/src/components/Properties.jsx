@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import PropertyDetail from './PropertyDetail';
 import '../styles/Properties.css';
-import propertiesHeroImage from '../assets/images/properti-bg.jpeg';
+import propertiesHeroImage from '../assets/images/bg-2.jpeg';
 import btnLogo from '../assets/images/btnlogo.png';
 import btnsyariahLogo from '../assets/images/btnsyariahlogo.png';
 import mandiriLogo from '../assets/images/mandirilogo.png';

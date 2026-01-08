@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './AboutUs.css';
-import heroBg from '../assets/images/homedua.png';
+import heroBg from '../assets/images/bg-3.jpeg';
 import visiImage from '../assets/images/kantor3.png';
 import sejarahImage from '../assets/images/kantor3.png';
 import ceoImage from '../assets/images/pahri.png';

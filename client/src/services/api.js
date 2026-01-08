@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -8,6 +8,8 @@ import Contact from './pages/Contact';
 import Footer from './components/Footer';
 import './App.css';
 import axios from 'axios';
+
+import AdminLogin from './components/AdminLogin';
 
 const API_URL = 'http://localhost/pt-fachri-property-group/server/api';
 
@@ -51,6 +53,9 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/property" element={<Property />} />
           <Route path="/contact" element={<Contact />} />
+
+          <Route path="/contact/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/login" element={<Navigate to="/contact/admin/login" replace />} />
         </Routes>
         <Footer />
       </div>

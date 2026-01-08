@@ -82,7 +82,7 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" data-anim="blur" style={{ transitionDelay: '0.1s' }}>VISI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" data-anim="up" style={{ transitionDelay: '0.3s' }}>
-                        MEMBERI ARTI DAN TUJUAN
+                        Mewujudkan hunian modern yang nyaman, aman, dan bernilai tinggi
                     </p>
                     <button
                         className="btn-outline animate-on-scroll"
@@ -106,7 +106,7 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" data-anim="blur" style={{ transitionDelay: '0.1s' }}>PROPERTI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" data-anim="up" style={{ transitionDelay: '0.3s' }}>
-                        TEMUKAN DAN BANGUN HUNIAN MASA DEPAN ANDA
+                        Rumah berkualitas di lokasi strategis untuk hidup lebih baik
                     </p>
                     <button
                         className="btn-outline animate-on-scroll"
@@ -130,7 +130,7 @@ const LandingPage = () => {
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" data-anim="blur" style={{ transitionDelay: '0.1s' }}>HUBUNGI KAMI</h1>
                     <p className="hero-subtitle animate-on-scroll" data-anim="up" style={{ transitionDelay: '0.3s' }}>
-                        KAMI MEMBANGUN MIMPI
+                        Temukan Rumah Impian Anda Sekarang
                     </p>
                     <button
                         className="btn-outline animate-on-scroll"

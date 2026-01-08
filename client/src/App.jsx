@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import LandingPage from './components/LandingPage';
 import Home from './components/Home';
@@ -17,6 +17,7 @@ import Footer from './components/Footer'; // ADD
 import './styles/App.css';
 
 function AppContent() {
+    
     const location = useLocation();
     const hideNavbar = location.pathname.startsWith('/admin');
 
@@ -25,7 +26,9 @@ function AppContent() {
             {!hideNavbar && <Navbar />}
             <Routes>
                 {/* Admin Routes */}
-                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/login" element={<Navigate to="/contact/admin/login" replace />} />
+                <Route path="/contact/admin/login" element={<AdminLogin />} />
+
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
                 

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './News.css';
-import heroBg from '../assets/images/bg-2.jpeg';
+import heroBg from '../assets/images/berita.jpg';
 import logoHotampt from '../assets/images/logoitampt.png';
 import { getNewsList } from '../services/newsService';
 
