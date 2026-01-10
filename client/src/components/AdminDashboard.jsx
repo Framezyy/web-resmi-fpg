@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/AdminDashboard.css';
-import logoFPG from '../assets/images/logo-fpl.png'; // ← GANTI: nama variabel jadi logoFPG
-import logoFPL from '../assets/images/logo-fpg.png'; // ← GANTI: nama variabel jadi logoFPL
+import logoFPG from '../assets/images/logo-fpg.png'; // ← GANTI: nama variabel jadi logoFPG
+import logoFPL from '../assets/images/logo-fpl.png'; // ← GANTI: nama variabel jadi logoFPL
 
 const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
