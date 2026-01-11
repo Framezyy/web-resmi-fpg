@@ -1304,66 +1304,1110 @@
   }
 }
 
-/* ===== Tablet/HP: 1 layar hanya untuk HERO + RECAP (filter & list jangan dipaksa 1 layar) ===== */
-@media (max-width: 1024px) {
-  .properties-page {
-    scroll-snap-type: y mandatory;
-  }
-
-  /* Snap hanya hero & recap */
-  .properties-hero,
-  .properties-recap {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    min-height: 100svh;
-    scroll-margin-top: 90px;
-  }
-
-  /* Filter & list: normal flow (ini yang menghilangkan jarak kosong besar) */
-  .properties-filter,
-  .properties-list-section {
-    scroll-snap-align: none;
-    scroll-snap-stop: normal;
-    min-height: auto;
-  }
+/* ===== OUR BUSINESS SECTION ===== */
+.our-business-section {
+    background: #ffffff;
+    padding: 120px 0;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-/* Rapatkan jarak filter -> list khusus tablet/HP */
+.our-business-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.business-content {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.business-title {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #111;
+    text-transform: uppercase;
+    margin: 0 0 20px 0;
+    text-align: left;
+}
+
+.business-divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, #111 0%, #111 60px, transparent 60px);
+    margin: 0 0 30px 0;
+}
+
+.business-description {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    text-align: left;
+}
+
+/* Responsive: OUR BUSINESS Section */
 @media (max-width: 1024px) {
-  .properties-filter {
-    padding-bottom: 12px;
+    .our-business-section {
+        padding: 90px 0;
+    }
+
+    .business-title {
+        font-size: 30px;
+    }
+
+    .business-description {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .our-business-section {
+        padding: 72px 0;
+    }
+
+    .business-title {
+        font-size: 26px;
+        letter-spacing: 0.8px;
+    }
+
+    .business-divider {
+        background: linear-gradient(to right, #111 0%, #111 50px, transparent 50px);
+    }
+
+    .business-description {
+        font-size: 14px;
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 480px) {
+    .our-business-section {
+        padding: 64px 0;
+    }
+
+    .business-title {
+        font-size: 24px;
+    }
+
+    .business-divider {
+        background: linear-gradient(to right, #111 0%, #111 45px, transparent 45px);
+    }
+}
+
+/* ===== Rekapan Section (FULL 1 layar, center, cards besar, dropdown kanan atas) ===== */
+.properties-recap {
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.properties-recap .recap-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 110px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 110px; /* sebelumnya 44px -> tambah jarak bawah subtitle ke cards */
+}
+
+/* 2) title + info di tengah */
+.recap-center {
+    text-align: center;
+    max-width: 860px;
+}
+
+.recap-heading {
+    margin: 0 0 12px 0;
+    font-size: 36px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.recap-subheading {
+    margin: 0;
+    font-size: 16px;           /* membesar */
+    color: #555;
+    line-height: 1.6;
+}
+
+/* area kartu + dropdown */
+.recap-cards-area {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* dropdown lebih besar, posisi tetap */
+.recap-controls--inline {
+    position: absolute;
+    right: 0;
+    top: -66px;                /* sesuaikan karena komponen membesar */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 320px;          /* membesar */
+    align-items: flex-start;
+}
+
+.recap-controls-title {
+    font-size: 10px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #444;
+    text-transform: uppercase;
+}
+
+.recap-select--light {
+    height: 38px;              /* membesar */
+    width: 240px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    font-size: 13px;           /* membesar */
+    font-weight: 700;
+    color: #222;
+    outline: none;
+}
+
+.recap-select--light:focus {
+    border-color: #bdbdbd;
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
+}
+
+/* 3) tiga card besar */
+.recap-cards {
+    display: flex;
+    gap: 28px;                 /* membesar */
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+}
+
+.recap-cards--big {
+    max-width: 1120px;         /* lebih lebar untuk 3 card besar */
+}
+
+.recap-stat-card {
+    background: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;       /* sedikit membesar */
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.10);
+}
+
+.recap-stat-card--big {
+    width: 370px;              /* membesar */
+    min-height: 210px;         /* membesar */
+    padding: 24px 26px;        /* membesar */
+    text-align: center;        /* angka (dan konten card) jadi center */
+}
+
+.recap-stat-label {
+    font-size: 12px;           /* membesar */
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.recap-stat-value {
+    margin-top: 50px;          /* membesar */
+    font-size: 78px;           /* membesar */
+    font-weight: 900;
+    line-height: 1;
+    width: 100%;               /* pastikan center konsisten */
+}
+
+/* warna angka seperti figma */
+.recap-stat-value--red { color: #c4161c; }
+.recap-stat-value--dark { color: #222222; }
+.recap-stat-value--orange { color: #e58a00; }
+
+/* responsive: ikut membesar tapi tetap rapih */
+@media (max-width: 968px) {
+    .properties-recap .recap-container {
+        padding: 80px 20px;
+        gap: 26px;
+    }
+
+    .recap-controls--inline {
+        position: static;
+        width: 100%;
+        min-width: unset;
+        align-self: stretch;
+        margin-bottom: 14px;
+    }
+
+    .recap-heading { font-size: 30px; }
+    .recap-subheading { font-size: 15px; }
+
+    .recap-cards {
+        flex-direction: column;
+        gap: 18px;
+        max-width: 560px;
+    }
+
+    .recap-stat-card--big {
+        width: 100%;
+        min-height: 190px;
+    }
+
+    .recap-stat-value {
+        font-size: 70px;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .recap-shell {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .recap-right {
+        max-width: none;
+        margin-left: 0;
+    }
+
+    .recap-title {
+        font-size: 56px;
+    }
+
+    .recap-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 680px) {
+    .properties-recap {
+        min-height: auto;
+        padding: 64px 0;
+    }
+
+    .recap-title {
+        font-size: 40px;
+    }
+
+    .recap-value {
+        font-size: 38px;
+    }
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .properties-page .hero-overlay {
+        left: 40px;
+        bottom: 40px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 48px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 22px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .property-horizontal-item {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .property-image-box {
+        flex: none;
+        width: 100%;
+        height: 250px;
+    }
+
+    .property-info-box {
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .properties-page .hero-overlay {
+        left: 30px;
+        bottom: 30px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 40px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 18px;
+    }
+
+    .properties-list-section {
+        padding: 40px 0 60px;
+    }
+
+    .properties-horizontal-list {
+        gap: 25px;
+    }
+
+    .property-title-main {
+        font-size: 24px;
+    }
+
+    .property-location-text {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .properties-page .hero-overlay {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .properties-page .hero-overlay h1 {
+        font-size: 32px;
+    }
+
+    .properties-page .hero-overlay p {
+        font-size: 16px;
+    }
+
+    .property-image-box {
+        height: 220px;
+    }
+
+    .property-info-box {
+        padding: 25px 15px;
+    }
+
+    .property-title-main {
+        font-size: 22px;
+    }
+
+    .detail-link-btn {
+        padding: 8px 24px;
+        font-size: 13px;
+    }
+}
+
+/* =========================
+   Responsive: Properties Hero text center (ikuti About page)
+   Desktop tetap sama
+========================= */
+@media (max-width: 1024px) {
+  .properties-page .hero-overlay {
+    left: 50% !important;
+    bottom: auto !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    text-align: center !important;
+    max-width: min(92vw, 900px) !important;
+    padding: 0 16px !important;
   }
 
-  .properties-filter + .properties-list-section {
-    padding-top: 18px; /* lebih dekat dari 28px */
+  .properties-page .hero-overlay h1 {
+    font-size: 40px !important;
+    line-height: 1.15 !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .properties-page .hero-overlay p {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
   }
 }
 
 @media (max-width: 768px) {
-  .properties-filter {
-    padding-bottom: 8px;
+  .properties-page .hero-overlay {
+    max-width: min(92vw, 680px) !important;
+    padding: 0 14px !important;
   }
 
-  .properties-filter + .properties-list-section {
-    padding-top: 12px;
+  .properties-page .hero-overlay h1 {
+    font-size: 30px !important;
+    line-height: 1.18 !important;
+    letter-spacing: 1px !important;
+  }
+
+  .properties-page .hero-overlay p {
+    font-size: 14px !important;
   }
 }
 
-.properties-page .logo-box {
-    width: 80px;
-    height: 80px;
-    background: transparent;
-    border-radius: 5px;
+@media (max-width: 480px) {
+  .properties-page .hero-overlay h1 {
+    font-size: 26px !important;
+  }
 }
 
-/* Properties Contact: hilangkan background hitam logo-box + perbesar logo */
-.properties-page .contact-section .contact-logo-container .logo-box {
-  background: transparent !important;
-  width: 80px;
-  height: 80px;
+/* Paksa 1 baris untuk judul hero saat tablet/HP */
+@media (max-width: 1024px) {
+  .properties-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 1px !important;   /* rapatkan biar muat */
+  }
 }
 
-.properties-page .contact-section .contact-logo-container .logo-box img {
-  width: 100%;
-  height: 100%;
+@media (max-width: 768px) {
+  .properties-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 0.8px !important;
+    font-size: 28px !important;       /* sedikit diperkecil agar tidak turun baris */
+  }
+}
+
+@media (max-width: 480px) {
+  .properties-page .hero-overlay h1 {
+    white-space: nowrap !important;
+    letter-spacing: 0.6px !important;
+    font-size: 24px !important;       /* ekstra kecil biar tetap 1 baris */
+  }
+}
+
+/* =========================
+   Properties Page Entrance Animations (scoped)
+   Tidak mengubah layout (transform + opacity saja)
+   ========================= */
+.properties-page [data-animate] {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+        opacity 650ms ease,
+        transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.properties-page [data-animate].is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Variants */
+.properties-page [data-animate="fade-up"] {
+    transform: translate3d(0, 18px, 0);
+}
+
+.properties-page [data-animate="fade-right"] {
+    transform: translate3d(-18px, 0, 0);
+}
+
+.properties-page [data-animate="fade-left"] {
+    transform: translate3d(18px, 0, 0);
+}
+
+.properties-page [data-animate="zoom-in"] {
+    transform: scale(0.96);
+}
+
+.properties-page [data-animate="zoom-in"].is-visible {
+    transform: scale(1);
+}
+
+/* “Rise” = sedikit lebih premium untuk card angka */
+.properties-page [data-animate="rise"] {
+    transform: translate3d(0, 24px, 0) scale(0.985);
+}
+
+.properties-page [data-animate="rise"].is-visible {
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Reduce motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page [data-animate] {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* =========================================
+   Hover Effects (scoped - Properties page only)
+   Tidak mengubah layout: hanya transform/shadow
+   ========================================= */
+
+/* 1) Card Rekapan: lift + soft glow */
+.properties-page .recap-stat-card {
+    transition: transform 50ms ease, box-shadow 50ms ease, border-color 50ms ease;
+    will-change: transform, box-shadow;
+}
+
+.properties-page .recap-stat-card:hover {
+    transform: translate3d(0, -6px, 0);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.14);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* 2) Filter input/select: focus/hover feel lebih premium */
+.properties-page .filter-input,
+.properties-page .filter-select {
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.properties-page .filter-input:hover,
+.properties-page .filter-select:hover {
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+    transform: translate3d(0, -1px, 0);
+}
+
+/* 3) List item properti: lift + shadow + image micro-zoom */
+.properties-page .property-horizontal-item {
+    transition: transform 260ms ease, box-shadow 260ms ease;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.10); /* menyamai rasa card wrapper yg kamu punya */
+    will-change: transform, box-shadow;
+}
+
+.properties-page .property-horizontal-item:hover {
+    transform: translate3d(0, -6px, 0);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+}
+
+/* image zoom halus (tidak mengubah ukuran container) */
+.properties-page .property-horizontal-item .property-image-box img {
+    transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform;
+}
+
+.properties-page .property-horizontal-item:hover .property-image-box img {
+    transform: scale(1.06);
+}
+
+/* 4) Tombol detail: underline slide + sedikit lift */
+.properties-page .detail-link-btn {
+    position: relative;
+    transition: transform 220ms ease, background-color 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.properties-page .detail-link-btn::after {
+    content: '';
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 8px;
+    height: 2px;
+    background: currentColor;
+    opacity: 0;
+    transform: scaleX(0.2);
+    transform-origin: center;
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.properties-page .detail-link-btn:hover {
+    transform: translate3d(0, -2px, 0);
+}
+
+.properties-page .detail-link-btn:hover::after {
+    opacity: 0.45;
+    transform: scaleX(1);
+}
+
+/* 5) Partner logo: pop-in + soft shadow */
+.properties-page .partner-logo img {
+    transition: transform 220ms ease, filter 220ms ease;
+    will-change: transform;
+}
+
+.properties-page .partner-logo img:hover {
+    transform: translate3d(0, -3px, 0) scale(1.04);
+    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.12));
+}
+
+/* 6) Contact section di Properties: hover halus pada kotak info & map (jika ada box-shadow dari CSS lain) */
+.properties-page .contact-section .contact-info,
+.properties-page .contact-section .contact-map {
+    transition: transform 240ms ease, box-shadow 240ms ease;
+    will-change: transform, box-shadow;
+}
+
+.properties-page .contact-section .contact-info:hover,
+.properties-page .contact-section .contact-map:hover {
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* OVERRIDE: hilangkan hover animasi pada Contact Info (Properties page) */
+.properties-page .contact-section .contact-info {
+    transition: none !important;
+    will-change: auto !important;
+}
+
+.properties-page .contact-section .contact-info:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+/* OVERRIDE: hilangkan hover animasi pada Contact Info (Properties page) */
+.properties-page .contact-section .contact-map {
+    transition: none !important;
+    will-change: auto !important;
+}
+
+.properties-page .contact-section .contact-map:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Accessibility: kurangi motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-stat-card,
+    .properties-page .filter-input,
+    .properties-page .filter-select,
+    .properties-page .property-horizontal-item,
+    .properties-page .property-horizontal-item .property-image-box img,
+    .properties-page .detail-link-btn,
+    .properties-page .partner-logo img,
+    .properties-page .contact-section .contact-info,
+    .properties-page .contact-section .contact-map {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* ================================
+   Recap Select: refine (no lift, only effects)
+   HANYA untuk recap-select, tidak mengubah yang lain
+   ================================ */
+
+/* Matikan hover "wrapper" (label pilih perusahaan) agar tidak ikut efek */
+.properties-page .recap-controls--inline,
+.properties-page .recap-controls--inline:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Select: hover halus tanpa timbul (tanpa translate) */
+.properties-page .recap-select,
+.properties-page .recap-select--light {
+    transition:
+        border-color 180ms ease,
+        background-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 120ms ease;
+    will-change: box-shadow, border-color, background-color, transform;
+}
+
+.properties-page .recap-select:hover,
+.properties-page .recap-select--light:hover {
+    border-color: rgba(0, 0, 0, 0.22);
+    background-color: rgba(0, 0, 0, 0.01);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06); /* tetap halus, bukan timbul */
+    transform: none; /* pastikan tidak ada efek angkat */
+}
+
+/* Animasi "press" saat dropdown ditekan */
+.properties-page .recap-select:active,
+.properties-page .recap-select--light:active {
+    transform: scale(0.985); /* press kecil, bukan timbul */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Animasi saat klik/open (biasanya select jadi focus) */
+@keyframes recapSelectPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 150, 180, 0.22); }
+    100% { box-shadow: 0 0 0 6px rgba(0, 150, 180, 0.00); }
+}
+
+.properties-page .recap-select:focus,
+.properties-page .recap-select:focus-visible,
+.properties-page .recap-select--light:focus,
+.properties-page .recap-select--light:focus-visible {
+    outline: none;
+    border-color: rgba(0, 150, 180, 0.45);
+    animation: recapSelectPulse 420ms ease-out 1;
+    box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.08),
+        0 0 0 3px rgba(0, 150, 180, 0.14);
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-select,
+    .properties-page .recap-select--light {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* ================================
+   Override: samakan hover recap-select & recap-stat-card
+   dengan hover filter-select/filter-input
+   ================================ */
+
+/* Pastikan wrapper/label "PILIH PERUSAHAAN" tidak ikut efek */
+.properties-page .recap-controls--inline,
+.properties-page .recap-controls--inline:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Samakan transition seperti filter input/select */
+.properties-page .recap-select,
+.properties-page .recap-select--light,
+.properties-page .recap-stat-card {
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease !important;
+    will-change: transform, box-shadow;
+}
+
+/* Samakan hover effect */
+.properties-page .recap-select:hover,
+.properties-page .recap-select--light:hover,
+.properties-page .recap-stat-card:hover {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06) !important;
+    transform: translate3d(0, -1px, 0) !important;
+}
+
+/* Samakan focus feel (optional tapi nyambung dengan filter) */
+.properties-page .recap-select:focus,
+.properties-page .recap-select--light:focus,
+.properties-page .recap-select:focus-visible,
+.properties-page .recap-select--light:focus-visible {
+    border-color: #333 !important;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06) !important;
+    outline: none !important;
+}
+
+/* Hover anim khusus angka di recap stat card (muncul saat cursor di card) */
+.properties-page .recap-stat-card .recap-stat-value {
+    display: inline-block; /* penting agar transform scale terasa */
+    transform: translateZ(0) scale(1);
+    transform-origin: center;
+    transition: transform 200ms ease;
+    will-change: transform;
+}
+
+.properties-page .recap-stat-card:hover .recap-stat-value {
+    transform: translateZ(0) scale(1.20) !important; /* sebelumnya 1.045 */
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .properties-page .recap-stat-card .recap-stat-value {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* =========================
+   Responsive: RECAP (Tablet/HP)
+   Desktop tidak berubah
+========================= */
+
+/* Tablet (<=1024px) */
+@media (max-width: 1024px) {
+  .properties-recap .recap-container {
+    padding: 90px 18px !important;
+    gap: 54px !important; /* sebelumnya besar sekali */
+  }
+
+  .recap-heading {
+    font-size: 30px !important;
+  }
+
+  .recap-subheading {
+    font-size: 15px !important;
+  }
+
+  /* cards sedikit mengecil supaya muat nyaman */
+  .recap-stat-card--big {
+    width: 320px !important;
+    min-height: 190px !important;
+    padding: 22px 20px !important;
+  }
+
+  .recap-stat-value {
+    margin-top: 36px !important;
+    font-size: 64px !important;
+  }
+}
+
+/* Handphone (<=768px) */
+@media (max-width: 768px) {
+  .properties-recap {
+    min-height: auto !important; /* biar tidak “kepanjangan” di HP */
+  }
+
+  .properties-recap .recap-container {
+    padding: 72px 14px !important;
+    gap: 28px !important;
+  }
+
+  .recap-heading {
+    font-size: 26px !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  .recap-subheading {
+    font-size: 14px !important;
+  }
+
+  /* dropdown full width */
+  .recap-controls--inline {
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+
+  .recap-select--light {
+    width: 100% !important;
+    max-width: 520px;
+  }
+
+  /* cards stack tetap (sudah ada di 968), tapi rapikan ukuran & font */
+  .recap-cards {
+    max-width: 520px !important;
+    width: 100% !important;
+  }
+
+  .recap-stat-card--big {
+    width: 100% !important;
+    min-height: 170px !important;
+    padding: 18px 16px !important;
+  }
+
+  .recap-stat-label {
+    font-size: 11px !important;
+  }
+
+  .recap-stat-value {
+    margin-top: 28px !important;
+    font-size: 56px !important;
+  }
+}
+
+/* Small mobile (<=480px) */
+@media (max-width: 480px) {
+  .properties-recap .recap-container {
+    padding: 64px 12px !important;
+  }
+
+  .recap-heading {
+    font-size: 24px !important;
+  }
+
+  .recap-stat-value {
+    font-size: 50px !important;
+  }
+}
+
+/* FIX: perkecil lagi card recap di HP agar tidak terpotong */
+@media (max-width: 768px) {
+  .recap-cards {
+    max-width: 360px !important; /* sedikit dipersempit agar aman di layar kecil */
+    width: 100% !important;
+  }
+
+  .recap-stat-card--big {
+    min-height: 140px !important;
+    padding: 14px 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .recap-stat-label {
+    font-size: 10px !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  .recap-stat-value {
+    margin-top: 18px !important;   /* turunkan jarak */
+    font-size: 46px !important;    /* kecilkan angka */
+  }
+
+  /* Matikan efek hover zoom angka di mobile (di Inspect bisa kepicu hover dan jadi “kepotong”) */
+  .properties-page .recap-stat-card:hover .recap-stat-value {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .recap-cards {
+    max-width: 330px !important;
+  }
+}
+
+/* Center recap area (tablet/HP) */
+@media (max-width: 1024px) {
+  .recap-cards-area {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;   /* pusatkan semua isi */
+  }
+
+  .recap-controls--inline {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .recap-cards {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-items: center !important;
+  }
+
+  .recap-stat-card--big {
+    margin-left: auto !important;
+    margin-right: auto !important;   /* pastikan tiap card di tengah */
+  }
+}
+
+@media (max-width: 768px) {
+  .recap-cards-area {
+    align-items: center !important;
+  }
+
+  .recap-controls--inline {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .recap-cards {
+    width: 100% !important;
+    max-width: 420px !important;     /* mengikuti size mobile yang sudah kita kecilkan */
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* FIX: recap cards kepotong kanan di HP -> kecilkan max-width + kecilkan padding sisi */
+@media (max-width: 768px) {
+  .properties-recap .recap-container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .recap-cards-area {
+    padding: 0 6px !important; /* memberi ruang aman kiri-kanan */
+  }
+
+  .recap-cards {
+    max-width: 360px !important; /* sebelumnya 420, ini yang bikin mepet di 412/430 */
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .recap-stat-card--big {
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .recap-cards {
+    max-width: 330px !important;
+  }
+}
+
+/* =========================
+   Responsive: Partner Banner (Mitra)
+   Desktop tetap sama (hanya @media)
+========================= */
+
+@media (max-width: 1024px) {
+  .properties-page .partner-banner {
+    padding: 48px 0 !important;
+  }
+
+  .properties-page .partner-banner h2 {
+    font-size: 26px !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+  }
+
+  .properties-page .partner-logo {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 18px 28px !important; /* row-gap col-gap */
+    margin-top: 18px !important;
+  }
+
+  .properties-page .partner-logo img {
+    height: 42px !important;
+    width: auto !important;
+    max-width: 170px !important;
+    object-fit: contain !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .properties-page .partner-banner {
+    padding: 40px 0 !important;
+  }
+
+  .properties-page .partner-banner h2 {
+    font-size: 22px !important;
+  }
+
+  .properties-page .partner-logo {
+    gap: 14px 18px !important;
+  }
+
+  .properties-page .partner-logo img {
+    height: 34px !important;
+    max-width: 140px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .properties-page .partner-banner h2 {
+    font-size: 18px !important;
+    letter-spacing: 0.6px !important;
+  }
+
+  .properties-page .partner-logo img {
+    height: 30px !important;
+    max-width: 120px !important;
+  }
+}
+
+/* =========================
+   FIX: Desktop Mitra kembali center & logo tidak membesar
+   Hanya berlaku DESKTOP (>1024px)
+========================= */
+@media (min-width: 1025px) {
+  .properties-page .partner-banner .container {
+    text-align: center;
+  }
+
+  .properties-page .partner-banner h2 {
+    text-align: center;
+    margin: 0 0 22px 0;
+  }
+
+  .properties-page .partner-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px 42px; /* row-gap col-gap */
+    margin-top: 10px;
+  }
+
+  .properties-page .partner-logo img {
+    height: 72px;        /* batasi tinggi logo (biar tidak raksasa) */
+    width: auto;
+    max-width: 260px;    /* batasi lebar */
+    object-fit: contain;
+    display: block;
+  }
 }
