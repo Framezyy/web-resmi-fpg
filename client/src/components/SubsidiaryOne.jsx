@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './SubsidiaryOne.css';
 import heroBg from '../assets/images/homesatu.png';
 import logo1 from '../assets/images/anak2.png';
+import visionImg from '../assets/images/visibid.jpeg';
+import missionImg from '../assets/images/visibid.jpeg';
 
 const SubsidiaryOne = () => {
     const [activeTab, setActiveTab] = useState('vision');
@@ -82,14 +84,28 @@ const SubsidiaryOne = () => {
                                                 menjadi slah satu pengembang (developer) property terbaik dikalimantan barat dan terpercaya mampu bersaing di tingkat nasional sesuai kelas nya.
                                             </p>
                                         </div>
-                                        <div className="vision-shape"></div>
+                                        <div 
+                                            className="vision-shape"
+                                            style={{
+                                                backgroundImage: `url(${visionImg})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
+                                            }}
+                                        ></div>
                                     </div>
                                 </div>
                             )}
                             {activeTab === 'mission' && (
                                 <div className="tab-panel">
                                     <div className="mission-content">
-                                        <div className="mission-shape"></div>
+                                        <div 
+                                            className="mission-shape"
+                                            style={{
+                                                backgroundImage: `url(${missionImg})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
+                                            }}
+                                        ></div>
                                         <div className="mission-text">
                                             <p>
                                                 Memberikan pelayanan terbaik dengan produk yang berkualitas lingkungan yang nyaman, aman dan sehat.

@@ -229,7 +229,12 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     height: auto;
+<<<<<<< HEAD
     background: url('../assets/images/visibrp.png') center/cover no-repeat;
+=======
+    /* background dihapus, diganti inline style */
+    border-radius: 12px;
+>>>>>>> ca6ab3b7c7398e4d1608e81b637e44e9995907fe
     box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
 }
 
