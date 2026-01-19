@@ -85,9 +85,7 @@ const AdminLogin = () => {
                         </button>
                     </form>
                     
-                    <div className="login-footer">
-                        <a href="/">← Back to Home</a>
-                    </div>
+                    
                 </div>
             </div>
         </div>

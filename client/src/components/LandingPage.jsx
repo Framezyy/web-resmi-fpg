@@ -63,7 +63,7 @@ const LandingPage = () => {
             >
                 <div className="hero-overlay">
                     <h1 className="animate-on-scroll" data-anim="blur" style={{ transitionDelay: '0.1s' }}>
-                        PT <span className="highlight">FACHRI</span> PROPERTI GROUP
+                        PT <span className="highlight">FACHRI</span> PROPERTY GROUP
                     </h1>
                     <p className="hero-subtitle animate-on-scroll" data-anim="up" style={{ transitionDelay: '0.3s' }}>
                         BELI RUMAH HARUS FACHRI PROPERTI GROUP

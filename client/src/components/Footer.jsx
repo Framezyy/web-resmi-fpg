@@ -55,7 +55,7 @@ const Footer = () => {
                 <div className="footer-divider" />
 
                 <div className="footer-copy">
-                    PT Fachri Property Group © {new Date().getFullYear()} All Right Reserved.
+                    Muhammad Ichsan Firdaus dan Hasby Septian © {new Date().getFullYear()} All Right Reserved.
                 </div>
             </div>
         </footer>

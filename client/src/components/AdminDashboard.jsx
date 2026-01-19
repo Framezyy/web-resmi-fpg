@@ -27,6 +27,23 @@ const AdminDashboard = () => {
         welcome_text: '',
         about_text: ''
     });
+
+      // === TAMBAH: delete recap ===
+    const handleDeleteRecap = async (id) => {
+        const ok = window.confirm('Hapus rekapan ini?');
+        if (!ok) return;
+
+        try {
+            const token = localStorage.getItem('adminToken');
+            await axios.delete(`${API_URL}/recap-delete.php?id=${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            await fetchRecaps();
+        } catch (e) {
+            console.error('Error deleting recap:', e);
+            alert(e.response?.data?.message || 'Gagal menghapus rekapan');
+        }
+    };
     const [mainImage, setMainImage] = useState(null);
     const [galleryImages, setGalleryImages] = useState([]);
     const [previewMainImage, setPreviewMainImage] = useState(null);
@@ -45,6 +62,27 @@ const AdminDashboard = () => {
         display_order: 0
     });
     const [awardImage, setAwardImage] = useState(null);
+
+    // === TAMBAH: state untuk UPDATE/EDIT award ===
+    const [awardEditMode, setAwardEditMode] = useState(false);
+    const [currentAward, setCurrentAward] = useState(null);
+    // === END TAMBAH ===
+      const handleEditAward = (award) => {
+    setActiveSection('awards');
+    setShowModal(true);
+
+    setAwardEditMode(true);
+    setCurrentAward(award);
+
+    setAwardFormData({
+      title: award?.title || '',
+      year: award?.year || '',
+      display_order: award?.display_order ?? 0,
+    });
+
+    setAwardImage(null);
+  };
+
     const [recaps, setRecaps] = useState([]); // ← TAMBAH INI
     const [editingRecap, setEditingRecap] = useState(null); // ← TAMBAH INI
     const [recapFormData, setRecapFormData] = useState({
@@ -465,17 +503,50 @@ const AdminDashboard = () => {
     const handleAwardSubmit = async (e) => {
         e.preventDefault();
         
-        const formData = new FormData();
-        formData.append('title', awardFormData.title);
-        formData.append('year', awardFormData.year);
-        formData.append('display_order', awardFormData.display_order);
+        const token = localStorage.getItem('adminToken');
+        
+        const fd = new FormData();
+        fd.append('title', awardFormData.title);
+        fd.append('year', awardFormData.year);
+        fd.append('display_order', awardFormData.display_order);
+
         if (awardImage) {
-            formData.append('image', awardImage);
+            fd.append('image', awardImage);
         }
 
         try {
-            const response = await axios.post(`${API_URL}/award-create.php`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            // UPDATE
+            if (awardEditMode && currentAward?.id) {
+                fd.append('id', currentAward.id);
+
+                const response = await axios.post(`${API_URL}/award-update.php`, fd, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (response.data.success) {
+                    alert('Award updated successfully!');
+                    fetchAwards();
+                    setShowModal(false);
+
+                    setAwardEditMode(false);
+                    setCurrentAward(null);
+                    setAwardFormData({ title: '', year: '', display_order: 0 });
+                    setAwardImage(null);
+                } else {
+                    alert(response.data?.message || 'Gagal update penghargaan');
+                }
+                return;
+            }
+
+            // CREATE
+            const response = await axios.post(`${API_URL}/award-create.php`, fd, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                }
             });
 
             if (response.data.success) {
@@ -484,9 +555,11 @@ const AdminDashboard = () => {
                 setShowModal(false);
                 setAwardFormData({ title: '', year: '', display_order: 0 });
                 setAwardImage(null);
+            } else {
+                alert(response.data?.message || 'Gagal tambah penghargaan');
             }
         } catch (error) {
-            alert('Error adding award: ' + (error.response?.data?.message || error.message));
+            alert('Error saving award: ' + (error.response?.data?.message || error.message));
         }
     };
 
@@ -616,6 +689,11 @@ const AdminDashboard = () => {
 
         setAwardFormData({ title: '', year: '', display_order: 0 });
         setAwardImage(null);
+
+        // === TAMBAH: reset mode edit award ===
+        setAwardEditMode(false);
+        setCurrentAward(null);
+        // === END TAMBAH ===
     };
 
     const closeModal = () => {
@@ -657,6 +735,11 @@ const AdminDashboard = () => {
 
         setAwardFormData({ title: '', year: '', display_order: 0 });
         setAwardImage(null);
+
+        // === TAMBAH: reset mode edit award ===
+        setAwardEditMode(false);
+        setCurrentAward(null);
+        // === END TAMBAH ===
     };
 
     if (loading) {
@@ -823,8 +906,6 @@ const AdminDashboard = () => {
             {/* AWARDS SECTION */}
             {activeSection === 'awards' && (
                 <>
-                    
-
                     <div className="awards-table-container">
                         <h2>Manajemen Penghargaan</h2>
                         {awards.length === 0 ? (
@@ -846,8 +927,8 @@ const AdminDashboard = () => {
                                     {awards.map((award) => (
                                         <tr key={award.id}>
                                             <td>
-                                                <img 
-                                                    src={award.image} 
+                                                <img
+                                                    src={award.image}
                                                     alt={award.title}
                                                     className="table-image"
                                                     onError={(e) => {
@@ -860,7 +941,17 @@ const AdminDashboard = () => {
                                             <td>{award.display_order}</td>
                                             <td>
                                                 <div className="action-buttons">
-                                                    <button 
+                                                    {/* === TAMBAH: tombol Update/Edit === */}
+                                                    <button
+                                                        className="btn-edit"
+                                                        type="button"
+                                                        onClick={() => handleEditAward(award)}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    {/* === END TAMBAH === */}
+
+                                                    <button
                                                         className="btn-delete"
                                                         onClick={() => handleDeleteAward(award.id)}
                                                     >
@@ -906,12 +997,22 @@ const AdminDashboard = () => {
                                         <td>{recap.total_rumah}</td>
                                         <td>{recap.total_terjual}</td>
                                         <td>
-                                            <button 
-                                                className="btn-edit"
-                                                onClick={() => handleEditRecap(recap)}
-                                            >
-                                                Edit
-                                            </button>
+                                            <div className="action-buttons">
+                                                <button
+                                                    className="btn-edit"
+                                                    type="button"
+                                                    onClick={() => handleEditRecap(recap)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="btn-delete"
+                                                    type="button"
+                                                    onClick={() => handleDeleteRecap(recap.id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -987,7 +1088,7 @@ const AdminDashboard = () => {
                                 {activeSection === 'news'
                                     ? (newsEditMode ? 'Edit Berita' : 'Tambah Berita')
                                     : activeSection === 'awards'
-                                    ? 'Tambah Penghargaan'
+                                    ? (awardEditMode ? 'Update Penghargaan' : 'Tambah Penghargaan')
                                     : activeSection === 'recaps'
                                     ? (isCreatingRecap ? 'Tambah Rekapan' : 'Edit Rekapan')
                                     : (editMode ? 'Edit Properti' : 'Tambah Properti')}
@@ -1240,7 +1341,12 @@ const AdminDashboard = () => {
 
                     <div className="form-group">
                         <label>Gambar</label>
-                        <input type="file" accept="image/*" onChange={handleAwardImageChange} required />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAwardImageChange}
+                            required={!awardEditMode} // <-- saat update tidak wajib upload ulang
+                        />
                     </div>
 
                     <div className="form-actions">

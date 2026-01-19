@@ -231,22 +231,7 @@ const Properties = () => {
                 </div>
             </section>
 
-            {/* OUR BUSINESS SECTION */}
-            <section className="our-business-section">
-                <div className="container">
-                    <div className="business-content">
-                        <h2 className="business-title" data-animate="fade-up" data-animate-delay="80">
-                            OUR BUSINESS
-                        </h2>
-                        <div className="business-divider" data-animate="fade-up" data-animate-delay="120"></div>
-                        <p className="business-description" data-animate="fade-up" data-animate-delay="160">
-                            Founded on October 22, 1981 by Dr. (HC) Ir. Ciputra under the name of PT Citra
-                            Habitat Indonesia, PT Ciputra Development Tbk is now one of the leading and most
-                            diversified property companies in Indonesia.
-                        </p>
-                    </div>
-                </div>
-            </section>
+            
 
             {/* RECAP SECTION */}
             <section className="properties-recap">
