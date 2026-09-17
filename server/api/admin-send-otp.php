@@ -1,168 +1,83 @@
 <?php
-// filepath: d:\xampp\htdocs\web-resmi-fpg\server\api\admin-send-otp.php
 
 error_reporting(E_ERROR | E_PARSE);
-ini_set('display_errors', 0);
+ini_set('display_errors', '0');
 
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json; charset=UTF-8');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+    http_response_code(204);
     exit();
 }
 
-// Set timezone ke Asia/Jakarta
 date_default_timezone_set('Asia/Jakarta');
 
-require '../vendor/autoload.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-include_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/resend.php';
 
 try {
-    $database = new Database();
-    $db = $database->getConnection();
-
-    $data = json_decode(file_get_contents("php://input"), true);
-    $email = trim($data['email'] ?? '');
-    $ip_address = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-
-    if (empty($email)) {
-        throw new Exception("Email is required");
+    $data = json_decode(file_get_contents('php://input'), true);
+    $email = strtolower(trim((string) ($data['email'] ?? '')));
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new RuntimeException('Email tidak valid.');
     }
 
-    // Check if email exists
-    $checkQuery = "SELECT id, username FROM admin_users WHERE email = :email LIMIT 1";
-    $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(':email', $email);
-    $checkStmt->execute();
-
-    if ($checkStmt->rowCount() === 0) {
-        throw new Exception("Email not found in our system");
+    $db = (new Database())->getConnection();
+    $check = $db->prepare('SELECT id, username FROM admin_users WHERE email = :email LIMIT 1');
+    $check->execute([':email' => $email]);
+    $user = $check->fetch();
+    if (!$user) {
+        throw new RuntimeException('Email tidak ditemukan.');
     }
 
-    $user = $checkStmt->fetch(PDO::FETCH_ASSOC);
-    $user_id = $user['id'];
-
-    // Rate limiting: Check last request (max 1 request per 2 minutes)
-    $rateLimitQuery = "SELECT created_at FROM password_reset_tokens 
-                       WHERE email = :email 
-                       AND created_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE)
-                       ORDER BY created_at DESC LIMIT 1";
-    $rateLimitStmt = $db->prepare($rateLimitQuery);
-    $rateLimitStmt->bindParam(':email', $email);
-    $rateLimitStmt->execute();
-
-    if ($rateLimitStmt->rowCount() > 0) {
-        throw new Exception("Please wait 2 minutes before requesting a new OTP");
+    $rateLimit = $db->prepare(
+        'SELECT COUNT(*) FROM password_reset_tokens
+         WHERE email = :email AND created_at > DATE_SUB(NOW(), INTERVAL 2 MINUTE)'
+    );
+    $rateLimit->execute([':email' => $email]);
+    if ((int) $rateLimit->fetchColumn() > 0) {
+        throw new RuntimeException('Tunggu 2 menit sebelum meminta OTP baru.');
     }
 
-    // Generate 6-digit OTP
-    $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-    
-    // Set expiry time using CURRENT_TIMESTAMP + INTERVAL
-    $expires_at = date('Y-m-d H:i:s', time() + 600); // 10 minutes = 600 seconds
+    $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $expiresAt = date('Y-m-d H:i:s', time() + 600);
+    $insert = $db->prepare(
+        'INSERT INTO password_reset_tokens
+            (user_id, email, otp, expires_at, used, ip_address, created_at)
+         VALUES
+            (:user_id, :email, :otp, :expires_at, 0, :ip_address, NOW())'
+    );
+    $insert->execute([
+        ':user_id' => $user['id'],
+        ':email' => $email,
+        ':otp' => $otp,
+        ':expires_at' => $expiresAt,
+        ':ip_address' => substr((string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'), 0, 45),
+    ]);
+    $tokenId = (int) $db->lastInsertId();
 
-    // Save OTP to database (✅ FIX: sebutkan kolomnya)
-    $insertQuery = "INSERT INTO password_reset_tokens
-                    (user_id, email, otp, expires_at, used, ip_address, created_at)
-                    VALUES
-                    (:user_id, :email, :otp, :expires_at, 0, :ip_address, NOW())";
+    $safeUsername = htmlspecialchars($user['username'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    sendTransactionalEmail(
+        $email,
+        'Kode OTP Reset Password - Fachri Property Group',
+        "<h2>Reset password admin FPG</h2><p>Halo <strong>{$safeUsername}</strong>, gunakan kode berikut:</p><p style='font-size:32px;letter-spacing:5px'><strong>{$otp}</strong></p><p>Kode berlaku selama 10 menit dan hanya dapat digunakan satu kali.</p>",
+        "Kode OTP reset password FPG: {$otp}. Kode berlaku selama 10 menit.",
+        null,
+        "admin-otp-{$tokenId}"
+    );
 
-    $insertStmt = $db->prepare($insertQuery);
-    $insertStmt->bindParam(':user_id', $user_id);
-    $insertStmt->bindParam(':email', $email);
-    $insertStmt->bindParam(':otp', $otp);
-    $insertStmt->bindParam(':expires_at', $expires_at);
-    $insertStmt->bindParam(':ip_address', $ip_address);
-    $insertStmt->execute();
+    $response = ['success' => true, 'message' => 'OTP telah dikirim ke email Anda.'];
+    if (!isProduction()) {
+        $response['debug'] = ['otp' => $otp, 'expires_at' => $expiresAt];
+    }
 
-    // Send OTP via Email
-    $mail = new PHPMailer(true);
-    
-    // SMTP Configuration
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
-    $mail->SMTPAuth   = true;
-    $mail->Username   = 'muhammadichsan2017@gmail.com';
-    $mail->Password   = 'ixzrkmcjlovihmdw'; // ← GANTI INI
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
-
-    // Email settings
-    $mail->setFrom('noreply@fachripropertygroup.com', 'FPG Security');
-    $mail->addAddress($email);
-    $mail->isHTML(true);
-    $mail->Subject = '[Action Required] Your Password Reset OTP - Fachri Property Group';
-
-    // Email body
-    $mail->Body = "
-    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
-        <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;'>
-            <h1 style='color: white; margin: 0;'>Password Reset Request</h1>
-        </div>
-        
-        <div style='background: #f8f9fa; padding: 30px;'>
-            <p style='font-size: 16px; color: #333;'>Hi <strong>{$user['username']}</strong>,</p>
-            
-            <p style='font-size: 14px; color: #666;'>
-                You requested to reset your admin password. Please use this OTP code:
-            </p>
-            
-            <div style='background: white; border: 2px dashed #667eea; border-radius: 10px; padding: 20px; text-align: center; margin: 20px 0;'>
-                <p style='font-size: 12px; color: #999; margin: 0 0 10px 0;'>Your OTP Code</p>
-                <h2 style='color: #667eea; font-size: 36px; margin: 0; letter-spacing: 5px;'>{$otp}</h2>
-                <p style='font-size: 12px; color: #999; margin: 10px 0 0 0;'>Valid for 10 minutes</p>
-            </div>
-            
-            <div style='background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;'>
-                <p style='margin: 0; font-size: 13px; color: #856404;'>
-                    <strong>⚠️ Security Tips:</strong><br>
-                    • Never share this code with anyone<br>
-                    • This code expires in 10 minutes<br>
-                    • If you didn't request this, please ignore this email
-                </p>
-            </div>
-            
-            <p style='font-size: 12px; color: #999; text-align: center; margin-top: 30px;'>
-                Best regards,<br>
-                <strong>Fachri Property Group Security Team</strong>
-            </p>
-        </div>
-        
-        <div style='background: #333; padding: 20px; text-align: center;'>
-            <p style='color: #999; font-size: 11px; margin: 0;'>
-                © 2026 PT Fachri Property Group. All rights reserved.
-            </p>
-        </div>
-    </div>
-    ";
-
-    $mail->send();
-
-    ob_clean();
     http_response_code(200);
-    echo json_encode([
-        'success' => true,
-        'message' => 'OTP has been sent to your email',
-        'debug' => [
-            'otp' => $otp, // ← HAPUS INI DI PRODUCTION
-            'expires_at' => $expires_at
-        ]
-    ]);
-    exit();
-
-} catch (Exception $e) {
-    ob_clean();
+    echo json_encode($response);
+} catch (Throwable $error) {
+    error_log('Admin OTP error: ' . $error->getMessage());
     http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
-    exit();
+    echo json_encode(['success' => false, 'message' => $error->getMessage()]);
 }
-?>

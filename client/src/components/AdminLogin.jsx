@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Tambahkan Link
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import '../styles/AdminLogin.css';
 import logoColor from '../assets/images/logo-warna.png';
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const AdminLogin = () => {
     const [username, setUsername] = useState('');

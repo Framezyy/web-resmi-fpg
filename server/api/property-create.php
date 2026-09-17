@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include_once '../config/database.php';
+include_once '../config/urls.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -55,7 +56,7 @@ try {
         $upload_path = $upload_dir . $new_filename;
 
         if (move_uploaded_file($_FILES['mainImage']['tmp_name'], $upload_path)) {
-            $main_image = 'http://localhost/web-resmi-fpg/server/uploads/properties/main/' . $new_filename;
+            $main_image = publicAssetUrl('server/uploads/properties/main/' . $new_filename);
         }
     }
 
@@ -103,7 +104,7 @@ try {
                     $gallery_path = $gallery_dir . $gallery_filename;
 
                     if (move_uploaded_file($tmp_name, $gallery_path)) {
-                        $gallery_url = 'http://localhost/web-resmi-fpg/server/uploads/properties/gallery/' . $gallery_filename;
+                        $gallery_url = publicAssetUrl('server/uploads/properties/gallery/' . $gallery_filename);
 
                         $gallery_query = "INSERT INTO property_galleries (property_id, image_url, created_at) 
                                         VALUES (:property_id, :image_url, NOW())";

@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include_once '../config/database.php';
+include_once '../config/urls.php';
 
 try {
     $database = new Database();
@@ -39,7 +40,7 @@ try {
         $upload_path = $upload_dir . $new_filename;
         
         if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_path)) {
-            $image_url = 'http://localhost/web-resmi-fpg/server/uploads/awards/' . $new_filename;
+            $image_url = publicAssetUrl('server/uploads/awards/' . $new_filename);
         } else {
             throw new Exception("Failed to upload image");
         }

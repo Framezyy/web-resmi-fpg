@@ -6,6 +6,7 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 include_once '../config/database.php';
+include_once '../config/urls.php';
 include_once '../config/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -67,7 +68,7 @@ try {
 
         $mainImageName = time() . '_' . $_FILES['mainImage']['name'];
         if (move_uploaded_file($_FILES['mainImage']['tmp_name'], $uploadDir . $mainImageName)) {
-            $mainImage = 'http://localhost/web-resmi-fpg/server/uploads/properties/' . $mainImageName;
+            $mainImage = publicAssetUrl('server/uploads/properties/' . $mainImageName);
         }
     }
 
@@ -147,7 +148,7 @@ try {
                 if ($_FILES['galleryImages']['error'][$key] === 0) {
                     $galleryImageName = time() . '_' . $key . '_' . $_FILES['galleryImages']['name'][$key];
                     if (move_uploaded_file($tmp_name, $galleryDir . $galleryImageName)) {
-                        $imageUrl = 'http://localhost/web-resmi-fpg/server/uploads/properties/gallery/' . $galleryImageName;
+                        $imageUrl = publicAssetUrl('server/uploads/properties/gallery/' . $galleryImageName);
                         
                         $galleryQuery = "INSERT INTO property_galleries (property_id, image_url) VALUES (:property_id, :image_url)";
                         $galleryStmt = $db->prepare($galleryQuery);

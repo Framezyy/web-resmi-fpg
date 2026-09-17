@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import PropertyDetail from './PropertyDetail';
 import '../styles/Properties.css';
 import propertiesHeroImage from '../assets/images/bg-2.jpeg';
@@ -8,8 +9,6 @@ import btnsyariahLogo from '../assets/images/btnsyariahlogo.png';
 import mandiriLogo from '../assets/images/mandirilogo.png';
 import bniLogo from '../assets/images/bnilogo.png';
 import logoHotampt from '../assets/images/logoitampt.png';
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const Properties = () => {
     const observerRef = useRef(null);

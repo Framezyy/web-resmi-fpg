@@ -1,8 +1,7 @@
 import heroBg2 from '../assets/images/beritasatu.png';
 import heroBg3 from '../assets/images/homesatu.png';
 import heroBg4 from '../assets/images/homesatu.png';
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
+import { API_URL } from '../config/api';
 
 const DUMMY_NEWS = [
   {

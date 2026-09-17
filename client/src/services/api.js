@@ -8,10 +8,9 @@ import Contact from './pages/Contact';
 import Footer from './components/Footer';
 import './App.css';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 
 import AdminLogin from './components/AdminLogin';
-
-const API_URL = 'http://localhost/pt-fachri-property-group/server/api';
 
 export const getProperties = async () => {
   try {
@@ -35,7 +34,7 @@ export const getPropertyDetail = async (id) => {
 
 export const sendContact = async (formData) => {
   try {
-    const response = await axios.post(`${API_URL}/contact.php`, formData);
+    const response = await axios.post(`${API_URL}/contact-send.php`, formData);
     return response.data;
   } catch (error) {
     console.error('Error sending contact:', error);

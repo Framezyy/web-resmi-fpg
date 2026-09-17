@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 include_once '../config/database.php';
+include_once '../config/urls.php';
 
 verifyToken();
 
@@ -87,7 +88,7 @@ try {
             throw new Exception("Gagal upload cover image");
         }
 
-        $newCoverUrl = 'http://localhost/web-resmi-fpg/server/uploads/news/' . $safeName;
+        $newCoverUrl = publicAssetUrl('server/uploads/news/' . $safeName);
 
         $oldPath = localPathFromUrl($oldCover);
         if ($oldPath && file_exists($oldPath)) @unlink($oldPath);

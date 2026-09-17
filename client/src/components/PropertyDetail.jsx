@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import './PropertyDetail.css';
 import logoFPG from '../assets/images/logo-fpg.png'; // ← UBAH: import logo FPG
 import logoFPL from '../assets/images/logo-fpl.png'; // ← TAMBAH: import logo FPL
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const PropertyDetail = ({ property, onClose }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);

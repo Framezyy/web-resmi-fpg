@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import './AboutUs.css';
 import heroBg from '../assets/images/bg-3.jpeg';
 import visiImage from '../assets/images/kantor3.png';
@@ -13,8 +14,6 @@ import award3 from '../assets/images/penghargaantiga.jpeg';
 import logo1 from '../assets/images/anak2.png';
 import logo2 from '../assets/images/anak3.png';
 import logoHotampt from '../assets/images/logoitampt.png'; // FIX: arahkan ke gambar yang kamu berikan
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const AboutUs = () => {
     const location = useLocation();

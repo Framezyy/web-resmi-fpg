@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ContactUs.css';
+import TurnstileWidget from './TurnstileWidget';
+import { API_URL } from '../config/api';
 
 import {
     FaPhone,
@@ -15,17 +17,24 @@ import {
 import contactBg from '../assets/images/bg-1.jpeg';
 import heroBg from '../assets/images/bg-4.jpeg';
 
+const TURNSTILE_SITE_KEY = process.env.REACT_APP_TURNSTILE_SITE_KEY || '';
+
 const ContactUs = () => {
     const [jenisPernyataan, setJenisPernyataan] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [pesan, setPesan] = useState('');
+    const [privacyAccepted, setPrivacyAccepted] = useState(false);
+    const [companyWebsite, setCompanyWebsite] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState('');
+    const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formError, setFormError] = useState('');
     const [, setSuccess] = useState(false);
     const [showToast, setShowToast] = useState(false);
 
     const observerRef = useRef(null); // ADD
-
-    const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -78,35 +87,56 @@ const ContactUs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setFormError('');
 
-        const res = await fetch(`${API_URL}/contact-send.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                jenisPernyataan,
-                name,
-                email,
-                pesan
-            })
-        });
+        if (TURNSTILE_SITE_KEY && !turnstileToken) {
+            setFormError('Selesaikan verifikasi keamanan terlebih dahulu.');
+            return;
+        }
 
-        const json = await res.json();
-        if (json.success) {
+        setIsSubmitting(true);
+        try {
+            const res = await fetch(`${API_URL}/contact-send.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jenisPernyataan,
+                    name,
+                    email,
+                    phone,
+                    pesan,
+                    privacyAccepted,
+                    companyWebsite,
+                    turnstileToken
+                })
+            });
+
+            const json = await res.json().catch(() => ({}));
+            if (!res.ok || !json.success) {
+                throw new Error(json.message || 'Pesan belum dapat dikirim.');
+            }
+
             setSuccess(true);
             setShowToast(true);
-
             setJenisPernyataan('');
             setName('');
             setEmail('');
+            setPhone('');
             setPesan('');
+            setPrivacyAccepted(false);
+            setCompanyWebsite('');
+            setTurnstileToken('');
+            setTurnstileResetKey((value) => value + 1);
 
             setTimeout(() => {
                 setShowToast(false);
                 setSuccess(false);
             }, 4000);
-        } else {
+        } catch (error) {
             setSuccess(false);
-            alert(json.message || 'Gagal mengirim pesan');
+            setFormError(error.message || 'Pesan belum dapat dikirim.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -229,7 +259,7 @@ const ContactUs = () => {
                         <FaCheckCircle className="toast-icon" />
                         <div className="toast-text">
                             <h4>Berhasil!</h4>
-                            <p>Pesan Anda telah dikirim ke admin</p>
+                            <p>Pesan Anda telah diterima</p>
                         </div>
                     </div>
                     <div className="toast-progress"></div>
@@ -359,6 +389,17 @@ const ContactUs = () => {
                             </div>
                         </div>
 
+                        <div className="form-group" data-animate="fade-up" data-animate-delay="365">
+                            <label>Nomor WhatsApp</label>
+                            <input
+                                type="tel"
+                                placeholder="Contoh: +62 812 3456 7890"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                autoComplete="tel"
+                            />
+                        </div>
+
                         <div className="form-group" data-animate="fade-up" data-animate-delay="380">
                             <label>Pesan*</label>
                             <textarea
@@ -370,8 +411,44 @@ const ContactUs = () => {
                             />
                         </div>
 
-                        <button type="submit" className="submit-btn" data-animate="zoom-in" data-animate-delay="420">
-                            Kirim
+                        <div className="contact-honeypot" aria-hidden="true">
+                            <label htmlFor="company-website">Website perusahaan</label>
+                            <input
+                                id="company-website"
+                                type="text"
+                                value={companyWebsite}
+                                onChange={(e) => setCompanyWebsite(e.target.value)}
+                                tabIndex="-1"
+                                autoComplete="off"
+                            />
+                        </div>
+
+                        <label className="privacy-consent">
+                            <input
+                                type="checkbox"
+                                checked={privacyAccepted}
+                                onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                                required
+                            />
+                            <span>Saya menyetujui data ini digunakan untuk menindaklanjuti pertanyaan saya.</span>
+                        </label>
+
+                        <TurnstileWidget
+                            siteKey={TURNSTILE_SITE_KEY}
+                            onTokenChange={setTurnstileToken}
+                            resetKey={turnstileResetKey}
+                        />
+
+                        {formError && <div className="contact-form-error" role="alert">{formError}</div>}
+
+                        <button
+                            type="submit"
+                            className="submit-btn"
+                            data-animate="zoom-in"
+                            data-animate-delay="420"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? 'Mengirim...' : 'Kirim'}
                         </button>
                     </form>
                 </div>

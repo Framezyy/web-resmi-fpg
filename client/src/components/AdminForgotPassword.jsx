@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 import '../styles/AdminForgotPassword.css';
 import logoColor from '../assets/images/logo.png';
-
-const API_URL = 'http://localhost/web-resmi-fpg/server/api';
 
 const AdminForgotPassword = () => {
     const navigate = useNavigate();
